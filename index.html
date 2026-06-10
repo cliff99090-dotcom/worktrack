@@ -817,6 +817,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
             <div class="card-title" style="margin:0;">工讀生列表</div>
             <div style="display:flex;gap:8px;">
+              <button class="btn btn-sm btn-danger" onclick="removeAllEmps()"><i class="fas fa-trash"></i> 全部刪除</button>
               <button class="btn btn-sm" onclick="openModal('modal-emp-import')"><i class="fas fa-file-arrow-up"></i> 匯入名單</button>
               <button class="btn btn-primary btn-sm" onclick="openModal('modal-emp')"><i class="fas fa-plus"></i>新增工讀生</button>
             </div>
@@ -979,11 +980,20 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;font-size:12px;color:#0E3E7A;margin-bottom:14px;">
         支援你的 Excel 班表格式：欄位為星期，列為班次，格內 <code style="background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;">[C] 姓名 [D] 姓名 [⭐小組長] 姓名</code>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;background:var(--bg);border-radius:var(--r);padding:10px 14px;">
-        <i class="fas fa-calendar-week" style="color:var(--teal);"></i>
-        <span style="font-size:12px;font-weight:500;">匯入到哪一週？</span>
-        <input type="date" id="import-week-start" class="fi" style="width:160px;margin:0;" onchange="updateImportWeekLabel()">
-        <span id="import-week-label" style="font-size:11px;color:var(--muted);"></span>
+      <!-- 區間選擇 -->
+      <div style="background:var(--bg);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:500;margin-bottom:10px;"><i class="fas fa-calendar-week" style="color:var(--teal);margin-right:6px;"></i>匯入區間（週範本會自動展開到所選區間）</div>
+        <div class="two-col" style="margin-bottom:8px;">
+          <div class="form-row" style="margin:0;">
+            <label>開始日期</label>
+            <input type="date" id="import-week-start" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
+          </div>
+          <div class="form-row" style="margin:0;">
+            <label>結束日期 <span style="font-size:10px;color:var(--muted);">（選填，不填則只匯入一週）</span></label>
+            <input type="date" id="import-week-end" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
+          </div>
+        </div>
+        <div id="import-week-label" style="font-size:11px;color:var(--teal-d);min-height:16px;"></div>
       </div>
       <div id="drop-zone"
         style="border:2px dashed var(--border);border-radius:var(--r-lg);padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:14px;"
@@ -1010,7 +1020,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div style="background:var(--bg);border-radius:var(--r);padding:10px 14px;margin-top:10px;">
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
           <input type="checkbox" id="import-overwrite" checked style="width:15px;height:15px;accent-color:var(--teal);">
-          覆蓋該週已有的班次
+          覆蓋該區間內已有的班次
         </label>
       </div>
     </div>
@@ -2406,7 +2416,17 @@ function removeEmp(id){
   if(!confirm('確定移除此工讀生及其所有紀錄？'))return;
   employees=employees.filter(e=>e.id!==id);
   records=records.filter(r=>r.empId!==id);
+  db.from('employees').delete().eq('id',id);
   toast('工讀生已移除');renderEmployees();
+}
+
+async function removeAllEmps(){
+  if(!confirm(`確定要刪除全部 ${employees.length} 位工讀生嗎？\n這個動作無法復原，打卡紀錄也會一併清除。`))return;
+  const {error}=await db.from('employees').delete().neq('id',0); // delete all
+  if(error){toast('刪除失敗：'+error.message,'err');return;}
+  employees=[];records=[];schedule=[];
+  renderEmployees();renderLoginList();renderSchedule();
+  toast('✅ 已清空所有工讀生資料');
 }
 async function submitEmp(){
   const name=document.getElementById('e-name').value.trim();
@@ -2701,11 +2721,27 @@ function getMonday(dateStr){
 }
 
 function updateImportWeekLabel(){
-  const val=document.getElementById('import-week-start').value;
-  if(!val){document.getElementById('import-week-label').textContent='';return;}
-  const mon=getMonday(val);
-  const fri=new Date(mon);fri.setDate(fri.getDate()+4);
-  document.getElementById('import-week-label').textContent=`（週一 ${mon} ～ 週五 ${fmtD(fri)}）`;
+  const start=document.getElementById('import-week-start')?.value;
+  const end=document.getElementById('import-week-end')?.value;
+  const el=document.getElementById('import-week-label');
+  if(!el) return;
+  if(!start){el.textContent='';return;}
+  const mon=getMonday(start);
+  if(end&&end>start){
+    // Calculate how many weeks
+    const s=new Date(mon), e=new Date(end);
+    let days=0;
+    for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
+      if(d.getDay()!==0&&d.getDay()!==6) days++;
+    }
+    const weeks=Math.ceil(days/5);
+    el.textContent=`週一 ${mon} 至 ${end}，共約 ${weeks} 週，預計 ${weeks*WEEKLY_TEMPLATE.length} 筆排班`;
+    el.style.color='var(--teal-d)';
+  } else {
+    const fri=new Date(mon);fri.setDate(fri.getDate()+4);
+    el.textContent=`週一 ${mon} ～ 週五 ${fmtD(fri)}（單週匯入）`;
+    el.style.color='var(--muted)';
+  }
 }
 
 function switchImportTab(tab){
@@ -2938,52 +2974,71 @@ function executeImport(){
   // xlsx tab
   if(!importParsed.length){toast('尚未解析到任何資料，請先上傳檔案','err');return;}
   const weekInput=document.getElementById('import-week-start')?.value;
+  const weekEnd=document.getElementById('import-week-end')?.value;
   const monday=weekInput?getMonday(weekInput):'';
-  if(importParsed.some(r=>r.date.startsWith('weekday:'))&&!monday){
-    toast('請先設定匯入週次','err');return;
-  }
+  if(!monday){toast('請先設定匯入開始日期','err');return;}
+
+  // Auto-add new employees to local list
   importNewEmps.forEach(name=>{
     if(!employees.find(e=>e.name===name)){
       const newId=Math.max(...employees.map(e=>e.id),0)+1;
       employees.push({id:newId,name,sid:'待補',role:'C+D'});
     }
   });
+
   const overwrite=document.getElementById('import-overwrite').checked;
-  const affectedDates=new Set();
-  importParsed.forEach(r=>{
-    let date=r.date;
-    if(date.startsWith('weekday:')){
-      const dayIdx=parseInt(date.split(':')[1]);
-      const d=new Date(monday);d.setDate(d.getDate()+dayIdx);
-      date=fmtD(d);
-    }
-    affectedDates.add(date);
+
+  // Resolve weekday: entries into actual dates for the first week
+  // Then if weekEnd is set, repeat the pattern across weeks
+  const endDate=weekEnd&&weekEnd>monday?weekEnd:fmtD(new Date(new Date(monday).setDate(new Date(monday).getDate()+4)));
+
+  // Generate list of week-start mondays in range
+  const mondays=[];
+  const cur=new Date(monday);
+  const end=new Date(endDate);
+  while(cur<=end){
+    mondays.push(fmtD(cur));
+    cur.setDate(cur.getDate()+7);
+  }
+
+  // Build all entries across all weeks
+  const allEntries=[];
+  mondays.forEach(mon=>{
+    importParsed.forEach(r=>{
+      let date=r.date;
+      if(date.startsWith('weekday:')){
+        const dayIdx=parseInt(date.split(':')[1]);
+        const d=new Date(mon);d.setDate(d.getDate()+dayIdx);
+        date=fmtD(d);
+      }
+      if(date>endDate) return; // skip dates beyond range
+      allEntries.push({...r,date});
+    });
   });
+
+  // Collect affected dates
+  const affectedDates=new Set(allEntries.map(e=>e.date));
   if(overwrite){
     affectedDates.forEach(date=>{
       let i;
       while((i=schedule.findIndex(s=>s.date===date))!==-1) schedule.splice(i,1);
     });
   }
+
   let added=0;
-  importParsed.forEach(r=>{
-    let date=r.date;
-    if(date.startsWith('weekday:')){
-      const dayIdx=parseInt(date.split(':')[1]);
-      const d=new Date(monday);d.setDate(d.getDate()+dayIdx);
-      date=fmtD(d);
-    }
+  allEntries.forEach(r=>{
     const emp=employees.find(e=>e.name===r.name);
-    if(!emp)return;
-    const exists=schedule.find(s=>s.date===date&&s.shiftId===r.shiftId&&s.empId===emp.id);
-    if(!exists){schedule.push({date,shiftId:r.shiftId,empId:emp.id,coverBy:null,station:r.tag});added++;}
+    if(!emp) return;
+    const exists=schedule.find(s=>s.date===r.date&&s.shiftId===r.shiftId&&s.empId===emp.id);
+    if(!exists){schedule.push({date:r.date,shiftId:r.shiftId,empId:emp.id,coverBy:null,station:r.tag});added++;}
   });
+
   closeModal('modal-import');
   importParsed=[];importNewEmps=[];
   document.getElementById('import-preview').style.display='none';
   const fi=document.getElementById('xlsx-file-input');if(fi)fi.value='';
   renderAdminSchedule();renderSchedule();renderLoginList();
-  toast(`✅ 匯入完成：${added} 筆排班`);
+  toast(`✅ 匯入完成：${mondays.length} 週 × 共 ${added} 筆排班`);
 }
 
 function downloadTemplate(){
