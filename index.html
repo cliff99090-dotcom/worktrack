@@ -1781,8 +1781,64 @@ function renderSchedule(){
       let inner='';
       if(entries.length===0){
         inner=`<span style="color:var(--border);font-size:10px;">—</span>`;
+      } else if(sh.id==='wd5'){
+        // 18:00-21:00 特殊格式：分三區塊
+        // 順序：⭐小組長 → C/C2/C3/D → F/2F 二樓
+        const leaders=entries.filter(e=>{const t=e.station||'';return t.includes('⭐')||t.includes('小組長');});
+        const desk=entries.filter(e=>{const t=e.station||'';return !t.includes('⭐')&&!t.includes('小組長')&&!t.includes('F')&&t!=='2F';});
+        const floor=entries.filter(e=>{const t=e.station||'';return t.includes('F')||t==='2F';});
+
+        const renderEntry=(entry,sectionTag)=>{
+          const emp=employees.find(e=>e.id===entry.empId);if(!emp)return '';
+          const coverer=entry.coverBy?employees.find(e=>e.id===entry.coverBy):null;
+          const swapped=wasSwapped(date,sh.id,entry.empId);
+          const tag=entry.station||sectionTag;
+          const isMine=currentUser&&(entry.empId===currentUser.id||(entry.coverBy===currentUser?.id));
+          const col=tagColor(tag);
+          if(coverer){
+            return `<div style="line-height:1.5;"><span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${coverer.name}<span style="font-size:9px;">(代)</span></span></div>`;
+          } else if(swapped){
+            return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:11px;font-weight:700;color:var(--coral);">${emp.name}</span></div>`;
+          } else {
+            return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:11px;font-weight:600;color:var(--ink2);">${emp.name}</span></div>`;
+          }
+        };
+
+        // ⭐ 小組長區塊
+        if(leaders.length){
+          inner+=`<div style="border-bottom:1px dashed var(--border);margin-bottom:4px;padding-bottom:4px;">
+            <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:2px;">⭐ 小組長</div>
+            ${leaders.map(e=>renderEntry(e,'⭐小組長')).join('')}
+          </div>`;
+        }
+        // C2 C3 D 櫃台/詢問台區塊
+        if(desk.length){
+          inner+=`<div style="border-bottom:1px dashed var(--border);margin-bottom:4px;padding-bottom:4px;">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);margin-bottom:2px;">
+              <span style="color:#D05A1E;">C2</span> <span style="color:#2A6FA8;">C3</span> <span style="color:#1B6B3A;">D</span>
+            </div>
+            ${desk.map(e=>{
+              const tag=e.station||'C';const col=tagColor(tag);
+              const tagLabel=tag==='C'||tag==='C2'?'C2':tag==='C3'?'C3':tag==='D'?'D':tag;
+              const emp=employees.find(x=>x.id===e.empId);if(!emp)return '';
+              const coverer=e.coverBy?employees.find(x=>x.id===e.coverBy):null;
+              const swapped=wasSwapped(date,sh.id,e.empId);
+              const isMine=currentUser&&(e.empId===currentUser.id||(e.coverBy===currentUser?.id));
+              if(coverer){return `<div style="line-height:1.5;"><span style="font-size:9px;font-weight:700;color:var(--coral);">[${tagLabel}]</span> <span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${coverer.name}<span style="font-size:9px;">(代)</span></span></div>`;}
+              if(swapped){return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:9px;font-weight:700;color:var(--coral);">[${tagLabel}]</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${emp.name}</span></div>`;}
+              return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:9px;font-weight:700;color:${col};">[${tagLabel}]</span> <span style="font-size:11px;font-weight:600;color:var(--ink2);">${emp.name}</span></div>`;
+            }).join('')}
+          </div>`;
+        }
+        // F 二樓作業區塊
+        if(floor.length){
+          inner+=`<div>
+            <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:2px;">二樓作業</div>
+            ${floor.map(e=>renderEntry(e,'F')).join('')}
+          </div>`;
+        }
       } else {
-        // Group by tag for display order: ⭐ > C > C3 > D > F
+        // 一般班次：照原本方式渲染
         const order=['⭐小組長','C','C2','C3','D','F','2F'];
         const sorted=[...entries].sort((a,b)=>{
           const ta=order.findIndex(x=>(a.station||'').includes(x.replace('⭐小組長','⭐')));
@@ -1796,11 +1852,9 @@ function renderSchedule(){
           const swapped=wasSwapped(date,sh.id,entry.empId);
           const tag=entry.station||'C';
           const isMine=currentUser&&(entry.empId===currentUser.id||(entry.coverBy===currentUser?.id));
-          const tagLabel=tag.includes('⭐')||tag.includes('小組長')?'⭐':tag;
+          const tagLabel=tag.includes('⭐')||tag.includes('小組長')?'⭐':tag==='C'||tag==='C2'?'C2':tag==='C3'?'C3':tag;
           const col=tagColor(tag);
-
           if(coverer){
-            // 代班：橫線原名 + 紅色代班人(代)
             return `<div style="line-height:1.6;padding:1px 0;">
               <span style="font-size:9px;font-weight:700;color:var(--coral);margin-right:3px;">[${tagLabel}]</span>
               <span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span>
@@ -1808,7 +1862,6 @@ function renderSchedule(){
               <span style="font-size:9px;color:var(--coral);">(代)</span>
             </div>`;
           } else if(swapped){
-            // 換班：紅色標記
             return `<div style="line-height:1.6;padding:1px 0;${isMine?'background:rgba(27,153,114,0.1);border-radius:3px;padding:1px 3px;':''}">
               <span style="font-size:9px;font-weight:700;color:var(--coral);margin-right:3px;">[${tagLabel}]</span>
               <span style="font-size:12px;font-weight:700;color:var(--coral);">${emp.name}</span>
@@ -1830,11 +1883,11 @@ function renderSchedule(){
 
   html+=`</tbody></table></div>
   <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;padding:0 2px;font-size:11px;color:var(--muted);">
-    <span style="font-weight:700;color:#D05A1E;">[C] 櫃台</span>
-    <span style="font-weight:700;color:#2A6FA8;">[C3] 櫃台3</span>
-    <span style="font-weight:700;color:#1B6B3A;">[D] 詢問台</span>
-    <span style="font-weight:700;color:#7040B0;">[F] 二樓</span>
-    <span style="font-weight:700;color:#B07A00;">[⭐] 小組長</span>
+    <span style="font-weight:700;color:#B07A00;">⭐ 小組長</span>
+    <span style="font-weight:700;color:#D05A1E;">C2 櫃台</span>
+    <span style="font-weight:700;color:#2A6FA8;">C3 櫃台</span>
+    <span style="font-weight:700;color:#1B6B3A;">D 詢問台</span>
+    <span style="font-weight:700;color:#7040B0;">F 二樓作業</span>
     <span style="font-weight:700;color:var(--coral);">紅色 = 換班/代班</span>
   </div>`;
 
