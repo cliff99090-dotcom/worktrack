@@ -850,9 +850,6 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <button class="btn btn-primary" onclick="openModal('modal-import')">
             <i class="fas fa-file-arrow-up"></i> 匯入班表
           </button>
-          <button class="btn" onclick="downloadTemplate()">
-            <i class="fas fa-file-arrow-down"></i> 下載 CSV 範本
-          </button>
           <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
             <button class="btn btn-sm" onclick="adminShiftWeek(-1)"><i class="fas fa-chevron-left"></i></button>
             <button class="btn btn-sm" onclick="adminShiftWeek(1)"><i class="fas fa-chevron-right"></i></button>
@@ -922,124 +919,77 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
 <!-- ══ IMPORT SCHEDULE MODAL ══ -->
 <div class="modal-overlay" id="modal-import">
-  <div class="modal-box" style="width:560px;max-height:90vh;overflow-y:auto;">
+  <div class="modal-box" style="width:540px;max-height:90vh;overflow-y:auto;">
     <div class="modal-title"><i class="fas fa-file-arrow-up" style="color:var(--teal);margin-right:8px;"></i>匯入班表</div>
 
-    <!-- Tab switch -->
-    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:18px;">
-      <button id="import-tab-semester" onclick="switchImportTab('semester')"
-        style="padding:8px 14px;font-size:13px;border:none;background:none;cursor:pointer;border-bottom:2px solid var(--teal);color:var(--teal);font-weight:600;font-family:inherit;">
-        <i class="fas fa-graduation-cap" style="margin-right:5px;"></i>學期匯入
-      </button>
-      <button id="import-tab-xlsx" onclick="switchImportTab('xlsx')"
-        style="padding:8px 14px;font-size:13px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);font-family:inherit;">
-        <i class="fas fa-file-excel" style="margin-right:5px;"></i>上傳 Excel
-      </button>
-      <button id="import-tab-manual" onclick="switchImportTab('manual')"
-        style="padding:8px 14px;font-size:13px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);font-family:inherit;">
-        <i class="fas fa-keyboard" style="margin-right:5px;"></i>手動貼上
-      </button>
-    </div>
-
-    <!-- ── SEMESTER TAB ── -->
-    <div id="import-panel-semester">
-      <div style="background:var(--teal-l);border:1px solid #9FD9C3;border-radius:var(--r);padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--teal-d);line-height:1.7;">
-        <strong><i class="fas fa-info-circle"></i> 學期匯入</strong><br>
-        將已讀入的圖書館班表（週範本）自動展開到整個學期區間，每週重複同樣的排班。
+    <!-- Step 1: Upload Excel -->
+    <div style="margin-bottom:18px;">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
+        <span style="background:var(--teal);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-right:6px;">1</span>
+        上傳班表 Excel 檔
       </div>
-      <div class="two-col" style="margin-bottom:12px;">
-        <div class="form-row" style="margin:0;">
-          <label>學期開始日</label>
-          <input type="date" class="fi" id="sem-start" style="margin:0;">
-        </div>
-        <div class="form-row" style="margin:0;">
-          <label>學期結束日</label>
-          <input type="date" class="fi" id="sem-end" style="margin:0;">
-        </div>
-      </div>
-      <!-- Quick preset buttons -->
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
-        <span style="font-size:11px;color:var(--muted);align-self:center;">快速設定：</span>
-        <button class="btn btn-sm" onclick="setSemPreset('114-2')">114學年第2學期</button>
-        <button class="btn btn-sm" onclick="setSemPreset('115-1')">115學年第1學期</button>
-        <button class="btn btn-sm" onclick="setSemPreset('115-2')">115學年第2學期</button>
-      </div>
-      <div id="sem-preview" style="display:none;background:var(--bg);border-radius:var(--r);padding:12px 14px;font-size:12px;margin-bottom:4px;">
-        <div id="sem-preview-text"></div>
-      </div>
-      <div style="background:var(--bg);border-radius:var(--r);padding:10px 14px;margin-top:8px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
-          <input type="checkbox" id="sem-overwrite" checked style="width:15px;height:15px;accent-color:var(--teal);">
-          覆蓋該區間內已有的班次
-        </label>
-      </div>
-    </div>
-
-    <!-- ── XLSX TAB ── -->
-    <div id="import-panel-xlsx" style="display:none;">
-      <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;font-size:12px;color:#0E3E7A;margin-bottom:14px;">
-        支援你的 Excel 班表格式：欄位為星期，列為班次，格內 <code style="background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;">[C] 姓名 [D] 姓名 [⭐小組長] 姓名</code>
-      </div>
-      <!-- 區間選擇 -->
-      <div style="background:var(--bg);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;">
-        <div style="font-size:12px;font-weight:500;margin-bottom:10px;"><i class="fas fa-calendar-week" style="color:var(--teal);margin-right:6px;"></i>匯入區間（週範本會自動展開到所選區間）</div>
-        <div class="two-col" style="margin-bottom:8px;">
-          <div class="form-row" style="margin:0;">
-            <label>開始日期</label>
-            <input type="date" id="import-week-start" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
-          </div>
-          <div class="form-row" style="margin:0;">
-            <label>結束日期 <span style="font-size:10px;color:var(--muted);">（選填，不填則只匯入一週）</span></label>
-            <input type="date" id="import-week-end" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
-          </div>
-        </div>
-        <div id="import-week-label" style="font-size:11px;color:var(--teal-d);min-height:16px;"></div>
+      <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;font-size:12px;color:#0E3E7A;margin-bottom:12px;line-height:1.6;">
+        支援你的圖書館班表格式：欄位為週一到週五，列為班次時段，格內 <code style="background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;">[C] 姓名 [D] 姓名</code>
       </div>
       <div id="drop-zone"
-        style="border:2px dashed var(--border);border-radius:var(--r-lg);padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:14px;"
+        style="border:2px dashed var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;"
         onclick="document.getElementById('xlsx-file-input').click()"
         ondragover="event.preventDefault();this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)';"
         ondragleave="this.style.borderColor='var(--border)';this.style.background='';"
         ondrop="handleFileDrop(event)">
-        <i class="fas fa-cloud-arrow-up" style="font-size:28px;color:var(--muted);margin-bottom:8px;display:block;"></i>
-        <div style="font-size:13px;font-weight:500;margin-bottom:3px;">拖曳班表檔案到這裡</div>
-        <div style="font-size:11px;color:var(--muted);">支援 .xlsx · .csv 格式</div>
+        <i class="fas fa-cloud-arrow-up" id="dz-icon" style="font-size:26px;color:var(--muted);margin-bottom:8px;display:block;"></i>
+        <div id="dz-label" style="font-size:13px;font-weight:500;margin-bottom:3px;">拖曳 Excel 檔案到這裡，或點此選擇</div>
+        <div id="dz-sub" style="font-size:11px;color:var(--muted);">支援 .xlsx 格式</div>
         <input type="file" id="xlsx-file-input" accept=".xlsx,.csv,.txt" style="display:none;" onchange="handleFileSelect(event)">
       </div>
-      <div id="import-preview" style="display:none;">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;">解析預覽</div>
-        <div style="overflow:auto;max-height:180px;border:1px solid var(--border);border-radius:var(--r);">
+      <div id="import-preview" style="display:none;margin-top:12px;">
+        <div style="overflow:auto;max-height:160px;border:1px solid var(--border);border-radius:var(--r);">
           <table class="tbl" id="preview-table" style="font-size:12px;"></table>
         </div>
-        <div id="import-summary" style="font-size:12px;margin-top:8px;"></div>
-        <div id="new-emp-section" style="display:none;margin-top:8px;background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:10px 14px;">
-          <div style="font-size:12px;font-weight:600;color:#5C3A00;margin-bottom:4px;"><i class="fas fa-user-plus"></i> 偵測到新工讀生，將自動加入：</div>
+        <div id="import-summary" style="font-size:12px;color:var(--teal-d);margin-top:6px;font-weight:500;"></div>
+        <div id="new-emp-section" style="display:none;margin-top:8px;background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:8px 12px;">
+          <div style="font-size:12px;font-weight:600;color:#5C3A00;margin-bottom:3px;"><i class="fas fa-user-plus"></i> 偵測到新工讀生，將自動加入：</div>
           <div id="new-emp-list" style="font-size:12px;color:#5C3A00;"></div>
         </div>
       </div>
-      <div style="background:var(--bg);border-radius:var(--r);padding:10px 14px;margin-top:10px;">
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
-          <input type="checkbox" id="import-overwrite" checked style="width:15px;height:15px;accent-color:var(--teal);">
-          覆蓋該區間內已有的班次
-        </label>
-      </div>
     </div>
 
-    <!-- ── MANUAL TAB ── -->
-    <div id="import-panel-manual" style="display:none;">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.7;">
-        從 Excel 複製整個「週班表」工作表後貼上（Tab 分隔）
+    <!-- Step 2: Select date range -->
+    <div style="margin-bottom:18px;">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
+        <span style="background:var(--teal);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-right:6px;">2</span>
+        選擇匯入區間
       </div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;background:var(--bg);border-radius:var(--r);padding:10px 14px;">
-        <span style="font-size:12px;font-weight:500;">匯入到哪一週？</span>
-        <input type="date" id="import-week-start-m" class="fi" style="width:160px;margin:0;">
+      <div class="two-col" style="margin-bottom:10px;">
+        <div class="form-row" style="margin:0;">
+          <label>開始日期</label>
+          <input type="date" id="import-week-start" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
+        </div>
+        <div class="form-row" style="margin:0;">
+          <label>結束日期</label>
+          <input type="date" id="import-week-end" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
+        </div>
       </div>
-      <textarea class="fi" id="manual-paste" rows="7" style="font-family:'DM Mono',monospace;font-size:11px;resize:vertical;"
-        placeholder="從 Excel 複製整個工作表內容後貼上…"></textarea>
+      <!-- Preset buttons -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+        <span style="font-size:11px;color:var(--muted);align-self:center;">快速設定：</span>
+        <button class="btn btn-sm" onclick="setSemPreset('114-2')">114-2學期</button>
+        <button class="btn btn-sm" onclick="setSemPreset('115-1')">115-1學期</button>
+        <button class="btn btn-sm" onclick="setSemPreset('115-2')">115-2學期</button>
+      </div>
+      <div id="import-week-label" style="font-size:12px;color:var(--teal-d);min-height:18px;background:var(--teal-l);border-radius:var(--r);padding:8px 12px;display:none;"></div>
+    </div>
+
+    <!-- Options -->
+    <div style="background:var(--bg);border-radius:var(--r);padding:10px 14px;margin-bottom:4px;">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
+        <input type="checkbox" id="import-overwrite" checked style="width:15px;height:15px;accent-color:var(--teal);">
+        覆蓋該區間內已有的班次
+      </label>
     </div>
 
     <div class="modal-foot">
-      <button class="btn" onclick="closeModal('modal-import')">取消</button>
+      <button class="btn" onclick="closeModal('modal-import');resetImportModal()">取消</button>
       <button class="btn btn-primary" onclick="executeImport()"><i class="fas fa-check"></i> 確認匯入</button>
     </div>
   </div>
@@ -2654,9 +2604,9 @@ const SEM_PRESETS = {
 
 function setSemPreset(key){
   const p=SEM_PRESETS[key]; if(!p)return;
-  document.getElementById('sem-start').value=p.start;
-  document.getElementById('sem-end').value=p.end;
-  updateSemPreview();
+  document.getElementById('import-week-start').value=p.start;
+  document.getElementById('import-week-end').value=p.end;
+  updateImportWeekLabel();
 }
 
 function updateSemPreview(){
@@ -2725,36 +2675,24 @@ function updateImportWeekLabel(){
   const end=document.getElementById('import-week-end')?.value;
   const el=document.getElementById('import-week-label');
   if(!el) return;
-  if(!start){el.textContent='';return;}
+  if(!start){el.style.display='none';return;}
   const mon=getMonday(start);
-  if(end&&end>start){
-    // Calculate how many weeks
+  el.style.display='block';
+  if(end&&end>=start){
     const s=new Date(mon), e=new Date(end);
-    let days=0;
+    let weekdays=0;
     for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
-      if(d.getDay()!==0&&d.getDay()!==6) days++;
+      if(d.getDay()!==0&&d.getDay()!==6) weekdays++;
     }
-    const weeks=Math.ceil(days/5);
-    el.textContent=`週一 ${mon} 至 ${end}，共約 ${weeks} 週，預計 ${weeks*WEEKLY_TEMPLATE.length} 筆排班`;
-    el.style.color='var(--teal-d)';
+    const weeks=Math.ceil(weekdays/5);
+    el.innerHTML=`<i class="fas fa-calendar-check" style="margin-right:6px;"></i>${mon} ～ ${end}，共 <strong>${weeks}</strong> 週 · <strong>${weekdays}</strong> 個工作天`;
   } else {
     const fri=new Date(mon);fri.setDate(fri.getDate()+4);
-    el.textContent=`週一 ${mon} ～ 週五 ${fmtD(fri)}（單週匯入）`;
-    el.style.color='var(--muted)';
+    el.innerHTML=`<i class="fas fa-calendar-week" style="margin-right:6px;"></i>單週：${mon} ～ ${fmtD(fri)}`;
   }
 }
 
-function switchImportTab(tab){
-  document.getElementById('import-panel-xlsx').style.display=tab==='xlsx'?'':'none';
-  document.getElementById('import-panel-manual').style.display=tab==='manual'?'':'none';
-  ['xlsx','manual'].forEach(t=>{
-    const btn=document.getElementById('import-tab-'+t);
-    if(!btn)return;
-    btn.style.borderBottomColor=tab===t?'var(--teal)':'transparent';
-    btn.style.color=tab===t?'var(--teal)':'var(--muted)';
-    btn.style.fontWeight=tab===t?'600':'400';
-  });
-}
+// switchImportTab removed - no longer needed (unified modal)
 
 function handleFileDrop(e){
   e.preventDefault();
@@ -2916,92 +2854,95 @@ function showImportError(msg){
 }
 
 function showImportPreview(){
-  const pd=document.getElementById('import-preview');pd.style.display='';
+  // Update drop zone to show file loaded state
+  const dz=document.getElementById('drop-zone');
+  if(dz){
+    dz.style.borderColor='var(--teal)';dz.style.borderStyle='solid';
+    dz.style.background='var(--teal-l)';
+    const icon=document.getElementById('dz-icon');
+    const label=document.getElementById('dz-label');
+    const sub=document.getElementById('dz-sub');
+    if(icon){icon.className='fas fa-circle-check';icon.style.color='var(--teal)';}
+    if(label){label.textContent='檔案已載入，可重新上傳以替換';label.style.color='var(--teal-d)';}
+    if(sub){sub.textContent=`解析到 ${importParsed.length} 筆排班 · ${new Set(importParsed.map(r=>r.name)).size} 位工讀生`;}
+  }
 
-  // Build preview table (first 8 rows)
-  const preview=importParsed.slice(0,8);
-  const previewTable=document.getElementById('preview-table');
-  previewTable.innerHTML=`<thead><tr><th>日期/星期</th><th>班次</th><th>標籤</th><th>工讀生</th></tr></thead>
+  const pd=document.getElementById('import-preview');pd.style.display='';
+  const preview=importParsed.slice(0,6);
+  document.getElementById('preview-table').innerHTML=`<thead><tr><th>星期</th><th>班次時間</th><th>工作站</th><th>工讀生</th></tr></thead>
     <tbody>${preview.map(r=>{
       const dayLabel=r.date.startsWith('weekday:')?['一','二','三','四','五','六','日'][parseInt(r.date.split(':')[1])]:r.date;
-      const tagColor=r.tag.includes('⭐')||r.tag.includes('小組長')?'var(--amber)':r.tag==='D'?STATION_COLORS.D:STATION_COLORS.C2;
-      return `<tr><td>${dayLabel}</td><td style="font-size:11px;">${r.shiftLabel}</td>
-        <td><span style="font-weight:700;color:${tagColor};font-size:11px;">[${r.tag}]</span></td>
+      const col=r.tag.includes('⭐')||r.tag.includes('小組長')?'var(--amber)':r.tag==='D'?'#1B6B3A':'#D05A1E';
+      return `<tr><td>週${dayLabel}</td><td style="font-size:11px;font-family:'DM Mono',monospace;">${r.shiftLabel}</td>
+        <td><span style="font-weight:700;color:${col};font-size:11px;">[${r.tag}]</span></td>
         <td style="font-weight:500;">${r.name}</td></tr>`;
-    }).join('')}${importParsed.length>8?`<tr><td colspan="4" style="color:var(--muted);text-align:center;font-size:11px;">…還有 ${importParsed.length-8} 筆</td></tr>`:''}</tbody>`;
-
-  const hasDate=importParsed.some(r=>!r.date.startsWith('weekday:'));
-  const noDateWarning=!hasDate&&!document.getElementById('import-week-start')?.value?
-    `<br><span style="color:var(--amber);font-size:11px;"><i class="fas fa-triangle-exclamation"></i> 請設定匯入週次，否則無法確定日期</span>`:'';
+    }).join('')}${importParsed.length>6?`<tr><td colspan="4" style="color:var(--muted);text-align:center;font-size:11px;">…還有 ${importParsed.length-6} 筆</td></tr>`:''}</tbody>`;
 
   document.getElementById('import-summary').innerHTML=
-    `共解析 <strong>${importParsed.length}</strong> 筆排班，涵蓋 <strong>${new Set(importParsed.map(r=>r.name)).size}</strong> 位工讀生${noDateWarning}`;
+    `共解析 <strong>${importParsed.length}</strong> 筆排班，涵蓋 <strong>${new Set(importParsed.map(r=>r.name)).size}</strong> 位工讀生`;
 
   const ns=document.getElementById('new-emp-section');
   if(importNewEmps.length){
     ns.style.display='';
-    document.getElementById('new-emp-list').innerHTML=importNewEmps.map(n=>`<span style="display:inline-block;background:rgba(255,255,255,0.5);border-radius:4px;padding:1px 8px;margin:2px 3px;">${n}</span>`).join('');
+    document.getElementById('new-emp-list').innerHTML=importNewEmps.map(n=>`<span style="display:inline-block;background:rgba(255,255,255,0.6);border-radius:4px;padding:1px 8px;margin:2px;">${n}</span>`).join('');
   } else {
     ns.style.display='none';
   }
 }
 
+function resetImportModal(){
+  importParsed=[];importNewEmps=[];
+  const pd=document.getElementById('import-preview');if(pd)pd.style.display='none';
+  const dz=document.getElementById('drop-zone');
+  if(dz){
+    dz.style.borderColor='var(--border)';dz.style.borderStyle='dashed';dz.style.background='';
+    const icon=document.getElementById('dz-icon');
+    const label=document.getElementById('dz-label');
+    const sub=document.getElementById('dz-sub');
+    if(icon){icon.className='fas fa-cloud-arrow-up';icon.style.color='var(--muted)';}
+    if(label){label.textContent='拖曳 Excel 檔案到這裡，或點此選擇';label.style.color='';}
+    if(sub){sub.textContent='支援 .xlsx 格式';}
+  }
+  const fi=document.getElementById('xlsx-file-input');if(fi)fi.value='';
+  const wl=document.getElementById('import-week-label');if(wl){wl.style.display='none';wl.innerHTML='';}
+}
+
 function executeImport(){
-  const semVisible=document.getElementById('import-panel-semester').style.display!=='none'||
-    !document.getElementById('import-panel-semester').style.display; // default visible
-
-  if(semVisible){
-    const s=document.getElementById('sem-start').value;
-    const e=document.getElementById('sem-end').value;
-    if(!s||!e){toast('請選擇學期起始和結束日期','err');return;}
-    if(new Date(s)>new Date(e)){toast('開始日期不能晚於結束日期','err');return;}
-    const overwrite=document.getElementById('sem-overwrite').checked;
-    const added=importSemesterSchedule(s,e,overwrite);
-    closeModal('modal-import');
-    renderAdminSchedule();renderSchedule();
-    toast(`✅ 學期班表匯入完成：共 ${added} 筆排班`);
-    return;
+  // Validate: need file parsed
+  if(!importParsed.length){
+    toast('請先上傳班表 Excel 檔案','err');return;
   }
-
-  const manualVisible=document.getElementById('import-panel-manual').style.display!=='none';
-  if(manualVisible){
-    const text=document.getElementById('manual-paste').value;
-    if(!text.trim()){toast('請貼上班表資料','err');return;}
-    parseTsvText(text);
-    return;
-  }
-
-  // xlsx tab
-  if(!importParsed.length){toast('尚未解析到任何資料，請先上傳檔案','err');return;}
+  // Validate: need start date
   const weekInput=document.getElementById('import-week-start')?.value;
   const weekEnd=document.getElementById('import-week-end')?.value;
-  const monday=weekInput?getMonday(weekInput):'';
-  if(!monday){toast('請先設定匯入開始日期','err');return;}
+  if(!weekInput){toast('請設定匯入開始日期','err');return;}
 
-  // Auto-add new employees to local list
+  const monday=getMonday(weekInput);
+  const endDate=weekEnd&&weekEnd>=monday?weekEnd:fmtD(new Date(new Date(monday).getTime()+4*86400000));
+
+  if(new Date(monday)>new Date(endDate)){
+    toast('結束日期不能早於開始日期','err');return;
+  }
+
+  // Auto-add new employees
   importNewEmps.forEach(name=>{
     if(!employees.find(e=>e.name===name)){
-      const newId=Math.max(...employees.map(e=>e.id),0)+1;
-      employees.push({id:newId,name,sid:'待補',role:'C+D'});
+      employees.push({id:Date.now()+Math.random(),name,sid:'LIB'+String(Date.now()).slice(-6),role:'C+D'});
     }
   });
 
   const overwrite=document.getElementById('import-overwrite').checked;
 
-  // Resolve weekday: entries into actual dates for the first week
-  // Then if weekEnd is set, repeat the pattern across weeks
-  const endDate=weekEnd&&weekEnd>monday?weekEnd:fmtD(new Date(new Date(monday).setDate(new Date(monday).getDate()+4)));
-
-  // Generate list of week-start mondays in range
+  // Generate all week mondays in range
   const mondays=[];
   const cur=new Date(monday);
-  const end=new Date(endDate);
-  while(cur<=end){
+  const endD=new Date(endDate);
+  while(cur<=endD){
     mondays.push(fmtD(cur));
     cur.setDate(cur.getDate()+7);
   }
 
-  // Build all entries across all weeks
+  // Expand parsed entries across all weeks
   const allEntries=[];
   mondays.forEach(mon=>{
     importParsed.forEach(r=>{
@@ -3011,20 +2952,21 @@ function executeImport(){
         const d=new Date(mon);d.setDate(d.getDate()+dayIdx);
         date=fmtD(d);
       }
-      if(date>endDate) return; // skip dates beyond range
+      if(date>endDate) return;
       allEntries.push({...r,date});
     });
   });
 
-  // Collect affected dates
-  const affectedDates=new Set(allEntries.map(e=>e.date));
+  // Overwrite if checked
   if(overwrite){
-    affectedDates.forEach(date=>{
+    const affected=new Set(allEntries.map(e=>e.date));
+    affected.forEach(date=>{
       let i;
       while((i=schedule.findIndex(s=>s.date===date))!==-1) schedule.splice(i,1);
     });
   }
 
+  // Insert entries
   let added=0;
   allEntries.forEach(r=>{
     const emp=employees.find(e=>e.name===r.name);
@@ -3034,28 +2976,9 @@ function executeImport(){
   });
 
   closeModal('modal-import');
-  importParsed=[];importNewEmps=[];
-  document.getElementById('import-preview').style.display='none';
-  const fi=document.getElementById('xlsx-file-input');if(fi)fi.value='';
+  resetImportModal();
   renderAdminSchedule();renderSchedule();renderLoginList();
-  toast(`✅ 匯入完成：${mondays.length} 週 × 共 ${added} 筆排班`);
-}
-
-function downloadTemplate(){
-  const dates=getWeekDates(adminWeekOffset).slice(0,5);
-  const DAY_LABELS=['週一','週二','週三','週四','週五'];
-  // Build Excel-like TSV
-  let tsv='班次\t'+DAY_LABELS.join('\t')+'\n';
-  WEEKDAY_SHIFTS.forEach(sh=>{
-    const timeLabel=sh.time.replace('–','-')+'（'+((parseInt(sh.time.split('–')[1])-parseInt(sh.time.split('–')[0]))||2)+'hr）';
-    const sample=employees.length?`[C] ${employees[0].name} [D] ${employees[Math.min(1,employees.length-1)].name}`:'[C] 姓名 [D] 姓名';
-    tsv+=timeLabel+'\t'+dates.map(()=>sample).join('\t')+'\n';
-  });
-  const blob=new Blob(['\ufeff'+tsv],{type:'text/tab-separated-values;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='班表範本.tsv';a.click();
-  URL.revokeObjectURL(url);
-  toast('📥 範本已下載（以 Excel 開啟後另存為 xlsx）');
+  toast(`✅ 匯入完成：${mondays.length} 週，共 ${added} 筆排班`);
 }
 // ═══ HOLIDAYS & CLOSURES ═══
 let closureDays=[];
