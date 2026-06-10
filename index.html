@@ -2716,36 +2716,121 @@ function handleFileSelect(e){
   }
 }
 
-// Parse xlsx using SheetJS (loaded from CDN)
+// Parse xlsx using SheetJS — reads raw cell values directly, no CSV conversion
 function parseXlsxFile(file){
+  function doRead(){
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const wb=XLSX.read(ev.target.result,{type:'array'});
+        const sheetName=wb.SheetNames.find(n=>n.includes('週班表')||n.includes('班表'))||wb.SheetNames[0];
+        parseSheetDirect(wb.Sheets[sheetName]);
+      }catch(e){showImportError('讀取 Excel 失敗：'+e.message);}
+    };
+    reader.readAsArrayBuffer(file);
+  }
   if(typeof XLSX==='undefined'){
-    // Load SheetJS dynamically
     const s=document.createElement('script');
     s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-    s.onload=()=>{
-      const reader=new FileReader();
-      reader.onload=ev=>{
-        const wb=XLSX.read(ev.target.result,{type:'array'});
-        // Look for 週班表 sheet first, else first sheet
-        const sheetName=wb.SheetNames.find(n=>n.includes('週班表')||n.includes('班表'))||wb.SheetNames[0];
-        const ws=wb.Sheets[sheetName];
-        const tsv=XLSX.utils.sheet_to_csv(ws,{FS:'\t'});
-        parseTsvText(tsv);
-      };
-      reader.readAsArrayBuffer(file);
-    };
+    s.onload=doRead;
+    s.onerror=()=>showImportError('無法載入 Excel 解析套件，請確認網路連線');
     document.head.appendChild(s);
+  } else { doRead(); }
+}
+
+// Read cell values directly from SheetJS worksheet object
+// This avoids all CSV quoting/escaping issues
+function parseSheetDirect(ws){
+  importParsed=[];importNewEmps=[];
+  const detectedNames=new Set();
+  if(!ws||!ws['!ref']){showImportError('找不到工作表內容');return;}
+
+  const range=XLSX.utils.decode_range(ws['!ref']);
+  const maxRow=range.e.r, maxCol=range.e.c;
+
+  // Get raw cell string value
+  const cellVal=(r,c)=>{
+    const cell=ws[XLSX.utils.encode_cell({r,c})];
+    if(!cell) return '';
+    return String(cell.v!==undefined?cell.v:cell.w||'').trim();
+  };
+
+  // Find header row with 週一~週五
+  let headerRow=0;
+  for(let r=0;r<=Math.min(4,maxRow);r++){
+    for(let c=0;c<=Math.min(8,maxCol);c++){
+      if(/週[一二三四五]/.test(cellVal(r,c))){headerRow=r;break;}
+    }
+  }
+
+  // Map column → dayOffset 0=Mon...4=Fri
+  const DAY_MAP={'週一':0,'週二':1,'週三':2,'週四':3,'週五':4};
+  const colToDayIdx={};
+  for(let c=0;c<=maxCol;c++){
+    const v=cellVal(headerRow,c);
+    if(DAY_MAP[v]!==undefined) colToDayIdx[c]=DAY_MAP[v];
+  }
+  // Fallback: assume cols 1-5 = Mon-Fri
+  if(!Object.keys(colToDayIdx).length){
+    for(let i=1;i<=5;i++) colToDayIdx[i]=i-1;
+  }
+
+  // Extract all [TAG] Name pairs from a cell string
+  const parseCell=(raw)=>{
+    if(!raw) return [];
+    const entries=[];
+    const re=/\[([^\]]+)\]\s*([^\[]+?)(?=\s*\[|$)/g;
+    let m;
+    while((m=re.exec(String(raw)))!==null){
+      const tag=m[1].trim();
+      const name=m[2].trim().replace(/\s+/g,' ').replace(/[,，、。\s]+$/,'');
+      if(tag&&name&&name.length>=1&&name.length<=25) entries.push({tag,name});
+    }
+    return entries;
+  };
+
+  // Process each data row
+  for(let r=headerRow+1;r<=maxRow;r++){
+    const firstCell=cellVal(r,0);
+    if(!firstCell) continue;
+
+    // Match shift ID from time pattern
+    let shiftId=null;
+    for(const sm of SHIFT_TIME_MAP){
+      if(sm.pattern.test(firstCell)){shiftId=sm.id;break;}
+    }
+    if(!shiftId){
+      // Fallback: match by start hour:min
+      const tm=firstCell.match(/(\d{1,2}):(\d{2})/);
+      if(tm){
+        const start=`${tm[1].padStart(2,'0')}:${tm[2]}`;
+        const found=ALL_SHIFTS.find(s=>s.time.startsWith(start));
+        if(found) shiftId=found.id;
+      }
+    }
+    if(!shiftId) continue;
+
+    const shiftLabel=ALL_SHIFTS.find(s=>s.id===shiftId)?.time||firstCell;
+
+    Object.entries(colToDayIdx).forEach(([c,dayIdx])=>{
+      parseCell(cellVal(r,parseInt(c))).forEach(({tag,name})=>{
+        detectedNames.add(name);
+        importParsed.push({date:`weekday:${dayIdx}`,shiftId,name,tag,shiftLabel});
+      });
+    });
+  }
+
+  console.log(`[Import] ${importParsed.length} entries, ${detectedNames.size} people`);
+
+  if(!importParsed.length){
+    showImportError('未能解析到排班資料。請確認：①欄位標題需含「週一」~「週五」 ②格內格式為 [C] 姓名 [D] 姓名');
     return;
   }
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    const wb=XLSX.read(ev.target.result,{type:'array'});
-    const sheetName=wb.SheetNames.find(n=>n.includes('週班表')||n.includes('班表'))||wb.SheetNames[0];
-    const ws=wb.Sheets[sheetName];
-    const tsv=XLSX.utils.sheet_to_csv(ws,{FS:'\t'});
-    parseTsvText(tsv);
-  };
-  reader.readAsArrayBuffer(file);
+  importNewEmps=[];
+  detectedNames.forEach(name=>{
+    if(!employees.find(e=>e.name===name)) importNewEmps.push(name);
+  });
+  showImportPreview();
 }
 
 // Parse TSV/CSV content from Excel
