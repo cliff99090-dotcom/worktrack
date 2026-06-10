@@ -2755,95 +2755,109 @@ function parseTsvText(text){
   importNewEmps=[];
   const detectedNames=new Set();
 
-  // Normalize: split into lines, handle both \r\n and \n
+  // Normalize line endings
   const lines=text.split(/\r?\n/).map(l=>l.trimEnd()).filter(l=>l.trim());
-  if(lines.length<2){showImportError('格式錯誤：檔案內容不足，請確認是否為正確的班表檔案');return;}
+  if(lines.length<2){showImportError('格式錯誤：檔案內容不足');return;}
 
-  // Detect separator (tab or comma)
-  const sep=lines[0].includes('\t')?'\t':',';
+  // Always use tab as separator (we force tab via SheetJS FS:'\t')
+  const sep='\t';
 
-  // Find the header row (contains day names or is the first row)
-  // We look for row that has 週一/Monday/Mon or just treat first row as header
+  // Find header row containing 週一~週五
   let headerRowIdx=0;
   for(let i=0;i<Math.min(5,lines.length);i++){
-    if(/週[一二三四五]|Mon|Tue|一二三四五/.test(lines[i])){headerRowIdx=i;break;}
+    if(/週[一二三四五]/.test(lines[i])){headerRowIdx=i;break;}
   }
   const header=lines[headerRowIdx].split(sep);
 
-  // Map column index → day offset (0=Mon, 1=Tue, ..., 4=Fri)
-  // Accept: 週一~週五, 一~五, Monday~Friday, Mon~Fri, 1~5
-  const DAY_PATTERNS=[
-    {re:/週一|星期一|Monday|Mon\b/i, idx:0},
-    {re:/週二|星期二|Tuesday|Tue\b/i, idx:1},
-    {re:/週三|星期三|Wednesday|Wed\b/i, idx:2},
-    {re:/週四|星期四|Thursday|Thu\b/i, idx:3},
-    {re:/週五|星期五|Friday|Fri\b/i, idx:4},
-  ];
+  // Map column → day offset (0=Mon...4=Fri)
+  const DAY_MAP={'週一':0,'週二':1,'週三':2,'週四':3,'週五':4};
   const colToDayIdx={};
   header.forEach((h,ci)=>{
-    const clean=h.trim();
-    for(const p of DAY_PATTERNS){
-      if(p.re.test(clean)){colToDayIdx[ci]=p.idx;break;}
-    }
+    const clean=h.trim().replace(/^"|"$/g,''); // strip SheetJS quotes
+    if(DAY_MAP[clean]!==undefined) colToDayIdx[ci]=DAY_MAP[clean];
   });
 
-  // If header detection failed, assume cols 1~5 are Mon~Fri
+  // Fallback: if header detection fails, treat cols 1-5 as Mon-Fri
   if(Object.keys(colToDayIdx).length===0){
-    console.warn('無法偵測表頭，嘗試自動對應第 1~5 欄為週一~週五');
     for(let i=1;i<=5;i++) colToDayIdx[i]=i-1;
   }
 
-  // Parse cell: extract [TAG] Name pairs
-  const parseCell=(cellStr)=>{
+  // Parse [TAG] Name pairs from a cell string
+  function parseCell(raw){
+    // Strip surrounding quotes added by SheetJS CSV export
+    const cellStr=raw.replace(/^"|"$/g,'').replace(/""/g,'"').trim();
+    if(!cellStr) return [];
     const entries=[];
-    // Match [TAG] Name — name goes until next [ or end
+    // Match: [任何tag] 任何名字 (直到下一個[或結尾)
     const re=/\[([^\]]+)\]\s*([^\[]+?)(?=\s*\[|$)/g;
     let m;
     while((m=re.exec(cellStr))!==null){
       const tag=m[1].trim();
-      const name=m[2].trim().replace(/\s+/g,' ').replace(/[,，、。\s]+$/,''); // strip trailing punctuation
-      if(name&&name.length>=1&&name.length<=10) entries.push({tag,name});
+      // Clean name: remove trailing spaces, commas, newlines
+      const name=m[2].trim().replace(/[\r\n]/g,' ').replace(/\s+/g,' ').replace(/[,，、。\s]+$/,'');
+      if(tag&&name&&name.length>=1&&name.length<=20){
+        entries.push({tag,name});
+      }
     }
     return entries;
-  };
+  }
 
-  // Process data rows (skip header row)
+  // Process each data row
   lines.slice(headerRowIdx+1).forEach(line=>{
+    // Split by tab — each column may still have internal spaces
     const cols=line.split(sep);
-    const firstCol=(cols[0]||'').trim();
+    const firstCol=(cols[0]||'').replace(/^"|"$/g,'').trim();
     if(!firstCol) return;
 
-    // Match shift time from first column
+    // Match shift time from first column (handles both - and –)
     let shiftId=null;
-    for(const m of SHIFT_TIME_MAP){
-      if(m.pattern.test(firstCol)){shiftId=m.id;break;}
+    for(const sm of SHIFT_TIME_MAP){
+      if(sm.pattern.test(firstCol)){shiftId=sm.id;break;}
     }
-    if(!shiftId) return; // skip rows that don't match a shift time
+    if(!shiftId){
+      // Also try loose matching: extract HH:MM and look up
+      const timeMatch=firstCol.match(/(\d{1,2}):(\d{2})\D+(\d{1,2}):(\d{2})/);
+      if(timeMatch){
+        const start=`${timeMatch[1].padStart(2,'0')}:${timeMatch[2]}`;
+        const end=`${timeMatch[3].padStart(2,'0')}:${timeMatch[4]}`;
+        const found=ALL_SHIFTS.find(s=>s.time.startsWith(start));
+        if(found) shiftId=found.id;
+      }
+    }
+    if(!shiftId) return;
 
-    // Process each day column
+    const shiftLabel=ALL_SHIFTS.find(s=>s.id===shiftId)?.time||firstCol;
+
+    // Process each weekday column
     Object.entries(colToDayIdx).forEach(([ci,dayIdx])=>{
-      const cellStr=(cols[parseInt(ci)]||'').trim();
-      if(!cellStr) return;
-
-      parseCell(cellStr).forEach(({tag,name})=>{
+      const rawCell=cols[parseInt(ci)]||'';
+      const entries=parseCell(rawCell);
+      entries.forEach(({tag,name})=>{
         detectedNames.add(name);
         importParsed.push({
-          date:`weekday:${dayIdx}`, // always store as weekday offset
+          date:`weekday:${dayIdx}`,
           shiftId,
           name,
           tag,
-          shiftLabel: ALL_SHIFTS.find(s=>s.id===shiftId)?.time||firstCol
+          shiftLabel
         });
       });
     });
   });
 
+  console.log(`[Import] Parsed ${importParsed.length} entries from ${lines.length} rows`);
+
   if(!importParsed.length){
-    showImportError('未能解析到任何排班資料。請確認 Excel 格式：第一欄為時間（如 08:00-10:00），其他欄為週一~週五，格內用 [C] 姓名 [D] 姓名 格式。');
+    showImportError(
+      '未能解析到排班資料。\n可能原因：\n' +
+      '① Excel 欄位標題需為「週一」「週二」…「週五」\n' +
+      '② 班次格內需為 [C] 姓名 [D] 姓名 格式\n' +
+      '③ 請確認上傳的是「週班表」工作表'
+    );
     return;
   }
 
-  // Detect new employees
+  // Detect new employees not yet in system
   importNewEmps=[];
   detectedNames.forEach(name=>{
     if(!employees.find(e=>e.name===name)) importNewEmps.push(name);
