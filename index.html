@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_19.html -->
+<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_20.html -->
 <html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -482,64 +482,58 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         </div>
       </div>
       <div class="login-ann-title"><i class="fas fa-bullhorn" style="margin-right:5px;"></i>最新公告</div>
-      <div id="login-ann-feed"><div class="login-ann-empty">目前沒有公告</div></div>
+      <div id="login-ann-feed">
+        <div class="login-ann-empty">載入中…</div>
+      </div>
     </div>
 
-    <!-- Right: Card reader + Student browse login -->
+    <!-- Right: Card reader only, entries at bottom -->
     <div class="login-right" style="display:flex;flex-direction:column;">
-      <!-- Top: two side-by-side panels -->
-      <div style="display:flex;flex:1;min-height:0;">
+      <div class="login-right-main" style="flex:1;">
+        <div class="login-right-title">刷學生證打卡</div>
+        <div class="login-right-sub">請將學生證感應讀卡機</div>
 
-        <!-- Card reader panel -->
-        <div class="login-right-main" style="flex:1;border-right:1px solid var(--border);">
-          <div class="login-right-title">刷學生證打卡</div>
-          <div class="login-right-sub">請將學生證感應讀卡機</div>
-
-          <div class="card-reader-box" id="reader-box">
-            <div id="reader-idle">
-              <div class="card-reader-icon">
-                <i class="fas fa-wifi" style="transform:rotate(90deg);display:inline-block;color:var(--teal);opacity:0.8;"></i>
-              </div>
-              <div class="card-reader-label">等待感應學生證…</div>
-              <div class="card-reader-sub" id="reader-status">請將學生證靠近讀卡機</div>
-              <input id="card-input" style="position:fixed;opacity:0;width:0;height:0;pointer-events:none;left:-9999px;" autocomplete="off" tabindex="-1" aria-hidden="true">
+        <div class="card-reader-box" id="reader-box">
+          <div id="reader-idle">
+            <div class="card-reader-icon">
+              <i class="fas fa-wifi" style="transform:rotate(90deg);display:inline-block;color:var(--teal);opacity:0.8;"></i>
             </div>
-            <div id="reader-scanning" style="display:none;">
-              <div class="card-reader-icon"><i class="fas fa-circle-notch fa-spin" style="color:var(--teal);"></i></div>
-              <div class="card-reader-label" style="color:var(--teal);">讀取中…</div>
-            </div>
+            <div class="card-reader-label">等待感應學生證…</div>
+            <div class="card-reader-sub" id="reader-status">請將學生證靠近讀卡機</div>
+            <input id="card-input" style="position:fixed;opacity:0;width:0;height:0;pointer-events:none;left:-9999px;" autocomplete="off" tabindex="-1" aria-hidden="true">
           </div>
-
-          <div style="background:var(--teal-l);border:1px solid #9FD9C3;border-radius:var(--r);padding:8px 14px;display:flex;align-items:center;gap:8px;margin-top:14px;width:100%;max-width:280px;">
-            <i class="fas fa-circle-info" style="color:var(--teal);flex-shrink:0;font-size:13px;"></i>
-            <span style="font-size:11px;color:var(--teal-d);">工讀生請直接感應學生證打卡</span>
+          <div id="reader-scanning" style="display:none;">
+            <div class="card-reader-icon"><i class="fas fa-circle-notch fa-spin" style="color:var(--teal);"></i></div>
+            <div class="card-reader-label" style="color:var(--teal);">讀取中…</div>
           </div>
         </div>
 
-        <!-- Student browse login panel -->
-        <div class="login-right-main" style="flex:1;">
-          <div class="login-right-title">工讀生查詢登入</div>
-          <div class="login-right-sub">查看班表・公告・代換班（不含打卡）</div>
-
-          <div style="width:100%;max-width:280px;">
-            <div class="form-row" style="margin-bottom:10px;">
-              <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">學號</label>
-              <input class="fi" id="browse-sid" placeholder="請輸入學號" autocomplete="username" onkeydown="if(event.key===&#39;Enter&#39;)document.getElementById(&#39;browse-pwd&#39;).focus()">
-            </div>
-            <div class="form-row" style="margin-bottom:10px;">
-              <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">密碼</label>
-              <input class="fi" id="browse-pwd" type="password" placeholder="請輸入密碼" autocomplete="current-password" onkeydown="if(event.key===&#39;Enter&#39;)studentBrowseLogin()">
-            </div>
-            <div id="browse-err" style="font-size:12px;color:var(--coral);min-height:16px;margin-bottom:8px;"></div>
-            <button class="btn btn-primary" style="width:100%;" onclick="studentBrowseLogin()">
-              <i class="fas fa-arrow-right-to-bracket"></i> 登入查詢
-            </button>
-          </div>
+        <div style="background:var(--teal-l);border:1px solid #9FD9C3;border-radius:var(--r);padding:8px 14px;display:flex;align-items:center;gap:8px;margin-top:14px;width:100%;max-width:320px;">
+          <i class="fas fa-circle-info" style="color:var(--teal);flex-shrink:0;font-size:13px;"></i>
+          <span style="font-size:11px;color:var(--teal-d);">工讀生請直接感應學生證打卡</span>
         </div>
       </div>
 
-      <!-- Bottom: admin entry -->
-      <div class="login-right-foot">
+      <!-- Bottom entries -->
+      <div class="login-right-foot" style="display:flex;flex-direction:column;gap:8px;">
+        <!-- Student browse login (collapsible) -->
+        <div id="browse-entry" class="admin-entry" onclick="toggleBrowseForm()" style="justify-content:center;background:var(--teal-l);border-color:transparent;color:var(--teal-d);">
+          <i class="fas fa-eye" style="color:var(--teal);font-size:13px;"></i>
+          工讀生查詢登入
+          <i class="fas fa-chevron-right" id="browse-caret" style="font-size:10px;opacity:0.5;margin-left:auto;transition:transform 0.2s;"></i>
+        </div>
+        <!-- Browse login form (hidden by default) -->
+        <div id="browse-form" style="display:none;background:var(--bg);border-radius:var(--r);padding:12px 14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <input class="fi" id="browse-sid" placeholder="學號" autocomplete="username" style="font-size:12px;" onkeydown="if(event.key===&#39;Enter&#39;)document.getElementById(&#39;browse-pwd&#39;).focus()">
+            <input class="fi" id="browse-pwd" type="password" placeholder="密碼" autocomplete="current-password" style="font-size:12px;" onkeydown="if(event.key===&#39;Enter&#39;)studentBrowseLogin()">
+          </div>
+          <div id="browse-err" style="font-size:11px;color:var(--coral);min-height:14px;margin-bottom:6px;"></div>
+          <button class="btn btn-primary" style="width:100%;height:36px;font-size:13px;" onclick="studentBrowseLogin()">
+            <i class="fas fa-arrow-right-to-bracket"></i> 登入查詢
+          </button>
+        </div>
+        <!-- Admin entry -->
         <div class="admin-entry" onclick="openPin(null,true)" style="justify-content:center;">
           <i class="fas fa-shield-halved" style="color:var(--amber);font-size:13px;"></i>
           管理員入口
@@ -548,8 +542,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       </div>
     </div>
   </div>
-
-    </div>
+</div>
 
 <!-- ══ PIN OVERLAY ══ -->
 <div id="pin-overlay">
@@ -1362,6 +1355,15 @@ let clockTick=null,weekOffset=0;
 let chartW=null,chartE=null;
 
 // ═══ STUDENT BROWSE LOGIN (學號 + 密碼) ═══
+function toggleBrowseForm(){
+  const form=document.getElementById('browse-form');
+  const caret=document.getElementById('browse-caret');
+  const open=form.style.display==='none';
+  form.style.display=open?'block':'none';
+  if(caret) caret.style.transform=open?'rotate(90deg)':'rotate(0deg)';
+  if(open) setTimeout(()=>document.getElementById('browse-sid')?.focus(),50);
+}
+
 function studentBrowseLogin(){
   const sid=document.getElementById('browse-sid')?.value.trim().toUpperCase();
   const pwd=document.getElementById('browse-pwd')?.value.trim();
@@ -1395,7 +1397,7 @@ function doStudentBrowseLogin(empId){
 function filterStudentList(){}
 function loginFirstStudent(){}
 
-// ═══ STUDENT BROWSE LOGIN (學號 + 密碼) ═══
+// ═══ NAV GROUP TOGGLE ═══
 function toggleNavGroup(id){
   const header=document.getElementById('nav-'+id);
   const sub=document.getElementById('nav-sub-'+id);
@@ -1662,6 +1664,8 @@ function logout(){
   const bs=document.getElementById('browse-sid');if(bs)bs.value='';
   const bp=document.getElementById('browse-pwd');if(bp)bp.value='';
   const be=document.getElementById('browse-err');if(be)be.textContent='';
+  const bf=document.getElementById('browse-form');if(bf)bf.style.display='none';
+  const bc=document.getElementById('browse-caret');if(bc)bc.style.transform='rotate(0deg)';
   renderLoginList();
   setTimeout(()=>{ document.getElementById('card-input').focus(); },100);
 }
@@ -2967,21 +2971,33 @@ function renderEditCellCurrent(){
   }).join('');
 }
 
-function addToCellFromModal(){
+async function addToCellFromModal(){
   const empId=parseInt(document.getElementById('edit-cell-select').value);
   if(!empId){toast('請選擇工讀生','err');return;}
   const exists=schedule.find(s=>s.date===editCellDate&&s.shiftId===editCellShiftId&&s.empId===empId);
   if(exists){toast('此工讀生已在該班次','err');return;}
-  schedule.push({date:editCellDate,shiftId:editCellShiftId,empId,coverBy:null});
+  // station comes from openEditCell — this is the key fix for F/C2/C3/D
+  const station=editCellStation||'C';
+  // Save to local
+  schedule.push({date:editCellDate,shiftId:editCellShiftId,empId,coverBy:null,station});
+  // Save to Supabase
+  const {error}=await db.from('schedule').insert([{
+    date:editCellDate, shift_id:editCellShiftId,
+    emp_id:empId, cover_by:null, station
+  }]);
+  if(error) console.error('新增排班失敗:',error.message);
   document.getElementById('edit-cell-select').value='';
   renderEditCellCurrent();
   renderAdminSchedule();
   toast('已新增排班');
 }
 
-function removeFromCell(date,shiftId,empId){
+async function removeFromCell(date,shiftId,empId){
   const idx=schedule.findIndex(s=>s.date===date&&s.shiftId===shiftId&&s.empId===empId);
-  if(idx>-1){schedule.splice(idx,1);}
+  if(idx>-1) schedule.splice(idx,1);
+  // Save to Supabase
+  await db.from('schedule').delete()
+    .eq('date',date).eq('shift_id',shiftId).eq('emp_id',empId);
   renderAdminSchedule();
 }
 
@@ -3465,25 +3481,41 @@ function executeImport(){
 
   // Overwrite: remove existing entries for affected dates
   if(overwrite){
-    const affected=new Set(allEntries.map(e=>e.date));
+    const affected=[...new Set(allEntries.map(e=>e.date))];
     affected.forEach(date=>{
       let i;
       while((i=schedule.findIndex(s=>s.date===date))!==-1) schedule.splice(i,1);
     });
+    // Delete from Supabase in batches by date
+    for(const date of affected){
+      await db.from('schedule').delete().eq('date',date);
+    }
   }
 
-  // Insert new entries (deduplicate)
+  // Insert new entries (deduplicate) and save to Supabase
   let added=0;
+  const toInsert=[];
   allEntries.forEach(e=>{
     const exists=schedule.find(s=>s.date===e.date&&s.shiftId===e.shiftId&&s.empId===e.empId);
-    if(!exists){schedule.push({date:e.date,shiftId:e.shiftId,empId:e.empId,coverBy:null,station:e.station});added++;}
+    if(!exists){
+      schedule.push({date:e.date,shiftId:e.shiftId,empId:e.empId,coverBy:null,station:e.station});
+      toInsert.push({date:e.date,shift_id:e.shiftId,emp_id:e.empId,cover_by:null,station:e.station});
+      added++;
+    }
   });
+
+  // Batch insert to Supabase (in chunks of 500)
+  const chunkSize=500;
+  for(let i=0;i<toInsert.length;i+=chunkSize){
+    const chunk=toInsert.slice(i,i+chunkSize);
+    const {error}=await db.from('schedule').insert(chunk);
+    if(error) console.error('匯入 schedule 失敗:',error.message);
+  }
 
   closeModal('modal-import');
   resetImportModal();
   renderAdminSchedule();renderSchedule();renderLoginList();
 
-  // Count weeks
   const msPerWeek=7*24*60*60*1000;
   const weeks=Math.ceil((new Date(endVal)-new Date(startVal)+msPerWeek)/msPerWeek);
   toast(`✅ 匯入完成：${startVal} ～ ${endVal}，共 ${added} 筆排班`);
