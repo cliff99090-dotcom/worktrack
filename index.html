@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_20.html -->
+<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_22.html -->
 <html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -470,7 +470,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 <body>
 
 <!-- ══ LOGIN ══ -->
-<div id="login">
+<div id="login" style="display: flex;">
   <div class="login-wrap">
     <!-- Left: Announcements -->
     <div class="login-left">
@@ -482,9 +482,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         </div>
       </div>
       <div class="login-ann-title"><i class="fas fa-bullhorn" style="margin-right:5px;"></i>最新公告</div>
-      <div id="login-ann-feed">
-        <div class="login-ann-empty">載入中…</div>
-      </div>
+      <div id="login-ann-feed"><div class="login-ann-empty">目前沒有公告</div></div>
     </div>
 
     <!-- Right: Card reader only, entries at bottom -->
@@ -520,7 +518,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <div id="browse-entry" class="admin-entry" onclick="toggleBrowseForm()" style="justify-content:center;background:var(--teal-l);border-color:transparent;color:var(--teal-d);">
           <i class="fas fa-eye" style="color:var(--teal);font-size:13px;"></i>
           工讀生查詢登入
-          <i class="fas fa-chevron-right" id="browse-caret" style="font-size:10px;opacity:0.5;margin-left:auto;transition:transform 0.2s;"></i>
+          <i class="fas fa-chevron-right" id="browse-caret" style="font-size: 10px; opacity: 0.5; margin-left: auto; transition: transform 0.2s; transform: rotate(0deg);"></i>
         </div>
         <!-- Browse login form (hidden by default) -->
         <div id="browse-form" style="display:none;background:var(--bg);border-radius:var(--r);padding:12px 14px;">
@@ -542,16 +540,17 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       </div>
     </div>
   </div>
-</div>
+
+    </div>
 
 <!-- ══ PIN OVERLAY ══ -->
-<div id="pin-overlay">
+<div id="pin-overlay" class="">
   <div class="pin-box">
-    <div class="pin-box-title" id="pin-title">身份驗證</div>
+    <div class="pin-box-title" id="pin-title">管理員驗證</div>
     <div class="pin-box-sub">請輸入 4 位數 PIN 碼</div>
     <div class="pin-dots">
-      <div class="pd" id="pd0"></div><div class="pd" id="pd1"></div>
-      <div class="pd" id="pd2"></div><div class="pd" id="pd3"></div>
+      <div class="pd on" id="pd0"></div><div class="pd on" id="pd1"></div>
+      <div class="pd on" id="pd2"></div><div class="pd on" id="pd3"></div>
     </div>
     <div class="pin-err" id="pin-err"></div>
     <div class="pin-grid">
@@ -675,7 +674,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
   <div class="modal-box" style="width:420px;">
     <div class="modal-title">管理員驗證成功</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
-      <div onclick="doAdminLogin()" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r-lg);border:1.5px solid var(--amber);background:var(--amber-l);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background=&#39;#FAEAC0&#39;" onmouseout="this.style.background=&#39;var(--amber-l)&#39;">
+      <div onclick="doAdminLogin()" style="display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: var(--r-lg); border: 1.5px solid var(--amber); background: var(--amber-l); cursor: pointer; transition: background 0.15s;" onmouseover="this.style.background=&#39;#FAEAC0&#39;" onmouseout="this.style.background=&#39;var(--amber-l)&#39;">
         <div style="width:40px;height:40px;border-radius:10px;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">
           <i class="fas fa-shield-halved"></i>
         </div>
@@ -686,7 +685,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <i class="fas fa-chevron-right" style="margin-left:auto;color:#A07030;font-size:12px;"></i>
       </div>
 
-      <div onclick="showAdminSidInput()" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r-lg);border:1.5px solid var(--border);background:var(--bg);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background=&#39;#EDEDEA&#39;" onmouseout="this.style.background=&#39;var(--bg)&#39;">
+      <div onclick="showAdminSidInput()" style="display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: var(--r-lg); border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; transition: background 0.15s;" onmouseover="this.style.background=&#39;#EDEDEA&#39;" onmouseout="this.style.background=&#39;var(--bg)&#39;">
         <div style="width:40px;height:40px;border-radius:10px;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">
           <i class="fas fa-id-card"></i>
         </div>
@@ -717,7 +716,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 </div>
 
 <!-- ══ APP SHELL ══ -->
-<div class="shell" id="app" style="display:none;">
+<div class="shell" id="app" style="display: none;">
   <div class="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-mark"><i class="fas fa-id-card"></i></div>
@@ -733,11 +732,11 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
       <!-- 班表下拉 -->
       <div class="nav-group">
-        <div class="nav-group-header" id="nav-schedule-group" onclick="toggleNavGroup(&#39;schedule-group&#39;)">
+        <div class="nav-group-header open" id="nav-schedule-group" onclick="toggleNavGroup(&#39;schedule-group&#39;)">
           <i class="fas fa-calendar-week mi"></i><span>班表</span>
           <i class="fas fa-chevron-right nav-caret"></i>
         </div>
-        <div class="nav-sub" id="nav-sub-schedule-group">
+        <div class="nav-sub open" id="nav-sub-schedule-group">
           <div class="nav-sub-item" id="nav-schedule" onclick="go(&#39;schedule&#39;)"><i class="fas fa-sun" style="width:12px;font-size:11px;"></i>平日班表</div>
           <div class="nav-sub-item" id="nav-schedule-we" onclick="go(&#39;schedule-we&#39;)"><i class="fas fa-umbrella-beach" style="width:12px;font-size:11px;"></i>假日班表</div>
         </div>
@@ -749,7 +748,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="nav" id="nav-guide" onclick="go(&#39;guide&#39;)"><i class="fas fa-book-open"></i><span>使用手冊</span></div>
     </div>
 
-    <div class="sb-section" id="admin-sec" style="display:none;">
+    <div class="sb-section" id="admin-sec" style="">
       <div class="sb-label">管理員</div>
       <div class="nav" id="nav-dashboard" onclick="go(&#39;dashboard&#39;)"><i class="fas fa-chart-line"></i><span>儀表板</span></div>
       <div class="nav" id="nav-scheduleadmin" onclick="go(&#39;scheduleadmin&#39;)"><i class="fas fa-calendar-pen"></i><span>班表管理</span></div>
@@ -760,10 +759,10 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
     <div class="sb-foot">
       <div class="sb-user" onclick="logout()">
-        <div class="sb-av" id="sb-av"></div>
+        <div class="sb-av" id="sb-av" style="background: rgb(250, 199, 117); color: rgb(65, 36, 2);">管員</div>
         <div>
-          <div class="sb-uname" id="sb-name"></div>
-          <div class="sb-urole" id="sb-role"></div>
+          <div class="sb-uname" id="sb-name">管理員</div>
+          <div class="sb-urole" id="sb-role">系統管理員</div>
         </div>
         <i class="fas fa-right-from-bracket" style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25);"></i>
       </div>
@@ -784,8 +783,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="page on" id="page-clock">
         <div class="card" style="max-width:520px;margin:0 auto;">
           <div class="clock-hero">
-            <div class="ct" id="live-clock">--:--:--</div>
-            <div class="cd" id="live-date"></div>
+            <div class="ct" id="live-clock">19:40:13</div>
+            <div class="cd" id="live-date">2026年6月10日（星期三）</div>
           </div>
           <div id="today-shifts-list" style="margin-top:16px;"></div>
         </div>
@@ -796,10 +795,89 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:nowrap;">
           <button class="btn btn-sm" onclick="shiftWeek(-1)" style="flex-shrink:0;"><i class="fas fa-chevron-left"></i></button>
           <button class="btn btn-sm" onclick="shiftWeek(1)" style="flex-shrink:0;"><i class="fas fa-chevron-right"></i></button>
-          <div id="week-label" style="font-size:14px;font-weight:600;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+          <div id="week-label" style="font-size:14px;font-weight:600;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2026-06-08 ～ 2026-06-14</div>
           <button class="btn btn-sm" onclick="weekOffset=0;renderSchedule()" style="flex-shrink:0;">今週</button>
         </div>
-        <div id="schedule-grid"></div>
+        <div id="schedule-grid"><div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
+  <table style="border-collapse:collapse;background:var(--surface);font-family:&#39;Noto Sans TC&#39;,sans-serif;font-size:12px;width:100%;">
+    <thead><tr>
+      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:68px;">時間</th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
+      一<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/8</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
+      二<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/9</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--teal-d);
+      background:var(--teal-l);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
+      三<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--teal);margin-left:5px;">6/10</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
+      四<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/11</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
+      五<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/12</span>
+    </th></tr></thead><tbody><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">08:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–10:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">08:00–10:00</div>
+      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">10:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–12:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">10:00–12:00</div>
+      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">12:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–14:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">12:00–14:00</div>
+      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">14:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–16:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">14:00–16:00</div>
+      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">16:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–18:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">16:00–18:00</div>
+      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">18:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–21:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">18:00–21:00</div>
+      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div>
+            <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:2px;">二樓作業</div>
+            <div style="line-height:1.5;"><span style="font-size:11px;font-weight:600;color:var(--ink2);">黃昱翔</span></div>
+          </div></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">09:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–13:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">09:00–13:00</div>
+      </td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td></tr><tr>
+      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:none;vertical-align:top;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">13:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–17:00</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:1px;">13:00–17:00</div>
+      </td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td></tr></tbody></table></div>
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;padding:0 2px;font-size:11px;color:var(--muted);">
+    <span style="font-weight:700;color:#B07A00;">⭐ 小組長</span>
+    <span style="font-weight:700;color:#D05A1E;">C2 櫃台</span>
+    <span style="font-weight:700;color:#2A6FA8;">C3 櫃台</span>
+    <span style="font-weight:700;color:#1B6B3A;">D 詢問台</span>
+    <span style="font-weight:700;color:#7040B0;">F 二樓作業</span>
+    <span style="font-weight:700;color:var(--coral);">紅色 = 換班/代班</span>
+  </div></div>
       </div>
 
       <!-- SCHEDULE WEEKEND -->
@@ -911,11 +989,18 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
             <div>
               <div class="card-title" style="margin:0;">📍 當前時段出勤</div>
-              <div id="dash-curr-slot" style="font-size:12px;color:var(--muted);margin-top:3px;"></div>
+              <div id="dash-curr-slot" style="font-size:12px;color:var(--muted);margin-top:3px;">18:00–21:00</div>
             </div>
-            <span id="dash-refresh-time" style="font-size:11px;color:var(--muted);"></span>
+            <span id="dash-refresh-time" style="font-size:11px;color:var(--muted);">更新於 19:40</span>
           </div>
-          <div id="dash-current" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div>
+          <div id="dash-current" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"><div style="background:#FFF5F3;border:1.5px solid var(--coral-l);border-radius:var(--r-lg);padding:12px 14px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">
+          黃昱翔
+          <span style="font-size:10px;font-weight:700;color:#7040B0;margin-left:5px;">[F]</span>
+        </div>
+        <div><span class="badge bg-red"><i class="fas fa-user-xmark"></i> 未打卡</span></div>
+        
+      </div></div>
           <div id="dash-no-slot" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px;">目前不在任何班次時段內</div>
         </div>
 
@@ -924,7 +1009,14 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <div class="card-title">📋 今日全部出勤（依時間排序）</div>
           <table class="tbl">
             <thead><tr><th>姓名</th><th>班次時間</th><th>狀態</th><th>上班打卡</th><th>下班打卡</th><th>遲到</th></tr></thead>
-            <tbody id="today-dash"></tbody>
+            <tbody id="today-dash"><tr>
+      <td style="font-weight:500;">黃昱翔</td>
+      <td class="mono" style="font-size:11px;">18:00–21:00</td>
+      <td><span class="badge bg-amber"><i class="fas fa-bell"></i> 待打卡</span></td>
+      <td class="mono">—</td>
+      <td class="mono">—</td>
+      <td>—</td>
+    </tr></tbody>
           </table>
         </div>
       </div>
@@ -971,7 +1063,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
             <button class="btn btn-sm" onclick="adminShiftWeek(-1)"><i class="fas fa-chevron-left"></i></button>
             <button class="btn btn-sm" onclick="adminShiftWeek(1)"><i class="fas fa-chevron-right"></i></button>
-            <div id="admin-week-label" style="font-size:13px;font-weight:600;min-width:180px;text-align:center;"></div>
+            <div id="admin-week-label" style="font-size:13px;font-weight:600;min-width:180px;text-align:center;">2026-06-08 ～ 2026-06-12</div>
             <button class="btn btn-sm" onclick="adminWeekOffset=0;renderAdminSchedule()">今週</button>
           </div>
         </div>
@@ -983,7 +1075,445 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         </div>
 
         <!-- 可編輯班表 -->
-        <div id="admin-schedule-grid"></div>
+        <div id="admin-schedule-grid"><div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
+  <table style="border-collapse:collapse;background:var(--surface);font-family:&#39;Noto Sans TC&#39;,sans-serif;font-size:12px;width:100%;">
+    <thead><tr>
+      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:72px;">時間</th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
+      一<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/8</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
+      二<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/9</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--teal-d);
+      background:var(--teal-l);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
+      三<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--teal);margin-left:4px;">6/10</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
+      四<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/11</span>
+    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+      color:var(--ink);
+      background:var(--bg);
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
+      五<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/12</span>
+    </th></tr></thead><tbody><tr>
+      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">08:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–10:00</div>
+      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td></tr><tr>
+      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">10:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–12:00</div>
+      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td></tr><tr>
+      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">12:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–14:00</div>
+      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td></tr><tr>
+      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">14:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–16:00</div>
+      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td></tr><tr>
+      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">16:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–18:00</div>
+      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
+            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
+            
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div></div></td></tr><tr>
+      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:none;vertical-align:middle;background:var(--bg);white-space:nowrap;">
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">18:00</div>
+        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–21:00</div>
+      </td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
+            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
+          </div>
+          
+          <div style="display:flex;gap:2px;">
+            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div>
+        </div><div>
+          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
+            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
+          </div>
+          
+          <div style="display:flex;gap:2px;">
+            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div>
+        </div><div>
+          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(27,153,114,0.04);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
+            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
+          </div>
+          
+          <div style="display:flex;gap:2px;">
+            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div>
+        </div><div>
+          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
+          <div style="display:flex;align-items:center;gap:3px;justify-content:space-between;padding:1px 0;">
+      <div style="display:flex;align-items:center;gap:3px;">
+        <span style="font-size:9px;font-weight:700;color:#7040B0;">[F]</span>
+        <span style="font-size:12px;font-weight:600;color:var(--ink2);">黃昱翔</span>
+      </div>
+      <span onclick="removeFromCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,33)" style="cursor:pointer;color:var(--border);font-size:10px;padding:1px 3px;border-radius:3px;flex-shrink:0;" onmouseover="this.style.color=&#39;var(--coral)&#39;" onmouseout="this.style.color=&#39;var(--border)&#39;">✕</span>
+    </div>
+          <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
+            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
+          </div>
+          
+          <div style="display:flex;gap:2px;">
+            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div>
+        </div><div>
+          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
+          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
+            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
+          </div>
+          
+          <div style="display:flex;gap:2px;">
+            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+          </div>
+        </div><div>
+          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
+          
+          <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
+        </div></td></tr></tbody></table></div></div>
 
         <!-- 國定假日 & 休館日 -->
         <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1062,7 +1592,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <button class="btn btn-sm" onclick="setSemPreset(&#39;115-1&#39;)">115-1學期</button>
         <button class="btn btn-sm" onclick="setSemPreset(&#39;115-2&#39;)">115-2學期</button>
       </div>
-      <div id="import-week-label" style="font-size:12px;color:var(--teal-d);background:var(--teal-l);border-radius:var(--r);padding:8px 12px;display:none;"></div>
+      <div id="import-week-label" style="font-size: 12px; color: var(--teal-d); background: var(--teal-l); border-radius: var(--r); padding: 8px 12px; display: block;"><i class="fas fa-calendar-week" style="margin-right:6px;"></i>單週：2026-06-08 ～ 2026-06-12</div>
     </div>
 
     <!-- Step 2: Upload Excel -->
@@ -1432,64 +1962,43 @@ function toast(msg,type='ok'){
 }
 
 // ═══ CARD READER ═══
-const cardInput = document.getElementById('card-input');
+// Instead of stealing focus to a hidden input, intercept keydown on document
+// and buffer characters. This doesn't interfere with button clicks at all.
+const cardInput = document.getElementById('card-input'); // keep for compat
 
-// IDs that should never have focus stolen by the card reader
-const PROTECTED_INPUTS = new Set(['browse-sid','browse-pwd','admin-sid-input','e-name','e-sid','e-password','e-pin','ann-title','ann-body','manual-paste','emp-import-text','reset-pwd-input','closure-start','closure-end','closure-note','import-week-start','import-week-end','sem-start','sem-end','f-name']);
+let readerBuffer = '';
+let readerTimer = null;
 
-function keepReaderFocus() {
+document.addEventListener('keydown', function(e) {
+  // Only capture on login screen
   const loginEl = document.getElementById('login');
   if (!loginEl || loginEl.style.display === 'none') return;
 
+  // Don't capture if user is in a real input field
   const active = document.activeElement;
+  if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
+    // Allow browse-sid and browse-pwd to type normally
+    return;
+  }
 
-  // Don't steal focus if user is typing in a protected input
-  if (active && PROTECTED_INPUTS.has(active.id)) return;
-  if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) return;
-
-  // Don't steal focus if any modal or PIN overlay is open
+  // Don't capture if any overlay is open
   if (document.querySelector('.modal-overlay.on')) return;
-  if (document.querySelector('#pin-overlay.on')) return;
+  const pinOv = document.getElementById('pin-overlay');
+  if (pinOv && pinOv.classList.contains('on')) return;
 
-  if (active !== cardInput) cardInput.focus();
-}
-
-// Only re-focus on click if the click target is NOT a protected input
-document.addEventListener('click', (e) => {
-  const target = e.target;
-  if (target && (PROTECTED_INPUTS.has(target.id) || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) return;
-  setTimeout(keepReaderFocus, 50);
-});
-
-// On keydown, only redirect if NOT in a protected input
-document.addEventListener('keydown', (e) => {
-  const active = document.activeElement;
-  if (active && PROTECTED_INPUTS.has(active.id)) return;
-  if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) return;
-  if (document.querySelector('.modal-overlay.on') || document.querySelector('#pin-overlay.on')) return;
-  keepReaderFocus();
-});
-
-// Card reader sends data as rapid keystrokes then Enter
-let readerBuffer = '';
-let readerTimer = null;
-const CARD_SPEED_THRESHOLD = 80; // ms between keystrokes — human typing is slower
-
-cardInput.addEventListener('keydown', e => {
+  // Capture keystrokes into buffer (card reader sends data fast)
   if (e.key === 'Enter') {
     e.preventDefault();
     const sid = readerBuffer.trim().toUpperCase();
     readerBuffer = '';
     clearTimeout(readerTimer);
-    if (!sid) return;
-    processCardRead(sid);
+    if (sid.length >= 3) processCardRead(sid);
   } else if (e.key.length === 1) {
     readerBuffer += e.key;
     clearTimeout(readerTimer);
-    // If no Enter comes within 2s, clear buffer
-    readerTimer = setTimeout(() => { readerBuffer = ''; }, 2000);
+    readerTimer = setTimeout(() => { readerBuffer = ''; }, 1500);
   }
-});
+}, true); // useCapture=true so we get events before other handlers
 
 function processCardRead(sid) {
   const scanEl = document.getElementById('reader-scanning');
@@ -3434,7 +3943,7 @@ function resetImportModal(){
   const wl=document.getElementById('import-week-label');if(wl){wl.style.display='none';wl.innerHTML='';}
 }
 
-function executeImport(){
+async function executeImport(){
   if(!importParsed.length){toast('請先上傳班表 Excel 檔案','err');return;}
 
   const startVal=document.getElementById('import-week-start')?.value;
