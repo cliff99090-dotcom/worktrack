@@ -922,42 +922,10 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
   <div class="modal-box" style="width:540px;max-height:90vh;overflow-y:auto;">
     <div class="modal-title"><i class="fas fa-file-arrow-up" style="color:var(--teal);margin-right:8px;"></i>匯入班表</div>
 
-    <!-- Step 1: Upload Excel -->
-    <div style="margin-bottom:18px;">
+    <!-- Step 1: Date range -->
+    <div style="margin-bottom:20px;">
       <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
         <span style="background:var(--teal);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-right:6px;">1</span>
-        上傳班表 Excel 檔
-      </div>
-      <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;font-size:12px;color:#0E3E7A;margin-bottom:12px;line-height:1.6;">
-        支援你的圖書館班表格式：欄位為週一到週五，列為班次時段，格內 <code style="background:rgba(0,0,0,0.08);padding:1px 5px;border-radius:3px;">[C] 姓名 [D] 姓名</code>
-      </div>
-      <div id="drop-zone"
-        style="border:2px dashed var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;"
-        onclick="document.getElementById('xlsx-file-input').click()"
-        ondragover="event.preventDefault();this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)';"
-        ondragleave="this.style.borderColor='var(--border)';this.style.background='';"
-        ondrop="handleFileDrop(event)">
-        <i class="fas fa-cloud-arrow-up" id="dz-icon" style="font-size:26px;color:var(--muted);margin-bottom:8px;display:block;"></i>
-        <div id="dz-label" style="font-size:13px;font-weight:500;margin-bottom:3px;">拖曳 Excel 檔案到這裡，或點此選擇</div>
-        <div id="dz-sub" style="font-size:11px;color:var(--muted);">支援 .xlsx 格式</div>
-        <input type="file" id="xlsx-file-input" accept=".xlsx,.csv,.txt" style="display:none;" onchange="handleFileSelect(event)">
-      </div>
-      <div id="import-preview" style="display:none;margin-top:12px;">
-        <div style="overflow:auto;max-height:160px;border:1px solid var(--border);border-radius:var(--r);">
-          <table class="tbl" id="preview-table" style="font-size:12px;"></table>
-        </div>
-        <div id="import-summary" style="font-size:12px;color:var(--teal-d);margin-top:6px;font-weight:500;"></div>
-        <div id="new-emp-section" style="display:none;margin-top:8px;background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:8px 12px;">
-          <div style="font-size:12px;font-weight:600;color:#5C3A00;margin-bottom:3px;"><i class="fas fa-user-plus"></i> 偵測到新工讀生，將自動加入：</div>
-          <div id="new-emp-list" style="font-size:12px;color:#5C3A00;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Step 2: Select date range -->
-    <div style="margin-bottom:18px;">
-      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
-        <span style="background:var(--teal);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-right:6px;">2</span>
         選擇匯入區間
       </div>
       <div class="two-col" style="margin-bottom:10px;">
@@ -970,14 +938,47 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <input type="date" id="import-week-end" class="fi" style="margin:0;" onchange="updateImportWeekLabel()">
         </div>
       </div>
-      <!-- Preset buttons -->
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
         <span style="font-size:11px;color:var(--muted);align-self:center;">快速設定：</span>
         <button class="btn btn-sm" onclick="setSemPreset('114-2')">114-2學期</button>
         <button class="btn btn-sm" onclick="setSemPreset('115-1')">115-1學期</button>
         <button class="btn btn-sm" onclick="setSemPreset('115-2')">115-2學期</button>
       </div>
-      <div id="import-week-label" style="font-size:12px;color:var(--teal-d);min-height:18px;background:var(--teal-l);border-radius:var(--r);padding:8px 12px;display:none;"></div>
+      <div id="import-week-label" style="font-size:12px;color:var(--teal-d);background:var(--teal-l);border-radius:var(--r);padding:8px 12px;display:none;"></div>
+    </div>
+
+    <!-- Step 2: Upload Excel -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
+        <span style="background:var(--teal);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-right:6px;">2</span>
+        上傳班表 Excel 檔
+      </div>
+      <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:9px 13px;font-size:11.5px;color:#0E3E7A;margin-bottom:10px;">
+        系統會自動讀取 Excel 中週一到週五每個班次的 <code style="background:rgba(0,0,0,0.08);padding:1px 4px;border-radius:3px;">[C] 姓名 [D] 姓名</code> 格式，並依照區間重複展開
+      </div>
+      <div id="drop-zone"
+        style="border:2px dashed var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;"
+        onclick="document.getElementById('xlsx-file-input').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--teal)';this.style.background='var(--teal-l)';"
+        ondragleave="this.style.borderColor='var(--border)';this.style.background='';"
+        ondrop="handleFileDrop(event)">
+        <i class="fas fa-cloud-arrow-up" id="dz-icon" style="font-size:26px;color:var(--muted);margin-bottom:8px;display:block;"></i>
+        <div id="dz-label" style="font-size:13px;font-weight:500;margin-bottom:3px;">拖曳 Excel 檔案到這裡，或點此選擇</div>
+        <div id="dz-sub" style="font-size:11px;color:var(--muted);">支援 .xlsx · .csv 格式</div>
+        <input type="file" id="xlsx-file-input" accept=".xlsx,.csv,.txt" style="display:none;" onchange="handleFileSelect(event)">
+      </div>
+
+      <!-- Preview after file loaded -->
+      <div id="import-preview" style="display:none;margin-top:12px;">
+        <div style="overflow:auto;max-height:150px;border:1px solid var(--border);border-radius:var(--r);">
+          <table class="tbl" id="preview-table" style="font-size:12px;"></table>
+        </div>
+        <div id="import-summary" style="font-size:12px;color:var(--teal-d);margin-top:6px;font-weight:500;"></div>
+        <div id="new-emp-section" style="display:none;margin-top:8px;background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:8px 12px;">
+          <div style="font-size:12px;font-weight:600;color:#5C3A00;margin-bottom:3px;"><i class="fas fa-user-plus"></i> 偵測到新工讀生，將自動加入系統：</div>
+          <div id="new-emp-list" style="font-size:12px;color:#5C3A00;line-height:2;"></div>
+        </div>
+      </div>
     </div>
 
     <!-- Options -->
@@ -990,7 +991,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
     <div class="modal-foot">
       <button class="btn" onclick="closeModal('modal-import');resetImportModal()">取消</button>
-      <button class="btn btn-primary" onclick="executeImport()"><i class="fas fa-check"></i> 確認匯入</button>
+      <button class="btn btn-primary" id="import-confirm-btn" onclick="executeImport()"><i class="fas fa-check"></i> 確認匯入</button>
     </div>
   </div>
 </div>
@@ -2747,97 +2748,102 @@ function parseXlsxFile(file){
   reader.readAsArrayBuffer(file);
 }
 
-// Parse TSV content from Excel (tab-separated)
-// Format: row0=header(班次\t週一\t週二...), row1+= shift_label\tcell\tcell...
-// Cell format: [C] 姓名 [D] 姓名 [⭐小組長] 姓名 [F] 姓名
+// Parse TSV/CSV content from Excel
+// Always stores entries as weekday:N (0=Mon...4=Fri), date resolved at import time
 function parseTsvText(text){
-  // Get the target week Monday
-  const weekInput=document.getElementById('import-week-start')?.value||
-                  document.getElementById('import-week-start-m')?.value||'';
-  const monday=weekInput?getMonday(weekInput):'';
-
   importParsed=[];
   importNewEmps=[];
   const detectedNames=new Set();
 
-  const lines=text.trim().split('\n').map(l=>l.trimEnd()).filter(Boolean);
-  if(lines.length<2){showImportError('格式錯誤：檔案內容不足');return;}
+  // Normalize: split into lines, handle both \r\n and \n
+  const lines=text.split(/\r?\n/).map(l=>l.trimEnd()).filter(l=>l.trim());
+  if(lines.length<2){showImportError('格式錯誤：檔案內容不足，請確認是否為正確的班表檔案');return;}
 
-  // Header row: detect column order (週一=col1, 週二=col2...)
-  const header=lines[0].split('\t');
-  const DAY_MAP={'週一':0,'週二':1,'週三':2,'週四':3,'週五':4,'週六':5,'週日':6};
-  const colToDayIdx={}; // colIndex → dayOffset (0=Mon, 1=Tue...)
+  // Detect separator (tab or comma)
+  const sep=lines[0].includes('\t')?'\t':',';
+
+  // Find the header row (contains day names or is the first row)
+  // We look for row that has 週一/Monday/Mon or just treat first row as header
+  let headerRowIdx=0;
+  for(let i=0;i<Math.min(5,lines.length);i++){
+    if(/週[一二三四五]|Mon|Tue|一二三四五/.test(lines[i])){headerRowIdx=i;break;}
+  }
+  const header=lines[headerRowIdx].split(sep);
+
+  // Map column index → day offset (0=Mon, 1=Tue, ..., 4=Fri)
+  // Accept: 週一~週五, 一~五, Monday~Friday, Mon~Fri, 1~5
+  const DAY_PATTERNS=[
+    {re:/週一|星期一|Monday|Mon\b/i, idx:0},
+    {re:/週二|星期二|Tuesday|Tue\b/i, idx:1},
+    {re:/週三|星期三|Wednesday|Wed\b/i, idx:2},
+    {re:/週四|星期四|Thursday|Thu\b/i, idx:3},
+    {re:/週五|星期五|Friday|Fri\b/i, idx:4},
+  ];
+  const colToDayIdx={};
   header.forEach((h,ci)=>{
-    const hClean=h.trim();
-    if(DAY_MAP[hClean]!==undefined) colToDayIdx[ci]=DAY_MAP[hClean];
+    const clean=h.trim();
+    for(const p of DAY_PATTERNS){
+      if(p.re.test(clean)){colToDayIdx[ci]=p.idx;break;}
+    }
   });
 
+  // If header detection failed, assume cols 1~5 are Mon~Fri
+  if(Object.keys(colToDayIdx).length===0){
+    console.warn('無法偵測表頭，嘗試自動對應第 1~5 欄為週一~週五');
+    for(let i=1;i<=5;i++) colToDayIdx[i]=i-1;
+  }
+
+  // Parse cell: extract [TAG] Name pairs
   const parseCell=(cellStr)=>{
-    // Extract all [TAG] Name pairs
-    // Tags: C, D, F, 2F, ⭐小組長, ⭐
     const entries=[];
-    // Match pattern: [TAG] 姓名 (姓名 ends before next [ or end of string)
+    // Match [TAG] Name — name goes until next [ or end
     const re=/\[([^\]]+)\]\s*([^\[]+?)(?=\s*\[|$)/g;
     let m;
     while((m=re.exec(cellStr))!==null){
       const tag=m[1].trim();
-      const name=m[2].trim().replace(/\s+/g,' ');
-      if(name) entries.push({tag,name});
+      const name=m[2].trim().replace(/\s+/g,' ').replace(/[,，、。\s]+$/,''); // strip trailing punctuation
+      if(name&&name.length>=1&&name.length<=10) entries.push({tag,name});
     }
     return entries;
   };
 
-  const ensureEmp=(name)=>{
-    let emp=employees.find(e=>e.name===name);
-    if(!emp){
-      // Auto-create with placeholder sid
-      if(!importNewEmps.find(e=>e.name===name)){
-        importNewEmps.push({name,sid:'',isNew:true});
-      }
-      return null; // will be created on executeImport
-    }
-    return emp;
-  };
+  // Process data rows (skip header row)
+  lines.slice(headerRowIdx+1).forEach(line=>{
+    const cols=line.split(sep);
+    const firstCol=(cols[0]||'').trim();
+    if(!firstCol) return;
 
-  // Parse data rows
-  lines.slice(1).forEach((line,ri)=>{
-    const cols=line.split('\t');
-    if(!cols[0]?.trim())return;
-    const shiftLabel=cols[0].trim();
-
-    // Match shift id from time pattern in label
+    // Match shift time from first column
     let shiftId=null;
     for(const m of SHIFT_TIME_MAP){
-      if(m.pattern.test(shiftLabel)){shiftId=m.id;break;}
+      if(m.pattern.test(firstCol)){shiftId=m.id;break;}
     }
-    if(!shiftId)return; // skip non-shift rows
+    if(!shiftId) return; // skip rows that don't match a shift time
 
+    // Process each day column
     Object.entries(colToDayIdx).forEach(([ci,dayIdx])=>{
       const cellStr=(cols[parseInt(ci)]||'').trim();
-      if(!cellStr)return;
+      if(!cellStr) return;
 
-      const entries=parseCell(cellStr);
-      entries.forEach(({tag,name})=>{
-        if(!name||name.length<1)return;
+      parseCell(cellStr).forEach(({tag,name})=>{
         detectedNames.add(name);
-
-        // Determine date
-        let date='';
-        if(monday){
-          const d=new Date(monday);
-          d.setDate(d.getDate()+dayIdx);
-          date=fmtD(d);
-        } else {
-          // Placeholder: store as weekday index
-          date=`weekday:${dayIdx}`;
-        }
-
-        importParsed.push({date,shiftId,name,tag,shiftLabel:ALL_SHIFTS.find(s=>s.id===shiftId)?.label||shiftLabel});
+        importParsed.push({
+          date:`weekday:${dayIdx}`, // always store as weekday offset
+          shiftId,
+          name,
+          tag,
+          shiftLabel: ALL_SHIFTS.find(s=>s.id===shiftId)?.time||firstCol
+        });
       });
     });
   });
 
-  // Check for new employees
+  if(!importParsed.length){
+    showImportError('未能解析到任何排班資料。請確認 Excel 格式：第一欄為時間（如 08:00-10:00），其他欄為週一~週五，格內用 [C] 姓名 [D] 姓名 格式。');
+    return;
+  }
+
+  // Detect new employees
   importNewEmps=[];
   detectedNames.forEach(name=>{
     if(!employees.find(e=>e.name===name)) importNewEmps.push(name);
@@ -2854,37 +2860,46 @@ function showImportError(msg){
 }
 
 function showImportPreview(){
-  // Update drop zone to show file loaded state
+  const dayNames=['一','二','三','四','五','六','日'];
+  // Update drop zone UI
   const dz=document.getElementById('drop-zone');
   if(dz){
-    dz.style.borderColor='var(--teal)';dz.style.borderStyle='solid';
-    dz.style.background='var(--teal-l)';
+    dz.style.borderColor='var(--teal)';dz.style.borderStyle='solid';dz.style.background='var(--teal-l)';
     const icon=document.getElementById('dz-icon');
     const label=document.getElementById('dz-label');
     const sub=document.getElementById('dz-sub');
     if(icon){icon.className='fas fa-circle-check';icon.style.color='var(--teal)';}
-    if(label){label.textContent='檔案已載入，可重新上傳以替換';label.style.color='var(--teal-d)';}
+    if(label){label.textContent='檔案已載入 ✓（可重新上傳替換）';label.style.color='var(--teal-d)';}
     if(sub){sub.textContent=`解析到 ${importParsed.length} 筆排班 · ${new Set(importParsed.map(r=>r.name)).size} 位工讀生`;}
   }
 
+  // Build preview table
   const pd=document.getElementById('import-preview');pd.style.display='';
-  const preview=importParsed.slice(0,6);
-  document.getElementById('preview-table').innerHTML=`<thead><tr><th>星期</th><th>班次時間</th><th>工作站</th><th>工讀生</th></tr></thead>
+  const preview=importParsed.slice(0,8);
+  document.getElementById('preview-table').innerHTML=`
+    <thead><tr><th>星期</th><th>班次時間</th><th>工作站</th><th>工讀生</th></tr></thead>
     <tbody>${preview.map(r=>{
-      const dayLabel=r.date.startsWith('weekday:')?['一','二','三','四','五','六','日'][parseInt(r.date.split(':')[1])]:r.date;
+      const dayIdx=parseInt((r.date.split(':')[1])||'0');
       const col=r.tag.includes('⭐')||r.tag.includes('小組長')?'var(--amber)':r.tag==='D'?'#1B6B3A':'#D05A1E';
-      return `<tr><td>週${dayLabel}</td><td style="font-size:11px;font-family:'DM Mono',monospace;">${r.shiftLabel}</td>
+      return `<tr>
+        <td>週${dayNames[dayIdx]||dayIdx}</td>
+        <td class="mono" style="font-size:11px;">${r.shiftLabel}</td>
         <td><span style="font-weight:700;color:${col};font-size:11px;">[${r.tag}]</span></td>
-        <td style="font-weight:500;">${r.name}</td></tr>`;
-    }).join('')}${importParsed.length>6?`<tr><td colspan="4" style="color:var(--muted);text-align:center;font-size:11px;">…還有 ${importParsed.length-6} 筆</td></tr>`:''}</tbody>`;
+        <td style="font-weight:500;">${r.name}</td>
+      </tr>`;
+    }).join('')}
+    ${importParsed.length>8?`<tr><td colspan="4" style="color:var(--muted);text-align:center;font-size:11px;">…還有 ${importParsed.length-8} 筆</td></tr>`:''}
+    </tbody>`;
 
+  const uniquePeople=new Set(importParsed.map(r=>r.name)).size;
   document.getElementById('import-summary').innerHTML=
-    `共解析 <strong>${importParsed.length}</strong> 筆排班，涵蓋 <strong>${new Set(importParsed.map(r=>r.name)).size}</strong> 位工讀生`;
+    `共 <strong>${importParsed.length}</strong> 筆排班 · <strong>${uniquePeople}</strong> 位工讀生 · 每週重複此規律`;
 
   const ns=document.getElementById('new-emp-section');
   if(importNewEmps.length){
     ns.style.display='';
-    document.getElementById('new-emp-list').innerHTML=importNewEmps.map(n=>`<span style="display:inline-block;background:rgba(255,255,255,0.6);border-radius:4px;padding:1px 8px;margin:2px;">${n}</span>`).join('');
+    document.getElementById('new-emp-list').innerHTML=
+      importNewEmps.map(n=>`<span style="display:inline-block;background:rgba(255,255,255,0.6);border-radius:4px;padding:2px 10px;margin:2px;">${n}</span>`).join('');
   } else {
     ns.style.display='none';
   }
@@ -2908,23 +2923,15 @@ function resetImportModal(){
 }
 
 function executeImport(){
-  // Validate: need file parsed
-  if(!importParsed.length){
-    toast('請先上傳班表 Excel 檔案','err');return;
-  }
-  // Validate: need start date
-  const weekInput=document.getElementById('import-week-start')?.value;
-  const weekEnd=document.getElementById('import-week-end')?.value;
-  if(!weekInput){toast('請設定匯入開始日期','err');return;}
+  if(!importParsed.length){toast('請先上傳班表 Excel 檔案','err');return;}
 
-  const monday=getMonday(weekInput);
-  const endDate=weekEnd&&weekEnd>=monday?weekEnd:fmtD(new Date(new Date(monday).getTime()+4*86400000));
+  const startVal=document.getElementById('import-week-start')?.value;
+  const endVal=document.getElementById('import-week-end')?.value;
+  if(!startVal){toast('請先選擇匯入開始日期','err');return;}
+  if(!endVal){toast('請選擇匯入結束日期','err');return;}
+  if(endVal<startVal){toast('結束日期不能早於開始日期','err');return;}
 
-  if(new Date(monday)>new Date(endDate)){
-    toast('結束日期不能早於開始日期','err');return;
-  }
-
-  // Auto-add new employees
+  // Auto-add new employees to local memory
   importNewEmps.forEach(name=>{
     if(!employees.find(e=>e.name===name)){
       employees.push({id:Date.now()+Math.random(),name,sid:'LIB'+String(Date.now()).slice(-6),role:'C+D'});
@@ -2933,31 +2940,34 @@ function executeImport(){
 
   const overwrite=document.getElementById('import-overwrite').checked;
 
-  // Generate all week mondays in range
-  const mondays=[];
-  const cur=new Date(monday);
-  const endD=new Date(endDate);
-  while(cur<=endD){
-    mondays.push(fmtD(cur));
-    cur.setDate(cur.getDate()+7);
-  }
-
-  // Expand parsed entries across all weeks
-  const allEntries=[];
-  mondays.forEach(mon=>{
-    importParsed.forEach(r=>{
-      let date=r.date;
-      if(date.startsWith('weekday:')){
-        const dayIdx=parseInt(date.split(':')[1]);
-        const d=new Date(mon);d.setDate(d.getDate()+dayIdx);
-        date=fmtD(d);
-      }
-      if(date>endDate) return;
-      allEntries.push({...r,date});
-    });
+  // Build a map: dayOffset(0~4) → [{shiftId, name, tag}]
+  const weekTemplate={};
+  importParsed.forEach(r=>{
+    const dayIdx=parseInt(r.date.split(':')[1]);
+    if(!weekTemplate[dayIdx]) weekTemplate[dayIdx]=[];
+    weekTemplate[dayIdx].push({shiftId:r.shiftId,name:r.name,tag:r.tag});
   });
 
-  // Overwrite if checked
+  // Iterate every calendar day in [startVal, endVal]
+  const cur=new Date(startVal);
+  const endD=new Date(endVal);
+  const allEntries=[];
+
+  while(cur<=endD){
+    const dow=cur.getDay(); // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
+    if(dow>=1&&dow<=5){     // Only weekdays Mon~Fri
+      const dayOffset=dow-1; // Mon=0 ... Fri=4
+      const dateStr=fmtD(cur);
+      const slots=weekTemplate[dayOffset]||[];
+      slots.forEach(({shiftId,name,tag})=>{
+        const emp=employees.find(e=>e.name===name);
+        if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
+      });
+    }
+    cur.setDate(cur.getDate()+1);
+  }
+
+  // Overwrite: remove existing entries for affected dates
   if(overwrite){
     const affected=new Set(allEntries.map(e=>e.date));
     affected.forEach(date=>{
@@ -2966,19 +2976,21 @@ function executeImport(){
     });
   }
 
-  // Insert entries
+  // Insert new entries (deduplicate)
   let added=0;
-  allEntries.forEach(r=>{
-    const emp=employees.find(e=>e.name===r.name);
-    if(!emp) return;
-    const exists=schedule.find(s=>s.date===r.date&&s.shiftId===r.shiftId&&s.empId===emp.id);
-    if(!exists){schedule.push({date:r.date,shiftId:r.shiftId,empId:emp.id,coverBy:null,station:r.tag});added++;}
+  allEntries.forEach(e=>{
+    const exists=schedule.find(s=>s.date===e.date&&s.shiftId===e.shiftId&&s.empId===e.empId);
+    if(!exists){schedule.push({date:e.date,shiftId:e.shiftId,empId:e.empId,coverBy:null,station:e.station});added++;}
   });
 
   closeModal('modal-import');
   resetImportModal();
   renderAdminSchedule();renderSchedule();renderLoginList();
-  toast(`✅ 匯入完成：${mondays.length} 週，共 ${added} 筆排班`);
+
+  // Count weeks
+  const msPerWeek=7*24*60*60*1000;
+  const weeks=Math.ceil((new Date(endVal)-new Date(startVal)+msPerWeek)/msPerWeek);
+  toast(`✅ 匯入完成：${startVal} ～ ${endVal}，共 ${added} 筆排班`);
 }
 // ═══ HOLIDAYS & CLOSURES ═══
 let closureDays=[];
