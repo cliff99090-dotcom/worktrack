@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_22.html -->
+<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_24.html -->
 <html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -465,12 +465,113 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ─── Mobile hamburger button (hidden on desktop) ─── */
+.mobile-menu-btn{
+  display:none;
+  background:none;border:none;cursor:pointer;
+  width:38px;height:38px;border-radius:8px;
+  align-items:center;justify-content:center;
+  font-size:18px;color:var(--ink);flex-shrink:0;
+  transition:background 0.13s;
+}
+.mobile-menu-btn:hover{background:var(--bg);}
+.sidebar-backdrop{display:none;}
+
+/* ═══════════════ MOBILE LAYOUT (≤768px) ═══════════════ */
+@media (max-width: 768px) {
+  /* Show hamburger */
+  .mobile-menu-btn{display:flex;}
+
+  /* Sidebar becomes a slide-out drawer */
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;
+    width:78vw;max-width:280px;z-index:250;
+    transform:translateX(-100%);
+    transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:4px 0 24px rgba(0,0,0,0.3);
+  }
+  .sidebar.open{transform:translateX(0);}
+
+  /* Backdrop when sidebar open */
+  .sidebar-backdrop{
+    display:block;position:fixed;inset:0;z-index:240;
+    background:rgba(0,0,0,0.5);opacity:0;pointer-events:none;
+    transition:opacity 0.28s;
+  }
+  .sidebar-backdrop.open{opacity:1;pointer-events:auto;}
+
+  /* Main takes full width */
+  .shell{height:100vh;height:100dvh;}
+  .main{width:100%;}
+
+  /* Topbar tighter */
+  .topbar{padding:10px 14px;gap:10px;}
+  .tb-title{font-size:16px;}
+  .content{padding:14px 12px;}
+
+  /* Bigger nav items for touch */
+  .nav{padding:12px 11px;font-size:14px;}
+  .nav-sub-item{padding:10px 11px;font-size:13px;}
+  .nav-group-header{padding:12px 11px;font-size:14px;}
+
+  /* Cards full width, less padding */
+  .card{padding:14px !important;}
+
+  /* Stats rows stack to 2 or 1 column */
+  .stats-row{grid-template-columns:1fr 1fr !important;gap:8px !important;}
+  .stats-row.stats-4{grid-template-columns:1fr 1fr !important;}
+
+  /* Tables scroll horizontally */
+  .tbl{font-size:12px;}
+  table{font-size:12px;}
+
+  /* Dashboard current cards single column */
+  #dash-current{grid-template-columns:1fr !important;}
+
+  /* Login screen stacks vertically */
+  .login-wrap{
+    grid-template-columns:1fr !important;
+    width:94vw;min-height:auto;max-height:92vh;overflow-y:auto;
+  }
+  .login-left{padding:20px 18px;}
+  .login-ann-title{margin-top:8px;}
+  #login-ann-feed{max-height:120px;overflow-y:auto;}
+  .login-right-main{padding:24px 20px;}
+  .login-right-title{font-size:17px;}
+  .card-reader-box{max-width:100% !important;}
+
+  /* Modals near-fullscreen */
+  .modal-box{width:94vw !important;max-width:94vw !important;max-height:90vh;overflow-y:auto;}
+
+  /* Toast wider */
+  #toast{left:12px;right:12px;bottom:12px;transform:none;text-align:center;}
+
+  /* Two-col forms stack */
+  .two-col{grid-template-columns:1fr !important;}
+
+  /* Topbar action buttons wrap */
+  .tb-right{flex-wrap:wrap;justify-content:flex-end;}
+  .tb-right .btn{font-size:12px;padding:7px 10px;}
+
+  /* Schedule grid: allow horizontal scroll */
+  #schedule-grid, #admin-schedule-grid, #schedule-we-grid{
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  }
+}
+
+/* Small phones (≤400px) */
+@media (max-width: 400px){
+  .stats-row{grid-template-columns:1fr !important;}
+  .tb-title{font-size:15px;}
+  .content{padding:12px 10px;}
+}
 </style>
 </head>
 <body>
 
 <!-- ══ LOGIN ══ -->
-<div id="login" style="display: flex;">
+<div id="login">
   <div class="login-wrap">
     <!-- Left: Announcements -->
     <div class="login-left">
@@ -518,7 +619,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <div id="browse-entry" class="admin-entry" onclick="toggleBrowseForm()" style="justify-content:center;background:var(--teal-l);border-color:transparent;color:var(--teal-d);">
           <i class="fas fa-eye" style="color:var(--teal);font-size:13px;"></i>
           工讀生查詢登入
-          <i class="fas fa-chevron-right" id="browse-caret" style="font-size: 10px; opacity: 0.5; margin-left: auto; transition: transform 0.2s; transform: rotate(0deg);"></i>
+          <i class="fas fa-chevron-right" id="browse-caret" style="font-size:10px;opacity:0.5;margin-left:auto;transition:transform 0.2s;"></i>
         </div>
         <!-- Browse login form (hidden by default) -->
         <div id="browse-form" style="display:none;background:var(--bg);border-radius:var(--r);padding:12px 14px;">
@@ -544,13 +645,13 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
     </div>
 
 <!-- ══ PIN OVERLAY ══ -->
-<div id="pin-overlay" class="">
+<div id="pin-overlay">
   <div class="pin-box">
-    <div class="pin-box-title" id="pin-title">管理員驗證</div>
+    <div class="pin-box-title" id="pin-title">身份驗證</div>
     <div class="pin-box-sub">請輸入 4 位數 PIN 碼</div>
     <div class="pin-dots">
-      <div class="pd on" id="pd0"></div><div class="pd on" id="pd1"></div>
-      <div class="pd on" id="pd2"></div><div class="pd on" id="pd3"></div>
+      <div class="pd" id="pd0"></div><div class="pd" id="pd1"></div>
+      <div class="pd" id="pd2"></div><div class="pd" id="pd3"></div>
     </div>
     <div class="pin-err" id="pin-err"></div>
     <div class="pin-grid">
@@ -674,7 +775,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
   <div class="modal-box" style="width:420px;">
     <div class="modal-title">管理員驗證成功</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
-      <div onclick="doAdminLogin()" style="display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: var(--r-lg); border: 1.5px solid var(--amber); background: var(--amber-l); cursor: pointer; transition: background 0.15s;" onmouseover="this.style.background=&#39;#FAEAC0&#39;" onmouseout="this.style.background=&#39;var(--amber-l)&#39;">
+      <div onclick="doAdminLogin()" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r-lg);border:1.5px solid var(--amber);background:var(--amber-l);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background=&#39;#FAEAC0&#39;" onmouseout="this.style.background=&#39;var(--amber-l)&#39;">
         <div style="width:40px;height:40px;border-radius:10px;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">
           <i class="fas fa-shield-halved"></i>
         </div>
@@ -685,7 +786,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <i class="fas fa-chevron-right" style="margin-left:auto;color:#A07030;font-size:12px;"></i>
       </div>
 
-      <div onclick="showAdminSidInput()" style="display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: var(--r-lg); border: 1.5px solid var(--border); background: var(--bg); cursor: pointer; transition: background 0.15s;" onmouseover="this.style.background=&#39;#EDEDEA&#39;" onmouseout="this.style.background=&#39;var(--bg)&#39;">
+      <div onclick="showAdminSidInput()" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r-lg);border:1.5px solid var(--border);background:var(--bg);cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background=&#39;#EDEDEA&#39;" onmouseout="this.style.background=&#39;var(--bg)&#39;">
         <div style="width:40px;height:40px;border-radius:10px;background:var(--ink2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">
           <i class="fas fa-id-card"></i>
         </div>
@@ -716,8 +817,9 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 </div>
 
 <!-- ══ APP SHELL ══ -->
-<div class="shell" id="app" style="display: none;">
-  <div class="sidebar">
+<div class="shell" id="app" style="display:none;">
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
+  <div class="sidebar" id="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-mark"><i class="fas fa-id-card"></i></div>
       <div>
@@ -726,17 +828,17 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       </div>
     </div>
 
-    <div class="sb-section">
+    <div class="sb-section" id="student-sec">
       <div class="sb-label">工讀生</div>
       <div class="nav on" id="nav-clock" onclick="go(&#39;clock&#39;)"><i class="fas fa-fingerprint"></i><span>打卡</span></div>
 
       <!-- 班表下拉 -->
       <div class="nav-group">
-        <div class="nav-group-header open" id="nav-schedule-group" onclick="toggleNavGroup(&#39;schedule-group&#39;)">
+        <div class="nav-group-header" id="nav-schedule-group" onclick="toggleNavGroup(&#39;schedule-group&#39;)">
           <i class="fas fa-calendar-week mi"></i><span>班表</span>
           <i class="fas fa-chevron-right nav-caret"></i>
         </div>
-        <div class="nav-sub open" id="nav-sub-schedule-group">
+        <div class="nav-sub" id="nav-sub-schedule-group">
           <div class="nav-sub-item" id="nav-schedule" onclick="go(&#39;schedule&#39;)"><i class="fas fa-sun" style="width:12px;font-size:11px;"></i>平日班表</div>
           <div class="nav-sub-item" id="nav-schedule-we" onclick="go(&#39;schedule-we&#39;)"><i class="fas fa-umbrella-beach" style="width:12px;font-size:11px;"></i>假日班表</div>
         </div>
@@ -748,21 +850,23 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="nav" id="nav-guide" onclick="go(&#39;guide&#39;)"><i class="fas fa-book-open"></i><span>使用手冊</span></div>
     </div>
 
-    <div class="sb-section" id="admin-sec" style="">
+    <div class="sb-section" id="admin-sec" style="display:none;">
       <div class="sb-label">管理員</div>
       <div class="nav" id="nav-dashboard" onclick="go(&#39;dashboard&#39;)"><i class="fas fa-chart-line"></i><span>儀表板</span></div>
       <div class="nav" id="nav-scheduleadmin" onclick="go(&#39;scheduleadmin&#39;)"><i class="fas fa-calendar-pen"></i><span>班表管理</span></div>
       <div class="nav" id="nav-employees" onclick="go(&#39;employees&#39;)"><i class="fas fa-users"></i><span>工讀生管理</span></div>
       <div class="nav" id="nav-allrecords" onclick="go(&#39;allrecords&#39;)"><i class="fas fa-table-list"></i><span>打卡紀錄</span></div>
       <div class="nav" id="nav-approvals" onclick="go(&#39;approvals&#39;)"><i class="fas fa-clipboard-list"></i><span>代換班紀錄</span><div class="nav-dot" id="approval-dot" style="display:none;"></div></div>
+      <div class="nav" id="nav-announce-admin" onclick="go(&#39;announce&#39;)"><i class="fas fa-bullhorn"></i><span>公佈欄管理</span></div>
+      <div class="nav" id="nav-guide-admin" onclick="go(&#39;guide&#39;)"><i class="fas fa-book-open"></i><span>使用手冊管理</span></div>
     </div>
 
     <div class="sb-foot">
       <div class="sb-user" onclick="logout()">
-        <div class="sb-av" id="sb-av" style="background: rgb(250, 199, 117); color: rgb(65, 36, 2);">管員</div>
+        <div class="sb-av" id="sb-av"></div>
         <div>
-          <div class="sb-uname" id="sb-name">管理員</div>
-          <div class="sb-urole" id="sb-role">系統管理員</div>
+          <div class="sb-uname" id="sb-name"></div>
+          <div class="sb-urole" id="sb-role"></div>
         </div>
         <i class="fas fa-right-from-bracket" style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25);"></i>
       </div>
@@ -771,6 +875,9 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
   <div class="main">
     <div class="topbar">
+      <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="選單">
+        <i class="fas fa-bars"></i>
+      </button>
       <div>
         <div class="tb-title" id="tb-title">打卡</div>
         <div class="tb-sub" id="tb-sub"></div>
@@ -783,8 +890,8 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="page on" id="page-clock">
         <div class="card" style="max-width:520px;margin:0 auto;">
           <div class="clock-hero">
-            <div class="ct" id="live-clock">19:40:13</div>
-            <div class="cd" id="live-date">2026年6月10日（星期三）</div>
+            <div class="ct" id="live-clock">--:--:--</div>
+            <div class="cd" id="live-date"></div>
           </div>
           <div id="today-shifts-list" style="margin-top:16px;"></div>
         </div>
@@ -795,89 +902,10 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:nowrap;">
           <button class="btn btn-sm" onclick="shiftWeek(-1)" style="flex-shrink:0;"><i class="fas fa-chevron-left"></i></button>
           <button class="btn btn-sm" onclick="shiftWeek(1)" style="flex-shrink:0;"><i class="fas fa-chevron-right"></i></button>
-          <div id="week-label" style="font-size:14px;font-weight:600;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">2026-06-08 ～ 2026-06-14</div>
+          <div id="week-label" style="font-size:14px;font-weight:600;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
           <button class="btn btn-sm" onclick="weekOffset=0;renderSchedule()" style="flex-shrink:0;">今週</button>
         </div>
-        <div id="schedule-grid"><div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
-  <table style="border-collapse:collapse;background:var(--surface);font-family:&#39;Noto Sans TC&#39;,sans-serif;font-size:12px;width:100%;">
-    <thead><tr>
-      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:68px;">時間</th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
-      一<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/8</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
-      二<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/9</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--teal-d);
-      background:var(--teal-l);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
-      三<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--teal);margin-left:5px;">6/10</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
-      四<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/11</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:110px;">
-      五<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:5px;">6/12</span>
-    </th></tr></thead><tbody><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">08:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–10:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">08:00–10:00</div>
-      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">10:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–12:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">10:00–12:00</div>
-      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">12:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–14:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">12:00–14:00</div>
-      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">14:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–16:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">14:00–16:00</div>
-      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">16:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–18:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">16:00–18:00</div>
-      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">18:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–21:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">18:00–21:00</div>
-      </td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div>
-            <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:2px;">二樓作業</div>
-            <div style="line-height:1.5;"><span style="font-size:11px;font-weight:600;color:var(--ink2);">黃昱翔</span></div>
-          </div></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td><td style="padding:7px 10px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.5);"><span style="color:var(--border);font-size:10px;">—</span></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">09:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–13:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">09:00–13:00</div>
-      </td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:1px solid var(--border);background:#F8F6EF;"></td></tr><tr>
-      <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:none;vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">13:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–17:00</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">13:00–17:00</div>
-      </td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td><td style="border-left:1px solid var(--border);border-bottom:none;background:#F8F6EF;"></td></tr></tbody></table></div>
-  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;padding:0 2px;font-size:11px;color:var(--muted);">
-    <span style="font-weight:700;color:#B07A00;">⭐ 小組長</span>
-    <span style="font-weight:700;color:#D05A1E;">C2 櫃台</span>
-    <span style="font-weight:700;color:#2A6FA8;">C3 櫃台</span>
-    <span style="font-weight:700;color:#1B6B3A;">D 詢問台</span>
-    <span style="font-weight:700;color:#7040B0;">F 二樓作業</span>
-    <span style="font-weight:700;color:var(--coral);">紅色 = 換班/代班</span>
-  </div></div>
+        <div id="schedule-grid"></div>
       </div>
 
       <!-- SCHEDULE WEEKEND -->
@@ -955,10 +983,17 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="page" id="page-records">
         <div class="stats-row stats-3" id="my-stats" style="max-width:560px;margin-bottom:16px;"></div>
         <div class="card">
-          <div class="card-title">打卡紀錄</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+            <div class="card-title" style="margin:0;">打卡紀錄</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:12px;color:var(--muted);">月份篩選</span>
+              <select class="fi fi-sel" id="my-month" style="width:130px;margin:0;" onchange="renderMyRecords()"></select>
+            </div>
+          </div>
           <div style="overflow:auto;">
             <table class="tbl"><thead><tr><th>日期</th><th>班次</th><th>上班</th><th>下班</th><th>工時</th><th>遲到</th><th>加班</th></tr></thead>
-            <tbody id="my-tbody"></tbody></table>
+            <tbody id="my-tbody"></tbody>
+            <tfoot id="my-tfoot"></tfoot></table>
           </div>
         </div>
       </div>
@@ -989,18 +1024,11 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
             <div>
               <div class="card-title" style="margin:0;">📍 當前時段出勤</div>
-              <div id="dash-curr-slot" style="font-size:12px;color:var(--muted);margin-top:3px;">18:00–21:00</div>
+              <div id="dash-curr-slot" style="font-size:12px;color:var(--muted);margin-top:3px;"></div>
             </div>
-            <span id="dash-refresh-time" style="font-size:11px;color:var(--muted);">更新於 19:40</span>
+            <span id="dash-refresh-time" style="font-size:11px;color:var(--muted);"></span>
           </div>
-          <div id="dash-current" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"><div style="background:#FFF5F3;border:1.5px solid var(--coral-l);border-radius:var(--r-lg);padding:12px 14px;">
-        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">
-          黃昱翔
-          <span style="font-size:10px;font-weight:700;color:#7040B0;margin-left:5px;">[F]</span>
-        </div>
-        <div><span class="badge bg-red"><i class="fas fa-user-xmark"></i> 未打卡</span></div>
-        
-      </div></div>
+          <div id="dash-current" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div>
           <div id="dash-no-slot" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px;">目前不在任何班次時段內</div>
         </div>
 
@@ -1009,14 +1037,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           <div class="card-title">📋 今日全部出勤（依時間排序）</div>
           <table class="tbl">
             <thead><tr><th>姓名</th><th>班次時間</th><th>狀態</th><th>上班打卡</th><th>下班打卡</th><th>遲到</th></tr></thead>
-            <tbody id="today-dash"><tr>
-      <td style="font-weight:500;">黃昱翔</td>
-      <td class="mono" style="font-size:11px;">18:00–21:00</td>
-      <td><span class="badge bg-amber"><i class="fas fa-bell"></i> 待打卡</span></td>
-      <td class="mono">—</td>
-      <td class="mono">—</td>
-      <td>—</td>
-    </tr></tbody>
+            <tbody id="today-dash"></tbody>
           </table>
         </div>
       </div>
@@ -1057,13 +1078,16 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
         <!-- 上方工具列 -->
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
-          <button class="btn btn-primary" onclick="openModal(&#39;modal-import&#39;)">
+          <button class="btn btn-primary" onclick="openImportModal()">
             <i class="fas fa-file-arrow-up"></i> 匯入班表
+          </button>
+          <button class="btn" onclick="openModal(&#39;modal-closure&#39;)">
+            <i class="fas fa-building-lock"></i> 新增休館日
           </button>
           <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
             <button class="btn btn-sm" onclick="adminShiftWeek(-1)"><i class="fas fa-chevron-left"></i></button>
             <button class="btn btn-sm" onclick="adminShiftWeek(1)"><i class="fas fa-chevron-right"></i></button>
-            <div id="admin-week-label" style="font-size:13px;font-weight:600;min-width:180px;text-align:center;">2026-06-08 ～ 2026-06-12</div>
+            <div id="admin-week-label" style="font-size:13px;font-weight:600;min-width:180px;text-align:center;"></div>
             <button class="btn btn-sm" onclick="adminWeekOffset=0;renderAdminSchedule()">今週</button>
           </div>
         </div>
@@ -1071,466 +1095,16 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <!-- 說明 -->
         <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;font-size:12px;color:#0E3E7A;">
           <i class="fas fa-circle-info" style="margin-top:1px;flex-shrink:0;"></i>
-          <div>點擊格子中的 <strong>+</strong> 可新增排班；點擊姓名可移除。CSV 匯入會覆蓋指定週的全部班次。</div>
+          <div>點擊格子中的 <strong>+</strong> 可新增排班；點擊姓名旁的 ✕ 可移除。匯入班表會覆蓋指定區間的班次。</div>
         </div>
 
         <!-- 可編輯班表 -->
-        <div id="admin-schedule-grid"><div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
-  <table style="border-collapse:collapse;background:var(--surface);font-family:&#39;Noto Sans TC&#39;,sans-serif;font-size:12px;width:100%;">
-    <thead><tr>
-      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:72px;">時間</th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
-      一<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/8</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
-      二<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/9</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--teal-d);
-      background:var(--teal-l);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
-      三<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--teal);margin-left:4px;">6/10</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
-      四<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/11</span>
-    </th><th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
-      color:var(--ink);
-      background:var(--bg);
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
-      五<span style="font-size:10px;font-family:&#39;DM Mono&#39;,monospace;font-weight:400;color:var(--muted);margin-left:4px;">6/12</span>
-    </th></tr></thead><tbody><tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">08:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–10:00</div>
-      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd1&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd1&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd1&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td></tr><tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">10:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–12:00</div>
-      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd2&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd2&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd2&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td></tr><tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">12:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–14:00</div>
-      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd3&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd3&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd3&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td></tr><tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">14:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–16:00</div>
-      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(245,244,239,0.6);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd4&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd4&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd4&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td></tr><tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">16:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–18:00</div>
-      </td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:rgba(27,153,114,0.04);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td><td style="padding:0;border-left:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;background:var(--surface);"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;height:100%;"><div style="padding:6px 5px;border-left:none;min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#D05A1E;margin-bottom:3px;">C2</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5_16&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#2A6FA8;margin-bottom:3px;">C3</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5_16&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div><div style="padding:6px 5px;border-left:1px dashed rgba(200,198,190,0.5);min-height:48px;text-align:center;">
-            <div style="font-size:9px;font-weight:700;color:#1B6B3A;margin-bottom:3px;">D</div>
-            
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5_16&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div></div></td></tr><tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:none;vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;font-weight:700;color:var(--ink2);">18:00</div>
-        <div style="font-family:&#39;DM Mono&#39;,monospace;font-size:10px;color:var(--muted);">–21:00</div>
-      </td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
-            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
-          </div>
-          
-          <div style="display:flex;gap:2px;">
-            <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div>
-        </div><div>
-          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-08&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
-            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
-          </div>
-          
-          <div style="display:flex;gap:2px;">
-            <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div>
-        </div><div>
-          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-09&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(27,153,114,0.04);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
-            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
-          </div>
-          
-          <div style="display:flex;gap:2px;">
-            <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div>
-        </div><div>
-          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
-          <div style="display:flex;align-items:center;gap:3px;justify-content:space-between;padding:1px 0;">
-      <div style="display:flex;align-items:center;gap:3px;">
-        <span style="font-size:9px;font-weight:700;color:#7040B0;">[F]</span>
-        <span style="font-size:12px;font-weight:600;color:var(--ink2);">黃昱翔</span>
-      </div>
-      <span onclick="removeFromCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,33)" style="cursor:pointer;color:var(--border);font-size:10px;padding:1px 3px;border-radius:3px;flex-shrink:0;" onmouseover="this.style.color=&#39;var(--coral)&#39;" onmouseout="this.style.color=&#39;var(--border)&#39;">✕</span>
-    </div>
-          <div onclick="openEditCell(&#39;2026-06-10&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
-            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
-          </div>
-          
-          <div style="display:flex;gap:2px;">
-            <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div>
-        </div><div>
-          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-11&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div></td><td style="padding:6px 8px;border-left:1px solid var(--border);border-bottom:none;vertical-align:top;background:rgba(245,244,239,0.6);min-height:80px;"><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;color:#B07A00;margin-bottom:3px;">⭐ 小組長</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;⭐小組長&#39;)" title="新增 ⭐小組長" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div><div style="border-bottom:1px dashed var(--border);padding-bottom:5px;margin-bottom:5px;">
-          <div style="font-size:9px;font-weight:700;margin-bottom:3px;">
-            <span style="color:#D05A1E;">C2</span>&nbsp;<span style="color:#2A6FA8;">C3</span>&nbsp;<span style="color:#1B6B3A;">D</span>
-          </div>
-          
-          <div style="display:flex;gap:2px;">
-            <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;C2&#39;)" title="新增 C2" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;C3&#39;)" title="新增 C3" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div><div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;D&#39;)" title="新增 D" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-          </div>
-        </div><div>
-          <div style="font-size:9px;font-weight:700;color:#7040B0;margin-bottom:3px;">二樓作業</div>
-          
-          <div onclick="openEditCell(&#39;2026-06-12&#39;,&#39;wd5&#39;,&#39;F&#39;)" title="新增 F" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor=&#39;var(--teal)&#39;;this.style.color=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" onmouseout="this.style.borderColor=&#39;var(--border)&#39;;this.style.color=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;">+</div>
-        </div></td></tr></tbody></table></div></div>
+        <div id="admin-schedule-grid"></div>
 
-        <!-- 國定假日 & 休館日 -->
-        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-          <div class="card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-              <div class="card-title" style="margin:0;">國定假日（自動抓取）</div>
-              <button class="btn btn-sm btn-primary" onclick="fetchHolidays()"><i class="fas fa-cloud-arrow-down"></i> 抓取今年假日</button>
-            </div>
-            <div id="holiday-list" style="font-size:12px;color:var(--muted);max-height:200px;overflow-y:auto;"></div>
-          </div>
-          <div class="card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-              <div class="card-title" style="margin:0;">休館日（不用上班）</div>
-              <button class="btn btn-sm btn-primary" onclick="openModal(&#39;modal-closure&#39;)"><i class="fas fa-plus"></i> 新增休館日</button>
-            </div>
-            <div id="closure-list" style="font-size:12px;max-height:200px;overflow-y:auto;"></div>
-          </div>
+        <!-- 休館日列表 -->
+        <div class="card" style="margin-top:20px;">
+          <div class="card-title">休館日（不用上班）</div>
+          <div id="closure-list" style="font-size:12px;"></div>
         </div>
       </div>
 
@@ -1570,6 +1144,16 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
   <div class="modal-box" style="width:540px;max-height:90vh;overflow-y:auto;">
     <div class="modal-title"><i class="fas fa-file-arrow-up" style="color:var(--teal);margin-right:8px;"></i>匯入班表</div>
 
+    <!-- Type toggle: weekday or weekend -->
+    <div style="display:flex;gap:8px;margin-bottom:18px;background:var(--bg);padding:5px;border-radius:var(--r);">
+      <button id="imp-type-wd" class="btn btn-sm" style="flex:1;background:var(--teal);color:#fff;" onclick="setImportType(&#39;weekday&#39;)">
+        <i class="fas fa-sun"></i> 平日班表（週一～五）
+      </button>
+      <button id="imp-type-we" class="btn btn-sm" style="flex:1;" onclick="setImportType(&#39;weekend&#39;)">
+        <i class="fas fa-umbrella-beach"></i> 假日班表（六、日）
+      </button>
+    </div>
+
     <!-- Step 1: Date range -->
     <div style="margin-bottom:20px;">
       <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">
@@ -1592,7 +1176,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <button class="btn btn-sm" onclick="setSemPreset(&#39;115-1&#39;)">115-1學期</button>
         <button class="btn btn-sm" onclick="setSemPreset(&#39;115-2&#39;)">115-2學期</button>
       </div>
-      <div id="import-week-label" style="font-size: 12px; color: var(--teal-d); background: var(--teal-l); border-radius: var(--r); padding: 8px 12px; display: block;"><i class="fas fa-calendar-week" style="margin-right:6px;"></i>單週：2026-06-08 ～ 2026-06-12</div>
+      <div id="import-week-label" style="font-size:12px;color:var(--teal-d);background:var(--teal-l);border-radius:var(--r);padding:8px 12px;display:none;"></div>
     </div>
 
     <!-- Step 2: Upload Excel -->
@@ -1601,8 +1185,11 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
         <span style="background:var(--teal);color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-right:6px;">2</span>
         上傳班表 Excel 檔
       </div>
-      <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:9px 13px;font-size:11.5px;color:#0E3E7A;margin-bottom:10px;">
+      <div id="imp-hint-wd" style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:9px 13px;font-size:11.5px;color:#0E3E7A;margin-bottom:10px;">
         系統會自動讀取 Excel 中週一到週五每個班次的 <code style="background:rgba(0,0,0,0.08);padding:1px 4px;border-radius:3px;">[C] 姓名 [D] 姓名</code> 格式，並依照區間重複展開
+      </div>
+      <div id="imp-hint-we" style="display:none;background:var(--amber-l);border:1px solid var(--amber);border-radius:var(--r);padding:9px 13px;font-size:11.5px;color:#5C3A00;margin-bottom:10px;">
+        系統會讀取 Excel 中週六、週日的班次（09:00–13:00、13:00–17:00），格內 <code style="background:rgba(0,0,0,0.08);padding:1px 4px;border-radius:3px;">[C] 姓名 [D] 姓名</code>，依區間展開到所有週末
       </div>
       <div id="drop-zone" style="border:2px dashed var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;" onclick="document.getElementById(&#39;xlsx-file-input&#39;).click()" ondragover="event.preventDefault();this.style.borderColor=&#39;var(--teal)&#39;;this.style.background=&#39;var(--teal-l)&#39;;" ondragleave="this.style.borderColor=&#39;var(--border)&#39;;this.style.background=&#39;&#39;;" ondrop="handleFileDrop(event)">
         <i class="fas fa-cloud-arrow-up" id="dz-icon" style="font-size:26px;color:var(--muted);margin-bottom:8px;display:block;"></i>
@@ -1755,89 +1342,21 @@ function fmtH(h){return h!=null?h.toFixed(1)+'h':'-';}
 
 // ═══ DATA ═══
 // ── 工讀生名單（來源：圖書館班表.xlsx 時數統計） ──
-let employees = [
-  {id:1,name:'郭柔吟',role:'C+D',sid:'LIB001'},
-  {id:2,name:'吳悅慈',role:'C+D',sid:'LIB002'},
-  {id:3,name:'沈筠婷',role:'C+D',sid:'LIB003'},
-  {id:4,name:'蘇子晴',role:'D 詢問台',sid:'LIB004'},
-  {id:5,name:'楊淳卉',role:'C+D',sid:'LIB005'},
-  {id:6,name:'許靜儀',role:'C+D',sid:'LIB006'},
-  {id:7,name:'徐翊芯',role:'C+D',sid:'LIB007'},
-  {id:8,name:'楊宜璇（傳）',role:'C 櫃台',sid:'LIB008'},
-  {id:9,name:'湯崢',role:'C+D',sid:'LIB009'},
-  {id:10,name:'邱新喬',role:'C+D',sid:'LIB010'},
-  {id:11,name:'吳育嫺',role:'C+D',sid:'LIB011'},
-  {id:12,name:'羅翊宸',role:'C+D',sid:'LIB012'},
-  {id:13,name:'楊宜璇',role:'C 櫃台',sid:'LIB013'},
-  {id:14,name:'洪苡晅',role:'C+D',sid:'LIB014'},
-  {id:15,name:'張芯瑀',role:'C+D',sid:'LIB015'},
-  {id:16,name:'顏珮伶',role:'C+D',sid:'LIB016'},
-  {id:17,name:'涂凱鈞',role:'C+D',sid:'LIB017'},
-  {id:18,name:'滕璦',role:'C+D',sid:'LIB018'},
-  {id:19,name:'昱翔',role:'C+D',sid:'LIB019'},
-  {id:20,name:'鄭塏霖',role:'C 櫃台',sid:'LIB020'},
-  {id:21,name:'蕭欣誼',role:'C+D',sid:'LIB021'},
-  {id:22,name:'吳欣晏',role:'C+D',sid:'LIB022'},
-  {id:23,name:'鄭宜恩',role:'C 櫃台',sid:'LIB023'},
-  {id:24,name:'莊佳珍',role:'C+D',sid:'LIB024'},
-  {id:25,name:'呂雅昀',role:'C+D',sid:'LIB025'},
-  {id:26,name:'黃子寧',role:'C 櫃台',sid:'LIB026'},
-  {id:27,name:'謝竣喆',role:'C+D',sid:'LIB027'},
-  {id:28,name:'張芷瑄',role:'D 詢問台',sid:'LIB028'},
-  {id:29,name:'林宏凌',role:'C+D',sid:'LIB029'},
-];
+let employees = []; // 清空，由 Supabase 載入
 
-// ── 每週班表範本（來源：圖書館班表.xlsx 週班表） ──
-// dayOffset: 0=週一 … 4=週五, tag: C/D/F/⭐小組長
-const WEEKLY_TEMPLATE = [
-  // 08:00–10:00
-  {shiftId:'wd1',dayOffset:0,name:'黃子寧',tag:'C'},{shiftId:'wd1',dayOffset:0,name:'郭柔吟',tag:'C'},{shiftId:'wd1',dayOffset:0,name:'邱新喬',tag:'D'},
-  {shiftId:'wd1',dayOffset:1,name:'黃子寧',tag:'C'},{shiftId:'wd1',dayOffset:1,name:'顏珮伶',tag:'C'},{shiftId:'wd1',dayOffset:1,name:'吳欣晏',tag:'D'},
-  {shiftId:'wd1',dayOffset:2,name:'楊淳卉',tag:'C'},{shiftId:'wd1',dayOffset:2,name:'羅翊宸',tag:'C'},{shiftId:'wd1',dayOffset:2,name:'涂凱鈞',tag:'D'},
-  {shiftId:'wd1',dayOffset:3,name:'黃子寧',tag:'C'},{shiftId:'wd1',dayOffset:3,name:'許靜儀',tag:'C'},{shiftId:'wd1',dayOffset:3,name:'莊佳珍',tag:'D'},
-  {shiftId:'wd1',dayOffset:4,name:'黃子寧',tag:'C'},{shiftId:'wd1',dayOffset:4,name:'吳欣晏',tag:'C'},{shiftId:'wd1',dayOffset:4,name:'謝竣喆',tag:'D'},
-  // 10:00–12:00
-  {shiftId:'wd2',dayOffset:0,name:'楊宜璇',tag:'C'},{shiftId:'wd2',dayOffset:0,name:'吳悅慈',tag:'C'},{shiftId:'wd2',dayOffset:0,name:'湯崢',tag:'D'},
-  {shiftId:'wd2',dayOffset:1,name:'楊宜璇（傳）',tag:'C'},{shiftId:'wd2',dayOffset:1,name:'滕璦',tag:'C'},{shiftId:'wd2',dayOffset:1,name:'呂雅昀',tag:'D'},
-  {shiftId:'wd2',dayOffset:2,name:'吳悅慈',tag:'C'},{shiftId:'wd2',dayOffset:2,name:'楊淳卉',tag:'C'},{shiftId:'wd2',dayOffset:2,name:'昱翔',tag:'D'},
-  {shiftId:'wd2',dayOffset:3,name:'徐翊芯',tag:'C'},{shiftId:'wd2',dayOffset:3,name:'楊淳卉',tag:'C'},{shiftId:'wd2',dayOffset:3,name:'沈筠婷',tag:'D'},
-  {shiftId:'wd2',dayOffset:4,name:'林宏凌',tag:'C'},{shiftId:'wd2',dayOffset:4,name:'許靜儀',tag:'C'},{shiftId:'wd2',dayOffset:4,name:'邱新喬',tag:'D'},
-  // 12:00–14:00
-  {shiftId:'wd3',dayOffset:0,name:'楊宜璇',tag:'C'},{shiftId:'wd3',dayOffset:0,name:'吳育嫺',tag:'C'},{shiftId:'wd3',dayOffset:0,name:'洪苡晅',tag:'D'},
-  {shiftId:'wd3',dayOffset:1,name:'楊宜璇',tag:'C'},{shiftId:'wd3',dayOffset:1,name:'郭柔吟',tag:'C'},{shiftId:'wd3',dayOffset:1,name:'蘇子晴',tag:'D'},
-  {shiftId:'wd3',dayOffset:2,name:'鄭塏霖',tag:'C'},{shiftId:'wd3',dayOffset:2,name:'楊宜璇（傳）',tag:'C'},{shiftId:'wd3',dayOffset:2,name:'莊佳珍',tag:'D'},
-  {shiftId:'wd3',dayOffset:3,name:'徐翊芯',tag:'C'},{shiftId:'wd3',dayOffset:3,name:'邱新喬',tag:'C'},{shiftId:'wd3',dayOffset:3,name:'吳育嫺',tag:'D'},
-  {shiftId:'wd3',dayOffset:4,name:'吳悅慈',tag:'C'},{shiftId:'wd3',dayOffset:4,name:'張芯瑀',tag:'C'},{shiftId:'wd3',dayOffset:4,name:'蕭欣誼',tag:'D'},
-  // 14:00–16:00
-  {shiftId:'wd4',dayOffset:0,name:'鄭塏霖',tag:'C'},{shiftId:'wd4',dayOffset:0,name:'沈筠婷',tag:'C'},{shiftId:'wd4',dayOffset:0,name:'張芯瑀',tag:'D'},
-  {shiftId:'wd4',dayOffset:1,name:'謝竣喆',tag:'C'},{shiftId:'wd4',dayOffset:1,name:'沈筠婷',tag:'C'},{shiftId:'wd4',dayOffset:1,name:'洪苡晅',tag:'D'},
-  {shiftId:'wd4',dayOffset:2,name:'楊宜璇',tag:'C'},{shiftId:'wd4',dayOffset:2,name:'鄭塏霖',tag:'C'},{shiftId:'wd4',dayOffset:2,name:'蘇子晴',tag:'D'},
-  {shiftId:'wd4',dayOffset:3,name:'徐翊芯',tag:'C'},{shiftId:'wd4',dayOffset:3,name:'羅翊宸',tag:'C'},{shiftId:'wd4',dayOffset:3,name:'涂凱鈞',tag:'D'},
-  {shiftId:'wd4',dayOffset:4,name:'吳悅慈',tag:'C'},{shiftId:'wd4',dayOffset:4,name:'洪苡晅',tag:'C'},{shiftId:'wd4',dayOffset:4,name:'張芯瑀',tag:'D'},
-  // 16:00–18:00
-  {shiftId:'wd5_16',dayOffset:0,name:'鄭塏霖',tag:'C'},{shiftId:'wd5_16',dayOffset:0,name:'楊宜璇',tag:'C'},{shiftId:'wd5_16',dayOffset:0,name:'許靜儀',tag:'D'},
-  {shiftId:'wd5_16',dayOffset:1,name:'鄭宜恩',tag:'C'},{shiftId:'wd5_16',dayOffset:1,name:'鄭塏霖',tag:'C'},{shiftId:'wd5_16',dayOffset:1,name:'張芷瑄',tag:'D'},
-  {shiftId:'wd5_16',dayOffset:2,name:'鄭宜恩',tag:'C'},{shiftId:'wd5_16',dayOffset:2,name:'楊宜璇（傳）',tag:'C'},{shiftId:'wd5_16',dayOffset:2,name:'林宏凌',tag:'D'},
-  {shiftId:'wd5_16',dayOffset:3,name:'楊宜璇',tag:'C'},{shiftId:'wd5_16',dayOffset:3,name:'滕璦',tag:'C'},{shiftId:'wd5_16',dayOffset:3,name:'張芷瑄',tag:'D'},
-  {shiftId:'wd5_16',dayOffset:4,name:'林宏凌',tag:'C'},{shiftId:'wd5_16',dayOffset:4,name:'徐翊芯',tag:'C'},{shiftId:'wd5_16',dayOffset:4,name:'羅翊宸',tag:'D'},
-  // 18:00–21:00
-  {shiftId:'wd5',dayOffset:0,name:'邱新喬',tag:'⭐小組長'},{shiftId:'wd5',dayOffset:0,name:'楊宜璇（傳）',tag:'C'},{shiftId:'wd5',dayOffset:0,name:'鄭宜恩',tag:'C'},{shiftId:'wd5',dayOffset:0,name:'蘇子晴',tag:'D'},{shiftId:'wd5',dayOffset:0,name:'羅翊宸',tag:'F'},{shiftId:'wd5',dayOffset:0,name:'涂凱鈞',tag:'F'},{shiftId:'wd5',dayOffset:0,name:'昱翔',tag:'F'},{shiftId:'wd5',dayOffset:0,name:'蕭欣誼',tag:'F'},
-  {shiftId:'wd5',dayOffset:1,name:'湯崢',tag:'⭐小組長'},{shiftId:'wd5',dayOffset:1,name:'黃子寧',tag:'C'},{shiftId:'wd5',dayOffset:1,name:'楊宜璇（傳）',tag:'C'},{shiftId:'wd5',dayOffset:1,name:'莊佳珍',tag:'D'},{shiftId:'wd5',dayOffset:1,name:'張芯瑀',tag:'F'},{shiftId:'wd5',dayOffset:1,name:'顏珮伶',tag:'F'},{shiftId:'wd5',dayOffset:1,name:'吳欣晏',tag:'F'},{shiftId:'wd5',dayOffset:1,name:'呂雅昀',tag:'F'},
-  {shiftId:'wd5',dayOffset:2,name:'呂雅昀',tag:'⭐小組長'},{shiftId:'wd5',dayOffset:2,name:'鄭宜恩',tag:'C'},{shiftId:'wd5',dayOffset:2,name:'吳育嫺',tag:'C'},{shiftId:'wd5',dayOffset:2,name:'蘇子晴',tag:'D'},{shiftId:'wd5',dayOffset:2,name:'謝竣喆',tag:'F'},{shiftId:'wd5',dayOffset:2,name:'蕭欣誼',tag:'F'},{shiftId:'wd5',dayOffset:2,name:'郭柔吟',tag:'F'},{shiftId:'wd5',dayOffset:2,name:'沈筠婷',tag:'F'},
-  {shiftId:'wd5',dayOffset:3,name:'郭柔吟',tag:'⭐小組長'},{shiftId:'wd5',dayOffset:3,name:'許靜儀',tag:'C'},{shiftId:'wd5',dayOffset:3,name:'洪苡晅',tag:'C'},{shiftId:'wd5',dayOffset:3,name:'張芷瑄',tag:'D'},{shiftId:'wd5',dayOffset:3,name:'滕璦',tag:'F'},{shiftId:'wd5',dayOffset:3,name:'湯崢',tag:'F'},{shiftId:'wd5',dayOffset:3,name:'顏珮伶',tag:'F'},{shiftId:'wd5',dayOffset:3,name:'昱翔',tag:'F'},
-  {shiftId:'wd5',dayOffset:4,name:'張芯瑀',tag:'⭐小組長'},{shiftId:'wd5',dayOffset:4,name:'涂凱鈞',tag:'C'},{shiftId:'wd5',dayOffset:4,name:'吳悅慈',tag:'C'},{shiftId:'wd5',dayOffset:4,name:'徐翊芯',tag:'D'},{shiftId:'wd5',dayOffset:4,name:'顏珮伶',tag:'F'},{shiftId:'wd5',dayOffset:4,name:'昱翔',tag:'F'},{shiftId:'wd5',dayOffset:4,name:'蕭欣誼',tag:'F'},{shiftId:'wd5',dayOffset:4,name:'呂雅昀',tag:'F'},
-];
+// ── 每週班表範本（已清空，改由匯入功能建立） ──
+const WEEKLY_TEMPLATE = [];
 
-let records = []; // 清空示範資料，由 Supabase 載入
+let records = []; // 由 Supabase 載入
 
 // ── 從週範本生成某段日期的班表 ──
 function generateScheduleFromTemplate(startDate, endDate){
   const result=[];
   const s=new Date(startDate), e=new Date(endDate);
   for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
-    const dayOfWeek=d.getDay(); // 0=Sun
-    if(dayOfWeek===0||dayOfWeek===6) continue; // skip weekends
-    const dayOffset=dayOfWeek-1; // Mon=0 … Fri=4
+    const dayOfWeek=d.getDay();
+    if(dayOfWeek===0||dayOfWeek===6) continue;
+    const dayOffset=dayOfWeek-1;
     const ds=fmtD(d);
     WEEKLY_TEMPLATE.forEach(t=>{
       if(t.dayOffset!==dayOffset) return;
@@ -1850,31 +1369,9 @@ function generateScheduleFromTemplate(startDate, endDate){
   return result;
 }
 
-// Schedule: { date, shiftId, empId, coverBy, station }
-let schedule = generateScheduleFromTemplate(
-  (() => { const d=new Date(); d.setDate(d.getDate()-d.getDay()+1-7); return fmtD(d); })(),
-  (() => { const d=new Date(); d.setDate(d.getDate()-d.getDay()+1+21); return fmtD(d); })()
-);
+// Schedule: 清空，由 Supabase 載入
+let schedule = [];
 
-// ── 學期匯入：將週範本重複展開到指定日期區間 ──
-function importSemesterSchedule(startDate, endDate, overwrite){
-  const newEntries=generateScheduleFromTemplate(startDate, endDate);
-  if(overwrite){
-    // Remove all schedule entries within the range
-    const s=new Date(startDate), e=new Date(endDate);
-    for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
-      const ds=fmtD(d);
-      let i;
-      while((i=schedule.findIndex(x=>x.date===ds))!==-1) schedule.splice(i,1);
-    }
-  }
-  let added=0;
-  newEntries.forEach(r=>{
-    const exists=schedule.find(x=>x.date===r.date&&x.shiftId===r.shiftId&&x.empId===r.empId);
-    if(!exists){schedule.push(r);added++;}
-  });
-  return added;
-}
 let announcements = []; // 由 Supabase 載入
 let requests = [];      // 由 Supabase 載入
 
@@ -1907,9 +1404,9 @@ function studentBrowseLogin(){
   const emp=employees.find(e=>e.sid.toUpperCase()===sid);
   if(!emp){errEl.textContent='找不到此學號，請確認';return;}
 
-  // Check password
-  if(!emp.password){errEl.textContent='此帳號尚未設定密碼，請聯絡管理員';return;}
-  if(emp.password!==pwd){errEl.textContent='密碼錯誤，請再試一次';return;}
+  // Check password (default 0000 if not set)
+  const realPwd=emp.password||'0000';
+  if(realPwd!==pwd){errEl.textContent='密碼錯誤，請再試一次';return;}
 
   // Clear form
   document.getElementById('browse-sid').value='';
@@ -1926,6 +1423,19 @@ function doStudentBrowseLogin(empId){
 // Keep for compatibility
 function filterStudentList(){}
 function loginFirstStudent(){}
+
+// ═══ MOBILE SIDEBAR ═══
+function toggleMobileSidebar(){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebar-backdrop');
+  const open=sb.classList.contains('open');
+  if(open){ sb.classList.remove('open'); bd.classList.remove('open'); }
+  else { sb.classList.add('open'); bd.classList.add('open'); }
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebar-backdrop')?.classList.remove('open');
+}
 
 // ═══ NAV GROUP TOGGLE ═══
 function toggleNavGroup(id){
@@ -2090,6 +1600,7 @@ function doLogin(empId,admin,viewOnly=false){
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('admin-sec').style.display=admin?'':'none';
+  document.getElementById('student-sec').style.display=admin?'none':'';
   const name=admin?'管理員':currentUser.name;
   const role=admin?'系統管理員':viewOnly?'查詢模式':'工讀生';
   const idx=admin?6:employees.findIndex(e=>e.id===empId);
@@ -2182,6 +1693,7 @@ function logout(){
 // ═══ NAVIGATION ═══
 const PAGE_NAMES={clock:'打卡',schedule:'平日班表','schedule-we':'假日班表',records:'我的紀錄',announce:'公告欄',swap:'代換班申請',guide:'使用說明',dashboard:'出勤儀表板',scheduleadmin:'班表管理',employees:'工讀生管理',allrecords:'所有打卡紀錄',approvals:'代換班紀錄'};
 function go(page){
+  closeMobileSidebar();
   document.querySelectorAll('.nav,.nav-sub-item').forEach(n=>n.classList.remove('on'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   highlightNav(page);
@@ -2212,16 +1724,7 @@ function go(page){
   if(page==='dashboard'){renderDashboard();}
   if(page==='scheduleadmin'){
     adminWeekOffset=weekOffset;renderAdminSchedule();
-    const dates=getWeekDates(adminWeekOffset);
-    const inp=document.getElementById('import-week-start');
-    const inpM=document.getElementById('import-week-start-m');
-    if(inp) inp.value=dates[0];
-    if(inpM) inpM.value=dates[0];
-    updateImportWeekLabel();
-    ['sem-start','sem-end'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el&&!el._semListener){el.addEventListener('change',updateSemPreview);el._semListener=true;}
-    });
+    if(typeof renderClosureList==='function') renderClosureList();
   }
   if(page==='employees'){renderEmployees();}
   if(page==='allrecords'){initMonthFilter();renderAll();}
@@ -2250,7 +1753,18 @@ function startClock(){
 }
 
 function getTR(){return currentUser?records.find(r=>r.empId===currentUser.id&&r.date===today()):null;}
-function getTRs(){return currentUser?records.filter(r=>r.empId===currentUser.id&&r.date===today()):[];}
+function getTRs(){
+  if(!currentUser) return [];
+  const td=today();
+  // 我今天負責的班次（含代班）對應的歸屬empId集合
+  const myShiftKeys=new Set();
+  schedule.filter(s=>s.date===td&&(
+    (s.empId===currentUser.id&&!s.coverBy)||(s.coverBy===currentUser.id)
+  )).forEach(s=>myShiftKeys.add(s.empId+'_'+s.shiftId));
+  return records.filter(r=>r.date===td&&(
+    r.empId===currentUser.id || myShiftKeys.has(r.empId+'_'+r.shiftId)
+  ));
+}
 
 // ── Shift helpers ──
 function parseMin(hhmm){ const [h,m]=hhmm.split(':').map(Number); return h*60+m; }
@@ -2375,18 +1889,31 @@ async function doClockShift(type, shiftId){
   if(!currentUser) return;
   const n=new Date(); const t=pad(n.getHours())+':'+pad(n.getMinutes());
   const shift=ALL_SHIFTS.find(s=>s.id===shiftId);
-  const allRecs=getTRs();
-  let rec=allRecs.find(r=>r.shiftId===shiftId);
+  const td=today();
+
+  // 找出這個班次在班表中的記錄，判斷是否為代班
+  const schedEntry=schedule.find(s=>s.date===td&&s.shiftId===shiftId&&
+    (s.empId===currentUser.id || s.coverBy===currentUser.id));
+
+  // 代班規則：時數算「原上班人」(schedEntry.empId)，但實際打卡的是 currentUser
+  // 所以 clock record 的 emp_id 用原上班人；name 標註代班人
+  const isCover = schedEntry && schedEntry.coverBy===currentUser.id && schedEntry.empId!==currentUser.id;
+  const recordEmpId = isCover ? schedEntry.empId : currentUser.id;
+  const origEmp = employees.find(e=>e.id===recordEmpId);
+  const recordName = isCover
+    ? `${origEmp?.name||''}（${currentUser.name}代）`
+    : currentUser.name;
+
+  // 找這位「歸屬人」今天此班次的紀錄
+  let rec=records.find(r=>r.empId===recordEmpId&&r.date===td&&r.shiftId===shiftId);
 
   if(type==='in'){
-    if(rec) return;
+    if(rec&&rec.inTime) { toast('此班次已打過上班卡',''); return; }
     const late=shift?calcLate(shift.time,t):0;
-    // local
-    const newRec={empId:currentUser.id,name:currentUser.name,date:today(),inTime:t,outTime:'',shiftId,lateMinutes:late,overtimeMinutes:0};
+    const newRec={empId:recordEmpId,name:recordName,date:td,inTime:t,outTime:'',shiftId,lateMinutes:late,overtimeMinutes:0,coveredBy:isCover?currentUser.id:null};
     records.push(newRec);
-    // db
     const {error}=await db.from('clock_records').upsert({
-      emp_id:currentUser.id,name:currentUser.name,date:today(),
+      emp_id:recordEmpId,name:recordName,date:td,
       in_time:t,out_time:null,shift_id:shiftId,late_minutes:late,overtime_minutes:0
     },{onConflict:'emp_id,date,shift_id'});
     if(error) console.error(error);
@@ -2398,7 +1925,7 @@ async function doClockShift(type, shiftId){
     rec.outTime=t; rec.overtimeMinutes=ot;
     const {error}=await db.from('clock_records')
       .update({out_time:t,overtime_minutes:ot})
-      .eq('emp_id',currentUser.id).eq('date',today()).eq('shift_id',shiftId);
+      .eq('emp_id',recordEmpId).eq('date',td).eq('shift_id',shiftId);
     if(error) console.error(error);
     if(ot>0) toast(`👋 下班打卡成功 ${t}，加班 ${ot} 分鐘`);
     else toast('👋 下班打卡成功 '+t);
@@ -2624,62 +2151,49 @@ let weekendGroups = []; // managed by admin, loaded from DB or manually set
 
 function renderWeekendSchedule(){
   const el=document.getElementById('schedule-we-grid');
-  if(!weekendGroups.length){
+  // Show weekend schedule entries (we1/we2) grouped by date
+  const weekendEntries=schedule.filter(s=>s.shiftId==='we1'||s.shiftId==='we2');
+  if(!weekendEntries.length){
     el.innerHTML=`<div style="text-align:center;padding:48px;color:var(--muted);">
-      <i class="fas fa-calendar-days" style="font-size:32px;opacity:0.3;display:block;margin-bottom:12px;"></i>
-      假日班表尚未設定，請由管理員在「班表管理」中匯入。
+      <i class="fas fa-umbrella-beach" style="font-size:32px;opacity:0.3;display:block;margin-bottom:12px;"></i>
+      假日班表尚未設定，請由管理員在「班表管理 → 匯入班表 → 假日班表」匯入。
     </div>`;
     return;
   }
-  let html=`<div style="overflow-x:auto;"><table style="border-collapse:collapse;width:100%;font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
-    <thead style="background:var(--bg);">
-      <tr>
-        <th style="padding:10px;border:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted);min-width:36px;">組別</th>
-        <th style="padding:10px;border:1px solid var(--border);font-size:11px;color:var(--muted);min-width:180px;">姓名</th>
-        <th colspan="2" style="padding:10px;border:1px solid var(--border);text-align:center;font-size:12px;font-weight:600;color:var(--ink);">輪值日期・時間<br><span style="font-size:10px;font-weight:400;color:var(--muted);">（週六・週日 全 08:55–16:55，午 12:55–16:55）</span></th>
-        <th style="padding:10px;border:1px solid var(--border);font-size:11px;color:var(--muted);">備註</th>
-      </tr>
-      <tr style="background:var(--bg);">
-        <th style="border:1px solid var(--border);"></th>
-        <th style="padding:6px 10px;border:1px solid var(--border);font-size:10px;color:var(--muted);font-weight:600;">A 班 / B 班</th>
-        <th style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-size:11px;font-weight:600;color:var(--blue);">A 班</th>
-        <th style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-size:11px;font-weight:600;color:var(--purple);">B 班</th>
-        <th style="border:1px solid var(--border);"></th>
-      </tr>
-    </thead><tbody>`;
-
-  weekendGroups.forEach(g=>{
-    const aMembers=g.members.filter(m=>m.band==='A');
-    const bMembers=g.members.filter(m=>m.band==='B');
-    const maxRows=Math.max(aMembers.length,bMembers.length,1);
-    g.slots.forEach((slot,si)=>{
-      const isFirst=si===0;
-      html+=`<tr>`;
-      if(isFirst) html+=`<td rowspan="${g.slots.length}" style="border:1px solid var(--border);text-align:center;font-weight:700;font-size:15px;vertical-align:middle;background:var(--bg);">${g.groupNum}</td>`;
-      // Names cell
-      if(isFirst){
-        html+=`<td rowspan="${g.slots.length}" style="border:1px solid var(--border);padding:8px 10px;vertical-align:top;">
-          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:4px;">A 班</div>
-          ${aMembers.map(m=>`<div style="font-size:12px;font-weight:500;padding:1px 0;">${m.name} <span style="font-size:10px;color:${tagColor(m.station)};">${m.station}</span></div>`).join('')}
-          <div style="font-size:10px;font-weight:600;color:var(--muted);margin:8px 0 4px;">B 班</div>
-          ${bMembers.map(m=>`<div style="font-size:12px;font-weight:500;padding:1px 0;">${m.name} <span style="font-size:10px;color:${tagColor(m.station)};">${m.station}</span></div>`).join('')}
-        </td>`;
-      }
-      // Date slots
-      html+=`<td style="border:1px solid var(--border);padding:8px 10px;vertical-align:top;min-width:120px;">
-        ${slot.aDates.map(d=>`<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink2);">${d}</div>`).join('')}
-        <div style="font-size:10px;color:var(--muted);margin-top:3px;">${slot.aNote||''}</div>
-      </td>
-      <td style="border:1px solid var(--border);padding:8px 10px;vertical-align:top;min-width:120px;">
-        ${slot.bDates.map(d=>`<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink2);">${d}</div>`).join('')}
-        <div style="font-size:10px;color:var(--muted);margin-top:3px;">${slot.bNote||''}</div>
-      </td>
-      <td style="border:1px solid var(--border);padding:8px 10px;font-size:11px;color:var(--muted);vertical-align:top;">${g.note||''}</td>
-    </tr>`;
-    });
+  // Group by date
+  const byDate={};
+  weekendEntries.forEach(s=>{
+    if(!byDate[s.date]) byDate[s.date]={};
+    if(!byDate[s.date][s.shiftId]) byDate[s.date][s.shiftId]=[];
+    byDate[s.date][s.shiftId].push(s);
   });
+  const dates=Object.keys(byDate).sort();
+  const DAY_NAMES=['日','一','二','三','四','五','六'];
 
-  html+=`</tbody></table></div>`;
+  let html=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">`;
+  dates.forEach(date=>{
+    const d=new Date(date);
+    const dn=DAY_NAMES[d.getDay()];
+    html+=`<div class="card" style="padding:14px;">
+      <div style="font-weight:600;font-size:14px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px;">
+        ${date}（週${dn}）
+      </div>`;
+    WEEKEND_SHIFTS.forEach(sh=>{
+      const entries=byDate[date][sh.id]||[];
+      if(!entries.length) return;
+      html+=`<div style="margin-bottom:10px;">
+        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--teal-d);font-weight:600;margin-bottom:4px;">${sh.time}</div>
+        ${entries.map(e=>{
+          const emp=employees.find(x=>x.id===(e.coverBy||e.empId));
+          if(!emp) return '';
+          const tag=e.station||'C';
+          return `<div style="font-size:12px;padding:1px 0;"><span style="font-weight:700;color:${tagColor(tag)};font-size:10px;">[${tag}]</span> ${emp.name}</div>`;
+        }).join('')}
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  html+=`</div>`;
   el.innerHTML=html;
 }
 
@@ -2702,7 +2216,22 @@ function renderLoginAnnFeed(){
 }
 function renderMyRecords(){
   if(!currentUser) return;
-  const myR=records.filter(r=>r.empId===currentUser.id).sort((a,b)=>b.date.localeCompare(a.date)||(a.shiftId||'').localeCompare(b.shiftId||''));
+  const allMine=records.filter(r=>r.empId===currentUser.id);
+
+  // Populate month dropdown
+  const monthSel=document.getElementById('my-month');
+  if(monthSel){
+    const months=[...new Set(allMine.map(r=>r.date.slice(0,7)))].sort((a,b)=>b.localeCompare(a));
+    const cur=monthSel.value;
+    monthSel.innerHTML='<option value="">全部月份</option>'+months.map(m=>`<option value="${m}">${m.replace('-','年')}月</option>`).join('');
+    if(cur) monthSel.value=cur;
+  }
+  const filterMonth=monthSel?.value||'';
+
+  const myR=allMine
+    .filter(r=>!filterMonth||r.date.startsWith(filterMonth))
+    .sort((a,b)=>b.date.localeCompare(a.date)||(a.shiftId||'').localeCompare(b.shiftId||''));
+
   let totalH=0,days=new Set(),totalLate=0,lateDays=0,totalOT=0;
   myR.forEach(r=>{
     const h=calHours(r.inTime,r.outTime);if(h){totalH+=h;days.add(r.date);}
@@ -2728,6 +2257,17 @@ function renderMyRecords(){
       <td>${ot>0?`<span class="badge bg-blue">${ot} 分</span>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}</td>
     </tr>`;
   }).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">暫無紀錄</td></tr>`;
+
+  // Total footer row
+  const tfoot=document.getElementById('my-tfoot');
+  if(tfoot){
+    tfoot.innerHTML=myR.length?`<tr style="border-top:2px solid var(--border);font-weight:600;background:var(--bg);">
+      <td colspan="4" style="text-align:right;">合計（${filterMonth?filterMonth.replace('-','年')+'月':'全部'}）</td>
+      <td style="color:var(--teal);">${totalH.toFixed(1)} h</td>
+      <td>${totalLate>0?`<span style="color:var(--coral);">${totalLate} 分</span>`:'—'}</td>
+      <td>${totalOT>0?`<span style="color:var(--blue);">${totalOT} 分</span>`:'—'}</td>
+    </tr>`:'';
+  }
 }
 
 // ═══ ANNOUNCEMENTS ═══
@@ -2782,16 +2322,28 @@ function openSwapModal(){
   const shifts=ALL_SHIFTS;
   document.getElementById('sw-my-shift').innerHTML=shifts.map(s=>`<option value="${s.id}">${s.label}（${s.time}）</option>`).join('');
   document.getElementById('sw-their-shift').innerHTML=shifts.map(s=>`<option value="${s.id}">${s.label}（${s.time}）</option>`).join('');
-  document.getElementById('sw-target').innerHTML=employees.filter(e=>e.id!==currentUser?.id).map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  rebuildSwapTargets();
   document.getElementById('sw-my-date').value=today();
   document.getElementById('sw-their-date').value=today();
   onSwapTypeChange();
   openModal('modal-swap');
 }
+function rebuildSwapTargets(){
+  const type=document.getElementById('sw-type').value;
+  const others=employees.filter(e=>e.id!==currentUser?.id);
+  // For cover type, add a "send to everyone" option at top
+  let opts='';
+  if(type==='cover'){
+    opts+=`<option value="ALL">📢 發送給所有人（先同意者得）</option>`;
+  }
+  opts+=others.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  document.getElementById('sw-target').innerHTML=opts;
+}
 function onSwapTypeChange(){
   const type=document.getElementById('sw-type').value;
   const theirSec=document.getElementById('swap-their-section');
   const targetLabel=document.getElementById('sw-target-label');
+  rebuildSwapTargets();
   if(type==='swap'){
     theirSec.style.display='';
     targetLabel.textContent='換給（對方）';
@@ -2804,31 +2356,61 @@ async function submitSwap(){
   const type=document.getElementById('sw-type').value;
   const myDate=document.getElementById('sw-my-date').value;
   const myShift=document.getElementById('sw-my-shift').value;
-  const toId=parseInt(document.getElementById('sw-target').value);
+  const targetVal=document.getElementById('sw-target').value;
   const theirDate=document.getElementById('sw-their-date').value;
   const theirShift=document.getElementById('sw-their-shift').value;
   const note=document.getElementById('sw-note').value.trim();
   if(!myDate||!myShift){toast('請填寫班次資訊','err');return;}
   if(type==='swap'&&(!theirDate||!theirShift)){toast('請填寫對方班次','err');return;}
+
+  // Group id to link requests sent to multiple people for the same shift
+  const groupId='g'+Date.now();
+
+  if(type==='cover'&&targetVal==='ALL'){
+    // Send to all other employees
+    const others=employees.filter(e=>e.id!==currentUser.id);
+    if(!others.length){toast('沒有其他工讀生可發送','err');return;}
+    const rows=others.map(e=>({
+      type, from_id:currentUser.id, to_id:e.id,
+      my_date:myDate, my_shift:myShift,
+      their_date:null, their_shift:null,
+      note, status:'pending_peer', group_id:groupId
+    }));
+    const res=await db.from('requests').insert(rows).select();
+    if(res.error){toast('申請送出失敗','err');console.error(res.error);return;}
+    (res.data||[]).forEach((row,i)=>{
+      requests.push({
+        id:row.id||Date.now()+i, type,
+        fromId:currentUser.id, toId:others[i].id,
+        myDate, myShift, theirDate:null, theirShift:null,
+        note, status:'pending_peer', approvedAt:null, groupId
+      });
+    });
+    closeModal('modal-swap');
+    toast(`代班申請已發送給所有人（${others.length}位），先同意者得`);
+    renderSwap();updateBadges();
+    return;
+  }
+
+  // Single target
+  const toId=parseInt(targetVal);
   const to=employees.find(e=>e.id===toId);
-  // 寫入 Supabase
   const res=await db.from('requests').insert([{
     type, from_id:currentUser.id, to_id:toId,
     my_date:myDate, my_shift:myShift,
     their_date:type==='swap'?theirDate:null,
     their_shift:type==='swap'?theirShift:null,
-    note, status:'pending_peer'
+    note, status:'pending_peer', group_id:groupId
   }]).select();
   if(res.error){toast('申請送出失敗，請再試一次','err');console.error(res.error);return;}
   const inserted=(res.data&&res.data[0])||{id:Date.now()};
-  // 更新本地記憶體
   requests.push({
     id:inserted.id, type,
     fromId:currentUser.id, toId,
     myDate, myShift,
     theirDate:type==='swap'?theirDate:null,
     theirShift:type==='swap'?theirShift:null,
-    note, status:'pending_peer', approvedAt:null
+    note, status:'pending_peer', approvedAt:null, groupId
   });
   closeModal('modal-swap');
   toast('申請已送出，等待 '+to.name+' 同意');
@@ -2837,8 +2419,11 @@ async function submitSwap(){
 
 function renderSwap(){
   const uid=currentUser?.id;
-  const mine=requests.filter(r=>r.fromId===uid);
-  const recv=requests.filter(r=>r.toId===uid);
+  const td=today();
+  // 過濾：過期（班次日期已過）、已撤銷/拒絕的不顯示
+  const visible=r=>r.myDate>=td && r.status!=='superseded' && r.status!=='rejected';
+  const mine=requests.filter(r=>r.fromId===uid && visible(r));
+  const recv=requests.filter(r=>r.toId===uid && visible(r));
 
   document.getElementById('my-reqs').innerHTML=mine.length?mine.map(r=>`
     <div class="req-card">
@@ -2877,45 +2462,90 @@ function renderSwap(){
 
 async function peerAction(id,action){
   const r=requests.find(x=>String(x.id)===String(id));if(!r)return;
+
   if(action==='reject'){
     r.status='rejected';
     await db.from('requests').update({status:'rejected'}).eq('id',id);
     toast('已拒絕申請');
-  } else {
-    r.status='approved';
-    r.approvedAt=today();
-    // ── 更新班表（本地 + 資料庫）──
-    if(r.type==='swap'){
-      const e1=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
-      const e2=schedule.find(s=>s.date===r.theirDate&&s.shiftId===r.theirShift&&s.empId===r.toId);
-      if(e1&&e2){
-        [e1.empId,e2.empId]=[e2.empId,e1.empId];
-        await db.from('schedule').update({emp_id:r.toId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
-        await db.from('schedule').update({emp_id:r.fromId}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.toId);
-      }
-    } else {
-      const entry=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
-      if(entry){
-        entry.coverBy=r.toId;
-        await db.from('schedule').update({cover_by:r.toId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
-      } else {
-        schedule.push({date:r.myDate,shiftId:r.myShift,empId:r.fromId,coverBy:r.toId});
-        await db.from('schedule').insert({date:r.myDate,shift_id:r.myShift,emp_id:r.fromId,cover_by:r.toId});
+    renderSwap();updateBadges();
+    return;
+  }
+
+  // ── APPROVE ──
+  // Re-fetch this request's siblings from DB to check if someone already took it
+  // (siblings = same from_id + my_date + my_shift, type cover)
+  if(r.type==='cover'){
+    const check=await db.from('requests').select('*')
+      .eq('from_id',r.fromId).eq('my_date',r.myDate).eq('my_shift',r.myShift);
+    if(!check.error&&check.data){
+      const alreadyApproved=check.data.find(x=>x.status==='approved');
+      if(alreadyApproved && String(alreadyApproved.id)!==String(id)){
+        // Someone else already took it — order by id, first wins
+        const winner=employees.find(e=>e.id===alreadyApproved.to_id);
+        r.status='superseded';
+        await db.from('requests').update({status:'superseded'}).eq('id',id);
+        toast(`此班次已由 ${winner?.name||'其他人'} 接受，您的申請已取消`,'err');
+        renderSwap();updateBadges();
+        return;
       }
     }
-    // 更新申請狀態
-    await db.from('requests').update({status:'approved',approved_at:today()}).eq('id',id);
-    toast('✅ 已同意！班表已自動更新，管理員將收到通知');
   }
+
+  r.status='approved';
+  r.approvedAt=today();
+
+  if(r.type==='swap'){
+    // 換班：兩人班次對調
+    const e1=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
+    const e2=schedule.find(s=>s.date===r.theirDate&&s.shiftId===r.theirShift&&s.empId===r.toId);
+    if(e1&&e2){
+      [e1.empId,e2.empId]=[e2.empId,e1.empId];
+      await db.from('schedule').update({emp_id:r.toId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
+      await db.from('schedule').update({emp_id:r.fromId}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.toId);
+    }
+  } else {
+    // 代班：原上班人保留(統計用)，coverBy = 代班人(打卡用)
+    const entry=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
+    if(entry){
+      entry.coverBy=r.toId;
+      await db.from('schedule').update({cover_by:r.toId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
+    } else {
+      schedule.push({date:r.myDate,shiftId:r.myShift,empId:r.fromId,coverBy:r.toId});
+      await db.from('schedule').insert([{date:r.myDate,shift_id:r.myShift,emp_id:r.fromId,cover_by:r.toId}]);
+    }
+  }
+  await db.from('requests').update({status:'approved',approved_at:today()}).eq('id',id);
+
+  // ── 撤銷其他人的同一筆代班申請（item 2 & 3）──
+  // Same from_id + my_date + my_shift, still pending → delete them
+  if(r.type==='cover'){
+    const siblings=requests.filter(x=>
+      String(x.id)!==String(id) &&
+      x.fromId===r.fromId && x.myDate===r.myDate && x.myShift===r.myShift &&
+      x.status==='pending_peer'
+    );
+    for(const sib of siblings){
+      await db.from('requests').delete().eq('id',sib.id);
+    }
+    // Remove from local array
+    requests=requests.filter(x=>
+      String(x.id)===String(id) ||
+      !(x.fromId===r.fromId && x.myDate===r.myDate && x.myShift===r.myShift && x.status==='pending_peer')
+    );
+  }
+
+  toast('✅ 已同意！班表已自動更新');
   renderSwap();updateBadges();
 }
 
 // ═══ ADMIN APPROVALS (notification view only) ═══
 function renderApprovals(){
   const list=document.getElementById('approval-list');
-  // Show all approved requests as notifications, newest first
-  const approved=requests.filter(r=>r.status==='approved').sort((a,b)=>b.id-a.id);
-  const pending=requests.filter(r=>r.status==='pending_peer').sort((a,b)=>b.id-a.id);
+  const td=today();
+  // 過期的不顯示（班次日期已過）
+  const notExpired=r=>r.myDate>=td;
+  const approved=requests.filter(r=>r.status==='approved'&&notExpired(r)).sort((a,b)=>b.id-a.id);
+  const pending=requests.filter(r=>r.status==='pending_peer'&&notExpired(r)).sort((a,b)=>b.id-a.id);
 
   let html='';
 
@@ -3558,6 +3188,36 @@ function switchImportTab(tab){
 }
 let importParsed=[];
 let importNewEmps=[];
+let importType='weekday'; // 'weekday' or 'weekend'
+
+function openImportModal(){
+  importType='weekday';
+  resetImportModal();
+  setImportType('weekday');
+  openModal('modal-import');
+}
+
+function setImportType(type){
+  importType=type;
+  const wdBtn=document.getElementById('imp-type-wd');
+  const weBtn=document.getElementById('imp-type-we');
+  const wdHint=document.getElementById('imp-hint-wd');
+  const weHint=document.getElementById('imp-hint-we');
+  if(type==='weekday'){
+    wdBtn.style.background='var(--teal)';wdBtn.style.color='#fff';
+    weBtn.style.background='';weBtn.style.color='';
+    if(wdHint)wdHint.style.display='';
+    if(weHint)weHint.style.display='none';
+  } else {
+    weBtn.style.background='var(--amber)';weBtn.style.color='#fff';
+    wdBtn.style.background='';wdBtn.style.color='';
+    if(wdHint)wdHint.style.display='none';
+    if(weHint)weHint.style.display='';
+  }
+  // Reset any loaded file when switching type
+  importParsed=[];importNewEmps=[];
+  const pd=document.getElementById('import-preview');if(pd)pd.style.display='none';
+}
 
 // Shift time string → shift id mapping (matches your Excel format)
 const SHIFT_TIME_MAP=[
@@ -3669,24 +3329,29 @@ function parseSheetDirect(ws){
     return String(cell.v!==undefined?cell.v:cell.w||'').trim();
   };
 
-  // Find header row with 週一~週五
+  // Find header row with day names (weekday or weekend depending on mode)
+  const headerPattern = importType==='weekend' ? /週[六日]/ : /週[一二三四五]/;
   let headerRow=0;
-  for(let r=0;r<=Math.min(4,maxRow);r++){
+  for(let r=0;r<=Math.min(6,maxRow);r++){
     for(let c=0;c<=Math.min(8,maxCol);c++){
-      if(/週[一二三四五]/.test(cellVal(r,c))){headerRow=r;break;}
+      if(headerPattern.test(cellVal(r,c))){headerRow=r;break;}
     }
   }
 
-  // Map column → dayOffset 0=Mon...4=Fri
-  const DAY_MAP={'週一':0,'週二':1,'週三':2,'週四':3,'週五':4};
+  // Map column → dayOffset
+  // Weekday: 週一=0...週五=4 ; Weekend: 週六=5, 週日=6
+  const DAY_MAP = importType==='weekend'
+    ? {'週六':5,'週日':6}
+    : {'週一':0,'週二':1,'週三':2,'週四':3,'週五':4};
   const colToDayIdx={};
   for(let c=0;c<=maxCol;c++){
     const v=cellVal(headerRow,c);
     if(DAY_MAP[v]!==undefined) colToDayIdx[c]=DAY_MAP[v];
   }
-  // Fallback: assume cols 1-5 = Mon-Fri
+  // Fallback
   if(!Object.keys(colToDayIdx).length){
-    for(let i=1;i<=5;i++) colToDayIdx[i]=i-1;
+    if(importType==='weekend'){ colToDayIdx[1]=5; colToDayIdx[2]=6; }
+    else { for(let i=1;i<=5;i++) colToDayIdx[i]=i-1; }
   }
 
   // Extract all [TAG] Name pairs from a cell string
@@ -3975,15 +3640,27 @@ async function executeImport(){
   const allEntries=[];
 
   while(cur<=endD){
-    const dow=cur.getDay(); // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
-    if(dow>=1&&dow<=5){     // Only weekdays Mon~Fri
-      const dayOffset=dow-1; // Mon=0 ... Fri=4
-      const dateStr=fmtD(cur);
-      const slots=weekTemplate[dayOffset]||[];
-      slots.forEach(({shiftId,name,tag})=>{
-        const emp=employees.find(e=>e.name===name);
-        if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
-      });
+    const dow=cur.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const dateStr=fmtD(cur);
+    if(importType==='weekend'){
+      // weekTemplate keyed by 5=Sat, 6=Sun
+      const dayOffset = dow===6 ? 5 : (dow===0 ? 6 : -1);
+      if(dayOffset>=0){
+        const slots=weekTemplate[dayOffset]||[];
+        slots.forEach(({shiftId,name,tag})=>{
+          const emp=employees.find(e=>e.name===name);
+          if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
+        });
+      }
+    } else {
+      if(dow>=1&&dow<=5){
+        const dayOffset=dow-1;
+        const slots=weekTemplate[dayOffset]||[];
+        slots.forEach(({shiftId,name,tag})=>{
+          const emp=employees.find(e=>e.name===name);
+          if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
+        });
+      }
     }
     cur.setDate(cur.getDate()+1);
   }
@@ -4178,7 +3855,7 @@ async function initApp(){
     const {data:empData, error:empErr} = await db.from('employees').select('*').order('id');
     if(empErr) throw empErr;
     if(empData && empData.length > 0){
-      employees = empData.map(e=>({id:e.id, name:e.name, sid:e.sid, role:e.role||'C+D', password:e.password||null}));
+      employees = empData.map(e=>({id:e.id, name:e.name, sid:e.sid, role:e.role||'C+D', password:e.password||'0000'}));
     }
 
     // ── 讀取公告 ──
@@ -4204,7 +3881,8 @@ async function initApp(){
       empId:r.emp_id, name:r.name, date:r.date,
       inTime:r.in_time, outTime:r.out_time,
       shiftId:r.shift_id, lateMinutes:r.late_minutes||0,
-      overtimeMinutes:r.overtime_minutes||0
+      overtimeMinutes:r.overtime_minutes||0,
+      coveredBy:null // derived from schedule at runtime
     }));
 
     // ── 讀取代換班申請 ──
@@ -4214,8 +3892,20 @@ async function initApp(){
       fromId:r.from_id, toId:r.to_id,
       myDate:r.my_date, myShift:r.my_shift,
       theirDate:r.their_date, theirShift:r.their_shift,
-      note:r.note, status:r.status, approvedAt:r.approved_at
+      note:r.note, status:r.status, approvedAt:r.approved_at,
+      groupId:r.group_id||null
     }));
+
+    // ── 清除過期的代換班申請（班次日期已過）──
+    const td=today();
+    const expired=requests.filter(r=>r.myDate<td);
+    if(expired.length){
+      for(const r of expired){
+        await db.from('requests').delete().eq('id',r.id);
+      }
+      requests=requests.filter(r=>r.myDate>=td);
+      console.log(`[Cleanup] 已刪除 ${expired.length} 筆過期代換班申請`);
+    }
 
   } catch(err){
     console.error('資料庫連線錯誤：', err.message);
