@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_25.html -->
+<!-- saved from url=(0046)file:///C:/Users/cliff/Downloads/index_27.html -->
 <html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -514,7 +514,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
   /* Main takes full width */
   .shell{height:100vh;height:100dvh;}
-  .main{width:100%;}
+  .main{width:100%;min-width:0;max-width:100vw;overflow-x:hidden;}
 
   /* Topbar tighter */
   .topbar{padding:10px 14px;gap:10px;}
@@ -568,6 +568,18 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
   /* Schedule grid: allow horizontal scroll */
   #schedule-grid, #admin-schedule-grid, #schedule-we-grid{
     overflow-x:auto;-webkit-overflow-scrolling:touch;
+    max-width:100%;width:100%;
+  }
+  /* Make sure content doesn't clip horizontal scroll */
+  .content{overflow-x:hidden;width:100%;box-sizing:border-box;}
+  .page{max-width:100%;width:100%;}
+  /* The inner scroll wrapper should scroll */
+  #schedule-grid > div, #admin-schedule-grid > div, #schedule-we-grid > div{
+    max-width:100%;overflow-x:auto !important;-webkit-overflow-scrolling:touch;
+  }
+  /* Tables keep their min-width so they overflow & scroll */
+  #schedule-grid table, #admin-schedule-grid table{
+    width:auto;
   }
 }
 
@@ -1327,6 +1339,16 @@ const AV_COLORS = [
 ];
 function ac(i){return AV_COLORS[i%7];}
 function ini(n){return n.slice(0,1)+(n.length>1?n.slice(-1):'');}
+// HTML escape — prevents XSS from user input (names, notes, announcements)
+function esc(s){
+  if(s==null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
 function pad(n){return String(n).padStart(2,'0');}
 function today(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function fmtD(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -1912,7 +1934,7 @@ async function doClockShift(type, shiftId){
   const recordEmpId = isCover ? schedEntry.empId : currentUser.id;
   const origEmp = employees.find(e=>e.id===recordEmpId);
   const recordName = isCover
-    ? `${origEmp?.name||''}（${currentUser.name}代）`
+    ? `${esc(origEmp?.name||'')}（${esc(currentUser.name)}代）`
     : currentUser.name;
 
   // 找這位「歸屬人」今天此班次的紀錄
@@ -2000,10 +2022,10 @@ function renderSchedule(){
     return schedule.filter(s=>s.date===date&&s.shiftId===shiftId);
   }
 
-  let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
-  <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;width:100%;">
+  let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);">
+  <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;min-width:640px;width:100%;">
     <thead><tr>
-      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:68px;">時間</th>`;
+      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:68px;position:sticky;left:0;z-index:2;">時間</th>`;
 
   weekdayDates.forEach((date,i)=>{
     const isToday=date===td;
@@ -2058,11 +2080,11 @@ function renderSchedule(){
           const isMine=currentUser&&(entry.empId===currentUser.id||(entry.coverBy===currentUser?.id));
           const col=tagColor(tag);
           if(coverer){
-            return `<div style="line-height:1.5;"><span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${coverer.name}<span style="font-size:9px;">(代)</span></span></div>`;
+            return `<div style="line-height:1.5;"><span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${esc(emp.name)}</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${esc(coverer.name)}<span style="font-size:9px;">(代)</span></span></div>`;
           } else if(swapped){
-            return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:11px;font-weight:700;color:var(--coral);">${emp.name}</span></div>`;
+            return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:11px;font-weight:700;color:var(--coral);">${esc(emp.name)}</span></div>`;
           } else {
-            return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:11px;font-weight:600;color:var(--ink2);">${emp.name}</span></div>`;
+            return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:11px;font-weight:600;color:var(--ink2);">${esc(emp.name)}</span></div>`;
           }
         };
 
@@ -2086,9 +2108,9 @@ function renderSchedule(){
               const coverer=e.coverBy?employees.find(x=>x.id===e.coverBy):null;
               const swapped=wasSwapped(date,sh.id,e.empId);
               const isMine=currentUser&&(e.empId===currentUser.id||(e.coverBy===currentUser?.id));
-              if(coverer){return `<div style="line-height:1.5;"><span style="font-size:9px;font-weight:700;color:var(--coral);">[${tagLabel}]</span> <span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${coverer.name}<span style="font-size:9px;">(代)</span></span></div>`;}
-              if(swapped){return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:9px;font-weight:700;color:var(--coral);">[${tagLabel}]</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${emp.name}</span></div>`;}
-              return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:9px;font-weight:700;color:${col};">[${tagLabel}]</span> <span style="font-size:11px;font-weight:600;color:var(--ink2);">${emp.name}</span></div>`;
+              if(coverer){return `<div style="line-height:1.5;"><span style="font-size:9px;font-weight:700;color:var(--coral);">[${tagLabel}]</span> <span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${esc(emp.name)}</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${esc(coverer.name)}<span style="font-size:9px;">(代)</span></span></div>`;}
+              if(swapped){return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:9px;font-weight:700;color:var(--coral);">[${tagLabel}]</span> <span style="font-size:11px;font-weight:700;color:var(--coral);">${esc(emp.name)}</span></div>`;}
+              return `<div style="line-height:1.5;${isMine?'background:rgba(27,153,114,0.1);border-radius:2px;padding:0 2px;':''}"><span style="font-size:9px;font-weight:700;color:${col};">[${tagLabel}]</span> <span style="font-size:11px;font-weight:600;color:var(--ink2);">${esc(emp.name)}</span></div>`;
             }).join('')}
           </div>`;
         }
@@ -2119,19 +2141,19 @@ function renderSchedule(){
           if(coverer){
             return `<div style="line-height:1.6;padding:1px 0;">
               <span style="font-size:9px;font-weight:700;color:var(--coral);margin-right:3px;">[${tagLabel}]</span>
-              <span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span>
-              <span style="font-size:11px;font-weight:700;color:var(--coral);"> ${coverer.name}</span>
+              <span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${esc(emp.name)}</span>
+              <span style="font-size:11px;font-weight:700;color:var(--coral);"> ${esc(coverer.name)}</span>
               <span style="font-size:9px;color:var(--coral);">(代)</span>
             </div>`;
           } else if(swapped){
             return `<div style="line-height:1.6;padding:1px 0;${isMine?'background:rgba(27,153,114,0.1);border-radius:3px;padding:1px 3px;':''}">
               <span style="font-size:9px;font-weight:700;color:var(--coral);margin-right:3px;">[${tagLabel}]</span>
-              <span style="font-size:12px;font-weight:700;color:var(--coral);">${emp.name}</span>
+              <span style="font-size:12px;font-weight:700;color:var(--coral);">${esc(emp.name)}</span>
             </div>`;
           } else {
             return `<div style="line-height:1.6;padding:1px 0;${isMine?'background:rgba(27,153,114,0.1);border-radius:3px;padding:1px 3px;':''}">
               <span style="font-size:9px;font-weight:700;color:${col};margin-right:3px;">[${tagLabel}]</span>
-              <span style="font-size:12px;font-weight:600;color:var(--ink2);">${emp.name}</span>
+              <span style="font-size:12px;font-weight:600;color:var(--ink2);">${esc(emp.name)}</span>
             </div>`;
           }
         }).join('');
@@ -2198,7 +2220,7 @@ function renderWeekendSchedule(){
           const emp=employees.find(x=>x.id===(e.coverBy||e.empId));
           if(!emp) return '';
           const tag=e.station||'C';
-          return `<div style="font-size:12px;padding:1px 0;"><span style="font-weight:700;color:${tagColor(tag)};font-size:10px;">[${tag}]</span> ${emp.name}</div>`;
+          return `<div style="font-size:12px;padding:1px 0;"><span style="font-weight:700;color:${tagColor(tag)};font-size:10px;">[${tag}]</span> ${esc(emp.name)}</div>`;
         }).join('')}
       </div>`;
     });
@@ -2221,7 +2243,7 @@ function renderLoginAnnFeed(){
   el.innerHTML=sorted.map(a=>`
     <div class="login-ann-item">
       <div><span class="login-ann-badge ${a.type}">${a.type==='pinned'?'📌 置頂':a.type==='urgent'?'🚨 緊急':'📢 公告'}</span></div>
-      <div class="login-ann-text">${a.title}</div>
+      <div class="login-ann-text">${esc(a.title)}</div>
       <div class="login-ann-date">${a.date}</div>
     </div>`).join('');
 }
@@ -2292,10 +2314,10 @@ function renderAnnounce(){
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         ${a.type==='pinned'?'<span class="badge bg-amber"><i class="fas fa-thumbtack"></i> 置頂</span>':''}
         ${a.type==='urgent'?'<span class="badge bg-red"><i class="fas fa-triangle-exclamation"></i> 緊急</span>':''}
-        <span style="font-size:14px;font-weight:500;">${a.title}</span>
+        <span style="font-size:14px;font-weight:500;">${esc(a.title)}</span>
         ${isAdmin?`<button class="btn btn-xs btn-danger" style="margin-left:auto;" onclick="delAnn(${a.id})"><i class="fas fa-trash"></i></button>`:''}
       </div>
-      <div style="font-size:13px;color:var(--ink2);line-height:1.65;">${a.body}</div>
+      <div style="font-size:13px;color:var(--ink2);line-height:1.65;">${esc(a.body)}</div>
       <div style="font-size:11px;color:var(--muted);margin-top:8px;">管理員 · ${a.date}</div>
     </div>`).join(''):'<div style="text-align:center;padding:32px;color:var(--muted);">目前沒有公告</div>';
 }
@@ -2347,7 +2369,7 @@ function rebuildSwapTargets(){
   if(type==='cover'){
     opts+=`<option value="ALL">📢 發送給所有人（先同意者得）</option>`;
   }
-  opts+=others.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  opts+=others.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
   document.getElementById('sw-target').innerHTML=opts;
 }
 function onSwapTypeChange(){
@@ -2440,13 +2462,13 @@ function renderSwap(){
     <div class="req-card">
       <span class="req-type-tag ${r.type==='swap'?'req-type-swap':'req-type-cover'}">${r.type==='swap'?'換班':'代班'}</span>
       <div style="font-size:13px;font-weight:500;margin-bottom:6px;">
-        ${r.type==='swap'?'與':'請'} <strong>${employees.find(e=>e.id===r.toId)?.name||'—'}</strong> ${r.type==='swap'?'換班':'代班'}
+        ${r.type==='swap'?'與':'請'} <strong>${esc(employees.find(e=>e.id===r.toId)?.name||'—')}</strong> ${r.type==='swap'?'換班':'代班'}
       </div>
       <div style="font-size:11px;color:var(--muted);line-height:1.7;">
         我的班：${r.myDate} ${getShiftLabel(r.myShift)}
         ${r.type==='swap'?`<br>對方班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
       </div>
-      ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:4px;">備註：${r.note}</div>`:''}
+      ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:4px;">備註：${esc(r.note)}</div>`:''}
       <div style="margin-top:10px;">${statusLabel(r.status)}</div>
     </div>`).join(''):'<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;">暫無申請記錄</div>';
 
@@ -2454,13 +2476,13 @@ function renderSwap(){
     <div class="req-card">
       <span class="req-type-tag ${r.type==='swap'?'req-type-swap':'req-type-cover'}">${r.type==='swap'?'換班':'代班'}</span>
       <div style="font-size:13px;font-weight:500;margin-bottom:6px;">
-        <strong>${employees.find(e=>e.id===r.fromId)?.name||'—'}</strong> 申請${r.type==='swap'?'換班':'請你代班'}
+        <strong>${esc(employees.find(e=>e.id===r.fromId)?.name||'—')}</strong> 申請${r.type==='swap'?'換班':'請你代班'}
       </div>
       <div style="font-size:11px;color:var(--muted);line-height:1.7;">
         對方班：${r.myDate} ${getShiftLabel(r.myShift)}
         ${r.type==='swap'?`<br>你的班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
       </div>
-      ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:4px;">原因：${r.note}</div>`:''}
+      ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:4px;">原因：${esc(r.note)}</div>`:''}
       <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         ${statusLabel(r.status)}
         ${r.status==='pending_peer'?`<div style="display:flex;gap:6px;">
@@ -2495,7 +2517,7 @@ async function peerAction(id,action){
         const winner=employees.find(e=>e.id===alreadyApproved.to_id);
         r.status='superseded';
         await db.from('requests').update({status:'superseded'}).eq('id',id);
-        toast(`此班次已由 ${winner?.name||'其他人'} 接受，您的申請已取消`,'err');
+        toast(`此班次已由 ${esc(winner?.name||'其他人')} 接受，您的申請已取消`,'err');
         renderSwap();updateBadges();
         return;
       }
@@ -2570,12 +2592,12 @@ function renderApprovals(){
           <span class="req-type-tag ${r.type==='swap'?'req-type-swap':'req-type-cover'}">${r.type==='swap'?'換班':'代班'}</span>
           <span class="badge bg-amber">待對方同意</span>
         </div>
-        <div style="font-size:13px;font-weight:500;">${from?.name} → ${to?.name}</div>
+        <div style="font-size:13px;font-weight:500;">${esc(from?.name)} → ${esc(to?.name)}</div>
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">
-          ${from?.name} 的班：${r.myDate} ${getShiftLabel(r.myShift)}
-          ${r.type==='swap'?`<br>${to?.name} 的班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
+          ${esc(from?.name)} 的班：${r.myDate} ${getShiftLabel(r.myShift)}
+          ${r.type==='swap'?`<br>${esc(to?.name)} 的班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
         </div>
-        ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:3px;">備註：${r.note}</div>`:''}
+        ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:3px;">備註：${esc(r.note)}</div>`:''}
       </div>`;
     }).join('');
   }
@@ -2592,12 +2614,12 @@ function renderApprovals(){
           <span class="badge bg-green"><i class="fas fa-check"></i> 已同意</span>
           <span style="font-size:11px;color:var(--muted);margin-left:auto;">${r.approvedAt||''}</span>
         </div>
-        <div style="font-size:13px;font-weight:500;">${from?.name} ⇄ ${to?.name}</div>
+        <div style="font-size:13px;font-weight:500;">${esc(from?.name)} ⇄ ${esc(to?.name)}</div>
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">
-          ${from?.name} 的班：${r.myDate} ${getShiftLabel(r.myShift)}
-          ${r.type==='swap'?`<br>${to?.name} 的班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
+          ${esc(from?.name)} 的班：${r.myDate} ${getShiftLabel(r.myShift)}
+          ${r.type==='swap'?`<br>${esc(to?.name)} 的班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
         </div>
-        ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:3px;">備註：${r.note}</div>`:''}
+        ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:3px;">備註：${esc(r.note)}</div>`:''}
       </div>`;
     }).join('');
   }
@@ -2681,7 +2703,7 @@ function updateDashboard(){
       const tag=entry.station||'C';
       return `<div style="background:${cardBg};border:1.5px solid ${borderCol};border-radius:var(--r-lg);padding:12px 14px;">
         <div style="font-size:13px;font-weight:600;margin-bottom:6px;">
-          ${emp.name}
+          ${esc(emp.name)}
           <span style="font-size:10px;font-weight:700;color:${tagColor(tag)};margin-left:5px;">[${tag}]</span>
         </div>
         <div>${statusHtml}</div>
@@ -2726,7 +2748,7 @@ function updateDashboard(){
     }
     const lateMin=rec?.lateMinutes||0;
     return `<tr>
-      <td style="font-weight:500;">${emp.name}</td>
+      <td style="font-weight:500;">${esc(emp.name)}</td>
       <td class="mono" style="font-size:11px;">${shift.time}</td>
       <td>${statusHtml}</td>
       <td class="mono">${rec?.inTime||'—'}</td>
@@ -2747,7 +2769,7 @@ function renderEmployees(){
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:9px;">
         <div style="width:28px;height:28px;border-radius:50%;background:${a.bg};color:${a.c};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;">${ini(e.name)}</div>
-        ${e.name}
+        ${esc(e.name)}
       </div></td>
       <td class="mono" style="font-size:12px;">${e.sid}</td>
       <td>
@@ -2771,7 +2793,7 @@ function viewEmp(id){
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
       <div style="width:52px;height:52px;border-radius:50%;background:${a.bg};color:${a.c};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;">${ini(e.name)}</div>
       <div>
-        <div style="font-size:17px;font-weight:600;">${e.name}</div>
+        <div style="font-size:17px;font-weight:600;">${esc(e.name)}</div>
         <div style="font-size:12px;color:var(--muted);margin-top:2px;">工讀生</div>
       </div>
     </div>
@@ -2910,7 +2932,7 @@ function renderAll(){
     const lateCell=r.lateMinutes>0
       ?`<td><span class="badge bg-red">${r.lateMinutes} 分</span></td>`
       :`<td style="color:var(--muted);font-size:11px;">—</td>`;
-    return `<tr><td>${r.name}</td><td>${r.date}</td>
+    return `<tr><td>${esc(r.name)}</td><td>${r.date}</td>
       <td style="font-size:11px;">${shift?`<span style="font-weight:500;">${shift.label}</span><br><span class="mono" style="font-size:10px;">${shift.time}</span>`:'—'}</td>
       <td class="mono">${r.inTime||'—'}</td><td class="mono">${r.outTime||'—'}</td>
       <td style="color:var(--teal);">${fmtH(h)}</td>${lateCell}</tr>`;
@@ -2956,9 +2978,9 @@ function renderAdminSchedule(){
     if(!emp) return '';
     const coverer=entry.coverBy?employees.find(e=>e.id===entry.coverBy):null;
     const nameEl=coverer
-      ?`<span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${emp.name}</span>
-         <span style="font-size:11px;font-weight:700;color:var(--amber);">${coverer.name}<span style="font-size:9px;">代</span></span>`
-      :`<span style="font-size:12px;font-weight:600;color:var(--ink2);">${emp.name}</span>`;
+      ?`<span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${esc(emp.name)}</span>
+         <span style="font-size:11px;font-weight:700;color:var(--amber);">${esc(coverer.name)}<span style="font-size:9px;">代</span></span>`
+      :`<span style="font-size:12px;font-weight:600;color:var(--ink2);">${esc(emp.name)}</span>`;
     return `<div style="display:flex;align-items:center;gap:3px;justify-content:space-between;padding:1px 0;">
       <div style="display:flex;align-items:center;gap:3px;">
         <span style="font-size:9px;font-weight:700;color:${tagCol};">[${tagLabel}]</span>
@@ -2973,10 +2995,10 @@ function renderAdminSchedule(){
     return `<div onclick="openEditCell('${date}','${shId}','${station}')" title="新增 ${station}" style="cursor:pointer;width:20px;height:20px;border-radius:50%;border:1.5px dashed var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--border);margin:2px 1px;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--teal)';this.style.color='var(--teal)';this.style.background='var(--teal-l)';" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--border)';this.style.background='';">+</div>`;
   }
 
-  let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
-  <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;width:100%;">
+  let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);">
+  <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;min-width:680px;width:100%;">
     <thead><tr>
-      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:72px;">時間</th>`;
+      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:72px;position:sticky;left:0;z-index:2;">時間</th>`;
 
   weekdayDates.forEach((date,i)=>{
     const isToday=date===td;
@@ -3068,12 +3090,12 @@ function renderAdminSchedule(){
               const coverer=e.coverBy?employees.find(x=>x.id===e.coverBy):null;
               if(coverer){
                 return `<div style="line-height:1.4;">
-                  <div style="font-size:9px;color:var(--muted);text-decoration:line-through;">${emp.name}</div>
-                  <div style="font-size:10px;font-weight:700;color:var(--amber);">${coverer.name}<span style="font-size:8px;">代</span></div>
+                  <div style="font-size:9px;color:var(--muted);text-decoration:line-through;">${esc(emp.name)}</div>
+                  <div style="font-size:10px;font-weight:700;color:var(--amber);">${esc(coverer.name)}<span style="font-size:8px;">代</span></div>
                 </div>`;
               }
               return `<div style="display:flex;align-items:center;gap:2px;justify-content:center;">
-                <span style="font-size:11px;font-weight:600;color:var(--ink2);">${emp.name}</span>
+                <span style="font-size:11px;font-weight:600;color:var(--ink2);">${esc(emp.name)}</span>
                 <span onclick="removeFromCell('${date}','${sh.id}',${e.empId})" style="cursor:pointer;color:var(--border);font-size:9px;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='var(--border)'">✕</span>
               </div>`;
             }).join('')}
@@ -3099,7 +3121,7 @@ function openEditCell(date,shiftId,station){
   document.getElementById('edit-cell-title').textContent=`編輯 ${sh.label}`;
   document.getElementById('edit-cell-sub').textContent=`${date}（星期${DAY_NAMES[d.getDay()]}）${sh.time} · 工作站 ${station}`;
   const sel=document.getElementById('edit-cell-select');
-  sel.innerHTML='<option value="">— 選擇工讀生 —</option>'+employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  sel.innerHTML='<option value="">— 選擇工讀生 —</option>'+employees.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
   renderEditCellCurrent();
   openModal('modal-edit-cell');
 }
@@ -3113,7 +3135,7 @@ function renderEditCellCurrent(){
     if(!emp) return '';
     const col=empNameColor(entry.empId);
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--r);border:1px solid var(--border);margin-bottom:6px;background:var(--bg);">
-      <span style="font-size:13px;font-weight:600;color:${col};">${emp.name}</span>
+      <span style="font-size:13px;font-weight:600;color:${col};">${esc(emp.name)}</span>
       <button class="btn btn-xs btn-danger" onclick="removeFromCell('${editCellDate}','${editCellShiftId}',${entry.empId});renderEditCellCurrent();renderAdminSchedule();">
         <i class="fas fa-trash"></i> 移除
       </button>
@@ -3582,7 +3604,7 @@ function showImportPreview(){
         <td>週${dayNames[dayIdx]||dayIdx}</td>
         <td class="mono" style="font-size:11px;">${r.shiftLabel}</td>
         <td><span style="font-weight:700;color:${col};font-size:11px;">[${r.tag}]</span></td>
-        <td style="font-weight:500;">${r.name}</td>
+        <td style="font-weight:500;">${esc(r.name)}</td>
       </tr>`;
     }).join('')}
     ${importParsed.length>8?`<tr><td colspan="4" style="color:var(--muted);text-align:center;font-size:11px;">…還有 ${importParsed.length-8} 筆</td></tr>`:''}
@@ -3596,7 +3618,7 @@ function showImportPreview(){
   if(importNewEmps.length){
     ns.style.display='';
     document.getElementById('new-emp-list').innerHTML=
-      importNewEmps.map(n=>`<span style="display:inline-block;background:rgba(255,255,255,0.6);border-radius:4px;padding:2px 10px;margin:2px;">${n}</span>`).join('');
+      importNewEmps.map(n=>`<span style="display:inline-block;background:rgba(255,255,255,0.6);border-radius:4px;padding:2px 10px;margin:2px;">${esc(n)}</span>`).join('');
   } else {
     ns.style.display='none';
   }
@@ -3631,7 +3653,7 @@ async function executeImport(){
   // Auto-add new employees to local memory
   importNewEmps.forEach(name=>{
     if(!employees.find(e=>e.name===name)){
-      employees.push({id:Date.now()+Math.random(),name,sid:'LIB'+String(Date.now()).slice(-6),role:'C+D'});
+      employees.push({id:Math.floor(Date.now()+Math.random()*1000),name,sid:'LIB'+String(Date.now()).slice(-6),role:'C+D',password:'0000'});
     }
   });
 
@@ -3753,7 +3775,7 @@ function getTWHolidays(year){
 function renderHolidayList(){
   const el=document.getElementById('holiday-list');if(!el)return;
   if(!publicHolidays.length){el.innerHTML='<span style="color:var(--muted);">尚未載入</span>';return;}
-  el.innerHTML=publicHolidays.map(h=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span class="mono" style="font-size:11px;">${h.date}</span><span style="color:var(--muted);">${h.name}</span></div>`).join('');
+  el.innerHTML=publicHolidays.map(h=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span class="mono" style="font-size:11px;">${h.date}</span><span style="color:var(--muted);">${esc(h.name)}</span></div>`).join('');
 }
 
 function addClosure(){
