@@ -894,7 +894,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
     <div class="sb-foot">
       <div class="sb-user" onclick="logout()">
-        <div class="sb-av" id="sb-av"></div>
+        <div class="sb-av" id="sb-av"><i class="fas fa-user" style="font-size:12px;"></i></div>
         <div>
           <div class="sb-uname" id="sb-name"></div>
           <div class="sb-urole" id="sb-role"></div>
@@ -947,64 +947,18 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <!-- GUIDE -->
       <div class="page" id="page-guide">
         <div style="max-width:680px;">
-          <div class="card" style="margin-bottom:14px;">
-            <div class="card-title">📋 系統使用說明</div>
-            <p style="font-size:13px;color:var(--ink2);line-height:1.8;">WorkTrack 是圖書館工讀生出勤管理系統，支援刷卡打卡、查看班表、代換班申請等功能。</p>
+          <div id="guide-admin-bar" style="display:none;margin-bottom:12px;gap:8px;">
+            <button class="btn btn-primary btn-sm" id="guide-edit-btn" onclick="toggleGuideEdit()"><i class="fas fa-pen"></i> 編輯使用說明</button>
           </div>
-
-          <div class="card" style="margin-bottom:14px;">
-            <div class="card-title">🪪 打卡方式</div>
-            <div style="font-size:13px;line-height:2;color:var(--ink2);">
-              <div>① 在圖書館打卡電腦前，將學生證感應讀卡機</div>
-              <div>② 系統自動識別身份，進入打卡頁面</div>
-              <div>③ 每個班次有獨立的上班/下班按鈕</div>
-              <div>④ <strong>上班打卡只開放在班次開始前 10 分鐘內</strong></div>
-              <div style="background:var(--amber-l);border-radius:var(--r);padding:8px 12px;margin-top:8px;font-size:12px;color:#5C3A00;">
-                ⚠️ 請前 5 分鐘到，逾時不候！遲到請從二樓進館。
+          <div id="guide-view"></div>
+          <div id="guide-editor" style="display:none;">
+            <div class="card">
+              <div class="card-title">編輯使用說明（支援換行，可用 ## 標題）</div>
+              <textarea id="guide-textarea" class="fi" style="width:100%;min-height:360px;font-size:13px;line-height:1.8;resize:vertical;font-family:'Noto Sans TC',sans-serif;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn btn-primary" onclick="saveGuide()"><i class="fas fa-check"></i> 儲存</button>
+                <button class="btn" onclick="toggleGuideEdit()">取消</button>
               </div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom:14px;">
-            <div class="card-title">📅 班表說明</div>
-            <div style="font-size:13px;line-height:2;color:var(--ink2);">
-              <div><strong>平日班表：</strong>週一到週五，時間段 × 星期格式</div>
-              <div><strong>假日班表：</strong>週六、週日，組別輪值制度</div>
-              <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;">
-                <span style="font-weight:700;color:#D05A1E;font-size:12px;">[C] 櫃台</span>
-                <span style="font-weight:700;color:#2A6FA8;font-size:12px;">[C3] 櫃台3</span>
-                <span style="font-weight:700;color:#1B6B3A;font-size:12px;">[D] 詢問台</span>
-                <span style="font-weight:700;color:#7040B0;font-size:12px;">[F] 二樓作業</span>
-                <span style="font-weight:700;color:#B07A00;font-size:12px;">[⭐] 小組長</span>
-                <span style="font-weight:700;color:var(--coral);font-size:12px;">紅色 = 換班/代班</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom:14px;">
-            <div class="card-title">🔄 代換班申請</div>
-            <div style="font-size:13px;line-height:2;color:var(--ink2);">
-              <div><strong>換班：</strong>與另一位工讀生互換班次日期</div>
-              <div><strong>代班：</strong>找人代替你的班次出勤</div>
-              <div>申請流程：送出申請 → 對方同意/拒絕 → 班表自動更新</div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom:14px;">
-            <div class="card-title">⏰ 遲到與加班規則</div>
-            <div style="font-size:13px;line-height:2;color:var(--ink2);">
-              <div><strong>遲到：</strong>從班次開始時間起算至實際打卡時間</div>
-              <div><strong>加班：</strong>實際下班打卡超過班次結束時間</div>
-              <div>以上皆自動記錄在「我的紀錄」</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">❓ 常見問題</div>
-            <div style="font-size:13px;color:var(--ink2);">
-              <div style="border-bottom:1px solid var(--border);padding:10px 0;"><strong>Q：刷卡沒反應？</strong><br>A：確認讀卡機 USB 已插好，或請管理員協助手動輸入學號登入。</div>
-              <div style="border-bottom:1px solid var(--border);padding:10px 0;"><strong>Q：打卡按鈕是灰色的？</strong><br>A：打卡只在班次開始前 10 分鐘到結束時間內開放。請確認時間是否正確。</div>
-              <div style="padding:10px 0;"><strong>Q：需要聯繫管理員？</strong><br>A：請至公告欄查看最新聯絡資訊，或直接詢問現場小組長。</div>
             </div>
           </div>
         </div>
@@ -1086,6 +1040,19 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
           </div>
           <table class="tbl"><thead><tr><th>姓名</th><th>學號</th><th>操作</th></tr></thead>
           <tbody id="emp-tbody"></tbody></table>
+        </div>
+
+        <!-- 系統資料管理 -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-title">💾 系統資料管理</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7;">
+            匯出：下載所有資料（工讀生、班表、打卡、公告等）成 JSON 備份檔。<br>
+            重置：清空雲端所有資料，操作前建議先匯出備份。
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="exportAllData()"><i class="fas fa-download"></i> 匯出所有資料</button>
+            <button class="btn btn-danger" onclick="resetAllData()"><i class="fas fa-trash"></i> 重置所有資料</button>
+          </div>
         </div>
       </div>
 
@@ -1656,7 +1623,8 @@ function doLogin(empId,admin,viewOnly=false){
   const idx=admin?6:employees.findIndex(e=>e.id===empId);
   const a=admin?{bg:'#FAC775',c:'#412402'}:ac(idx);
   const av=document.getElementById('sb-av');
-  av.style.background=a.bg;av.style.color=a.c;av.textContent=ini(name);
+  av.style.background=a.bg;av.style.color=a.c;
+  av.innerHTML='<i class="fas fa-user" style="font-size:12px;"></i>';
   document.getElementById('sb-name').textContent=name;
   document.getElementById('sb-role').textContent=role;
 
@@ -1762,7 +1730,7 @@ function go(page){
   }
   if(page==='schedule-we'){renderWeekendSchedule();}
   if(page==='records'){renderMyRecords();}
-  if(page==='guide'){}
+  if(page==='guide'){renderGuide();}
   if(page==='announce'){
     if(isAdmin) tr.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openModal('modal-ann')"><i class="fas fa-plus"></i>新增公告</button>`;
     renderAnnounce();
@@ -2056,17 +2024,15 @@ function renderSchedule(){
   });
   html+=`</tr></thead><tbody>`;
 
-  ALL_SHIFTS.forEach((sh,ri)=>{
-    const isWD=WEEKDAY_SHIFTS.find(s=>s.id===sh.id);
-    const isWE=WEEKEND_SHIFTS.find(s=>s.id===sh.id);
-    const isLastRow=ri===ALL_SHIFTS.length-1;
+  WEEKDAY_SHIFTS.forEach((sh,ri)=>{
+    const isWD=true;
+    const isWE=false;
+    const isLastRow=ri===WEEKDAY_SHIFTS.length-1;
     const rowBg=ri%2===0?'var(--surface)':'rgba(245,244,239,0.5)';
 
     html+=`<tr>
       <td style="padding:8px 12px;border-right:1px solid var(--border);border-bottom:${isLastRow?'none':'1px solid var(--border)'};vertical-align:top;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2);">${sh.time.split('–')[0]}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">–${sh.time.split('–')[1]}</div>
-        <div style="font-size:9px;color:var(--muted);margin-top:1px;">${sh.label.replace('平日','').replace('假日','假日 ')}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2);">${sh.time}</div>
       </td>`;
 
     weekdayDates.forEach((date,di)=>{
@@ -2299,7 +2265,7 @@ function renderMyRecords(){
     const ot=r.overtimeMinutes||0;
     return `<tr>
       <td>${r.date}</td>
-      <td style="font-size:11px;">${shift?`<span style="font-weight:500;">${shift.label}</span><br><span class="mono" style="font-size:10px;">${shift.time}</span>`:'—'}</td>
+      <td class="mono" style="font-size:11px;">${shift?shift.time:'—'}</td>
       <td class="mono">${r.inTime||'—'}</td>
       <td class="mono">${r.outTime||'—'}</td>
       <td style="color:var(--teal);font-weight:500;">${fmtH(h)}</td>
@@ -2321,6 +2287,93 @@ function renderMyRecords(){
 }
 
 // ═══ ANNOUNCEMENTS ═══
+// ═══ GUIDE (使用說明) ═══
+const DEFAULT_GUIDE=`## 📋 系統使用說明
+WorkTrack 是圖書館工讀生出勤管理系統，支援刷卡打卡、查看班表、代換班申請等功能。
+
+## 🪪 打卡方式
+① 在圖書館打卡電腦前，將學生證感應讀卡機
+② 系統自動識別身份，進入打卡頁面
+③ 每個班次有獨立的上班/下班按鈕
+④ 上班打卡只開放在班次開始前 10 分鐘內
+⚠️ 請前 5 分鐘到，逾時不候！遲到請從二樓進館。
+
+## 📅 班表說明
+平日班表：週一到週五，時間段 × 星期格式
+假日班表：週六、週日，組別輪值制度
+[C2] 櫃台　[C3] 櫃台3　[D] 詢問台　[F] 二樓作業　[⭐] 小組長　紅色 = 換班/代班
+
+## 🔄 代換班申請
+換班：與另一位工讀生互換班次日期
+代班：找人代替你的班次出勤
+申請流程：送出申請 → 對方同意/拒絕 → 班表自動更新
+
+## ⏰ 遲到與加班規則
+遲到：從班次開始時間起算至實際打卡時間
+加班：實際下班打卡超過班次結束時間
+以上皆自動記錄在「我的紀錄」
+
+## ❓ 常見問題
+Q：刷卡沒反應？
+A：確認讀卡機 USB 已插好，或請管理員協助登入。
+
+Q：打卡按鈕是灰色的？
+A：打卡只在班次開始前 10 分鐘到結束時間內開放。
+
+Q：需要聯繫管理員？
+A：請至公告欄查看最新聯絡資訊，或詢問現場小組長。`;
+
+let guideText = DEFAULT_GUIDE;
+
+function renderGuide(){
+  // Show admin bar only for admin
+  const bar=document.getElementById('guide-admin-bar');
+  if(bar) bar.style.display=isAdmin?'flex':'none';
+  // Render markdown-ish content
+  const view=document.getElementById('guide-view');
+  if(!view) return;
+  const blocks=guideText.split(/\n## /).map((b,i)=>i===0?b.replace(/^## /,''):b);
+  view.innerHTML=blocks.map(block=>{
+    const lines=block.split('\n');
+    const title=lines[0];
+    const body=lines.slice(1).filter(l=>l.trim());
+    return `<div class="card" style="margin-bottom:14px;">
+      <div class="card-title">${esc(title)}</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--ink2);">
+        ${body.map(l=>`<div style="${l.startsWith('⚠️')?'background:var(--amber-l);border-radius:var(--r);padding:8px 12px;margin-top:6px;color:#5C3A00;':''}">${esc(l)}</div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleGuideEdit(){
+  const editor=document.getElementById('guide-editor');
+  const view=document.getElementById('guide-view');
+  const editing=editor.style.display!=='none';
+  if(editing){
+    editor.style.display='none';view.style.display='';
+  } else {
+    document.getElementById('guide-textarea').value=guideText;
+    editor.style.display='';view.style.display='none';
+  }
+}
+
+async function saveGuide(){
+  const txt=document.getElementById('guide-textarea').value.trim();
+  if(!txt){toast('內容不可空白','err');return;}
+  guideText=txt;
+  // Save to Supabase settings table (key=guide)
+  const res=await db.from('settings').upsert([{key:'guide',value:txt}]);
+  if(res.error){
+    console.error(res.error);
+    toast('已暫存（雲端儲存失敗，請確認 settings 表存在）','err');
+  } else {
+    toast('✅ 使用說明已儲存');
+  }
+  toggleGuideEdit();
+  renderGuide();
+}
+
 function renderAnnounce(){
   const pinned=announcements.filter(a=>a.type==='pinned');
   const urgent=announcements.filter(a=>a.type==='urgent');
@@ -2359,19 +2412,20 @@ async function delAnn(id){
 }
 
 // ═══ SWAP / COVER ═══
-function getShiftLabel(shId){const s=ALL_SHIFTS.find(s=>s.id===shId);return s?`${s.label}（${s.time}）`:shId;}
+function getShiftLabel(shId){const s=ALL_SHIFTS.find(s=>s.id===shId);return s?s.time:shId;}
 function statusLabel(s){
   const map={
     pending_peer:'<span class="badge bg-amber"><i class="fas fa-hourglass-half"></i> 待對方同意</span>',
     approved:'<span class="badge bg-green"><i class="fas fa-check"></i> 已同意，班表已更新</span>',
     rejected:'<span class="badge bg-red"><i class="fas fa-times"></i> 已拒絕</span>',
+    cancel_pending:'<span class="badge bg-amber"><i class="fas fa-hourglass-half"></i> 等待對方同意取消</span>',
   };
   return map[s]||s;
 }
 function openSwapModal(){
   const shifts=ALL_SHIFTS;
-  document.getElementById('sw-my-shift').innerHTML=shifts.map(s=>`<option value="${s.id}">${s.label}（${s.time}）</option>`).join('');
-  document.getElementById('sw-their-shift').innerHTML=shifts.map(s=>`<option value="${s.id}">${s.label}（${s.time}）</option>`).join('');
+  document.getElementById('sw-my-shift').innerHTML=shifts.map(s=>`<option value="${s.id}">${s.time}</option>`).join('');
+  document.getElementById('sw-their-shift').innerHTML=shifts.map(s=>`<option value="${s.id}">${s.time}</option>`).join('');
   rebuildSwapTargets();
   document.getElementById('sw-my-date').value=today();
   document.getElementById('sw-their-date').value=today();
@@ -2475,25 +2529,50 @@ function renderSwap(){
   const mine=requests.filter(r=>r.fromId===uid && visible(r));
   const recv=requests.filter(r=>r.toId===uid && visible(r));
 
-  document.getElementById('my-reqs').innerHTML=mine.length?mine.map(r=>`
+  // Group "mine" requests: if sent to all (same groupId, multiple), collapse to one card
+  const mineGrouped=[];
+  const seenGroups=new Set();
+  mine.forEach(r=>{
+    if(r.groupId){
+      if(seenGroups.has(r.groupId)) return;
+      seenGroups.add(r.groupId);
+      const groupReqs=mine.filter(x=>x.groupId===r.groupId);
+      mineGrouped.push({...r, _groupCount:groupReqs.length, _isGroup:groupReqs.length>1});
+    } else {
+      mineGrouped.push({...r, _groupCount:1, _isGroup:false});
+    }
+  });
+
+  document.getElementById('my-reqs').innerHTML=mineGrouped.length?mineGrouped.map(r=>`
     <div class="req-card">
       <span class="req-type-tag ${r.type==='swap'?'req-type-swap':'req-type-cover'}">${r.type==='swap'?'換班':'代班'}</span>
       <div style="font-size:13px;font-weight:500;margin-bottom:6px;">
-        ${r.type==='swap'?'與':'請'} <strong>${esc(employees.find(e=>e.id===r.toId)?.name||'—')}</strong> ${r.type==='swap'?'換班':'代班'}
+        ${r._isGroup
+          ? `📢 <strong>發送給所有人</strong> 代班（${r._groupCount} 人）`
+          : `${r.type==='swap'?'與':'請'} <strong>${esc(employees.find(e=>e.id===r.toId)?.name||'—')}</strong> ${r.type==='swap'?'換班':'代班'}`}
       </div>
       <div style="font-size:11px;color:var(--muted);line-height:1.7;">
         我的班：${r.myDate} ${getShiftLabel(r.myShift)}
         ${r.type==='swap'?`<br>對方班：${r.theirDate} ${getShiftLabel(r.theirShift)}`:''}
       </div>
       ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:4px;">備註：${esc(r.note)}</div>`:''}
-      <div style="margin-top:10px;">${statusLabel(r.status)}</div>
+      <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        ${statusLabel(r.status)}
+        ${r.status==='pending_peer'
+          ? `<button class="btn btn-sm" onclick="withdrawRequest('${r.groupId||r.id}','${r.groupId?'group':'single'}')"><i class="fas fa-arrow-left"></i> 撤回申請</button>`
+          : r.status==='approved'
+          ? `<button class="btn btn-sm" onclick="requestCancelApproved(${r.id})"><i class="fas fa-rotate-left"></i> 申請取消</button>`
+          : r.status==='cancel_pending'
+          ? `<span class="badge bg-amber" style="font-size:10px;">等待對方同意取消</span>`
+          : ''}
+      </div>
     </div>`).join(''):'<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;">暫無申請記錄</div>';
 
   document.getElementById('recv-reqs').innerHTML=recv.length?recv.map(r=>`
     <div class="req-card">
       <span class="req-type-tag ${r.type==='swap'?'req-type-swap':'req-type-cover'}">${r.type==='swap'?'換班':'代班'}</span>
       <div style="font-size:13px;font-weight:500;margin-bottom:6px;">
-        <strong>${esc(employees.find(e=>e.id===r.fromId)?.name||'—')}</strong> 申請${r.type==='swap'?'換班':'請你代班'}
+        <strong>${esc(employees.find(e=>e.id===r.fromId)?.name||'—')}</strong> ${r.status==='cancel_pending'?'要求取消先前的'+(r.type==='swap'?'換班':'代班'):'申請'+(r.type==='swap'?'換班':'請你代班')}
       </div>
       <div style="font-size:11px;color:var(--muted);line-height:1.7;">
         對方班：${r.myDate} ${getShiftLabel(r.myShift)}
@@ -2501,11 +2580,16 @@ function renderSwap(){
       </div>
       ${r.note?`<div style="font-size:11px;color:var(--muted);margin-top:4px;">原因：${esc(r.note)}</div>`:''}
       <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        ${statusLabel(r.status)}
-        ${r.status==='pending_peer'?`<div style="display:flex;gap:6px;">
-          <button class="btn btn-primary btn-sm" onclick="peerAction(${r.id},'approve')"><i class="fas fa-check"></i> 同意</button>
-          <button class="btn btn-danger btn-sm" onclick="peerAction(${r.id},'reject')"><i class="fas fa-times"></i> 拒絕</button>
-        </div>`:''}
+        ${r.status==='cancel_pending'
+          ? `<span class="badge bg-amber"><i class="fas fa-hourglass-half"></i> 對方要求取消</span>
+             <div style="display:flex;gap:6px;">
+               <button class="btn btn-primary btn-sm" onclick="approveCancel(${r.id})"><i class="fas fa-check"></i> 同意取消</button>
+               <button class="btn btn-sm" onclick="rejectCancel(${r.id})">不同意</button>
+             </div>`
+          : statusLabel(r.status) + (r.status==='pending_peer'?`<div style="display:flex;gap:6px;">
+              <button class="btn btn-primary btn-sm" onclick="peerAction(${r.id},'approve')"><i class="fas fa-check"></i> 同意</button>
+              <button class="btn btn-danger btn-sm" onclick="peerAction(${r.id},'reject')"><i class="fas fa-times"></i> 拒絕</button>
+            </div>`:'')}
       </div>
     </div>`).join(''):'<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;">沒有收到請求</div>';
 }
@@ -2588,14 +2672,85 @@ async function peerAction(id,action){
   renderSwap();updateBadges();
 }
 
+// ── 撤回還沒被同意的申請（直接刪除）──
+async function withdrawRequest(idOrGroup, mode){
+  if(!confirm('確定要撤回這筆申請嗎？')) return;
+  if(mode==='group'){
+    // Delete all requests with this groupId that are still pending
+    const toDel=requests.filter(r=>r.groupId===idOrGroup && r.status==='pending_peer');
+    for(const r of toDel){
+      await db.from('requests').delete().eq('id',r.id);
+    }
+    requests=requests.filter(r=>!(r.groupId===idOrGroup && r.status==='pending_peer'));
+  } else {
+    await db.from('requests').delete().eq('id',idOrGroup);
+    requests=requests.filter(r=>String(r.id)!==String(idOrGroup));
+  }
+  toast('已撤回申請');
+  renderSwap();updateBadges();
+}
+
+// ── 申請取消已同意的代換班（需對方再同意）──
+async function requestCancelApproved(id){
+  const r=requests.find(x=>String(x.id)===String(id));
+  if(!r) return;
+  if(!confirm('這筆申請已經同意、班表也已更新。\n取消需要對方再次同意，確定要送出取消請求嗎？')) return;
+  r.status='cancel_pending';
+  await db.from('requests').update({status:'cancel_pending'}).eq('id',id);
+  const to=employees.find(e=>e.id===r.toId);
+  toast(`已送出取消請求，等待 ${esc(to?.name||'對方')} 同意`);
+  renderSwap();updateBadges();
+}
+
+// ── 對方同意取消：把班表改回原狀 ──
+async function approveCancel(id){
+  const r=requests.find(x=>String(x.id)===String(id));
+  if(!r) return;
+
+  // 還原班表
+  if(r.type==='swap'){
+    // 換回來
+    const e1=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.toId);
+    const e2=schedule.find(s=>s.date===r.theirDate&&s.shiftId===r.theirShift&&s.empId===r.fromId);
+    if(e1&&e2){
+      [e1.empId,e2.empId]=[e2.empId,e1.empId];
+      await db.from('schedule').update({emp_id:r.fromId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.toId);
+      await db.from('schedule').update({emp_id:r.toId}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.fromId);
+    }
+  } else {
+    // 代班：移除 cover_by
+    const entry=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
+    if(entry){
+      entry.coverBy=null;
+      await db.from('schedule').update({cover_by:null}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
+    }
+  }
+
+  // 刪除這筆申請
+  await db.from('requests').delete().eq('id',id);
+  requests=requests.filter(x=>String(x.id)!==String(id));
+  toast('✅ 已同意取消，班表已還原');
+  renderSwap();updateBadges();
+}
+
+// ── 對方不同意取消：維持原本已同意狀態 ──
+async function rejectCancel(id){
+  const r=requests.find(x=>String(x.id)===String(id));
+  if(!r) return;
+  r.status='approved';
+  await db.from('requests').update({status:'approved'}).eq('id',id);
+  toast('已回覆不同意取消，班表維持不變');
+  renderSwap();updateBadges();
+}
+
 // ═══ ADMIN APPROVALS (notification view only) ═══
 function renderApprovals(){
   const list=document.getElementById('approval-list');
   const td=today();
-  // 過期的不顯示（班次日期已過）
+  // 過期的不顯示（班次日期已過）；管理員只看已完成的，不看待同意的
   const notExpired=r=>r.myDate>=td;
   const approved=requests.filter(r=>r.status==='approved'&&notExpired(r)).sort((a,b)=>b.id-a.id);
-  const pending=requests.filter(r=>r.status==='pending_peer'&&notExpired(r)).sort((a,b)=>b.id-a.id);
+  const pending=[]; // 管理員不顯示未同意的申請
 
   let html='';
 
@@ -2884,6 +3039,71 @@ async function removeAllEmps(){
   renderEmployees();renderLoginList();renderSchedule();
   toast('✅ 已清空所有工讀生資料');
 }
+
+// ═══ 匯出所有資料 ═══
+async function exportAllData(){
+  toast('正在匯出資料…');
+  try {
+    // 從 Supabase 撈最新的所有資料
+    const [emp,sch,clk,req,ann,set] = await Promise.all([
+      db.from('employees').select('*'),
+      db.from('schedule').select('*'),
+      db.from('clock_records').select('*'),
+      db.from('requests').select('*'),
+      db.from('announcements').select('*'),
+      db.from('settings').select('*'),
+    ]);
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      version: '2.0',
+      employees: emp.data||[],
+      schedule: sch.data||[],
+      clock_records: clk.data||[],
+      requests: req.data||[],
+      announcements: ann.data||[],
+      settings: set.data||[],
+    };
+    const json = JSON.stringify(backup, null, 2);
+    const blob = new Blob([json], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `worktrack備份_${dateStr}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast(`✅ 已匯出：${backup.employees.length} 位工讀生、${backup.schedule.length} 筆班表、${backup.clock_records.length} 筆打卡`);
+  } catch(e){
+    console.error(e);
+    toast('匯出失敗：'+e.message,'err');
+  }
+}
+
+// ═══ 重置所有資料 ═══
+async function resetAllData(){
+  if(!confirm('⚠️ 警告：這會清空雲端所有資料！\n\n包含：工讀生、班表、打卡紀錄、代換班申請、公告。\n\n操作前強烈建議先「匯出所有資料」備份。\n\n確定要繼續嗎？')) return;
+  if(!confirm('再次確認：所有資料將永久刪除，無法復原。\n\n真的要重置嗎？')) return;
+
+  toast('正在重置…');
+  try {
+    await Promise.all([
+      db.from('clock_records').delete().neq('id',0),
+      db.from('requests').delete().neq('id',0),
+      db.from('schedule').delete().neq('id',0),
+      db.from('announcements').delete().neq('id',0),
+      db.from('employees').delete().neq('id',0),
+    ]);
+    // 清空本地
+    employees=[];schedule=[];records=[];requests=[];announcements=[];
+    renderEmployees();renderLoginList();
+    if(typeof renderSchedule==='function') renderSchedule();
+    toast('✅ 已重置所有資料');
+  } catch(e){
+    console.error(e);
+    toast('重置失敗：'+e.message,'err');
+  }
+}
+
 async function submitEmp(){
   const name=document.getElementById('e-name').value.trim();
   const sidRaw=document.getElementById('e-sid').value.trim().toUpperCase();
@@ -2950,7 +3170,7 @@ function renderAll(){
       ?`<td><span class="badge bg-red">${r.lateMinutes} 分</span></td>`
       :`<td style="color:var(--muted);font-size:11px;">—</td>`;
     return `<tr><td>${esc(r.name)}</td><td>${r.date}</td>
-      <td style="font-size:11px;">${shift?`<span style="font-weight:500;">${shift.label}</span><br><span class="mono" style="font-size:10px;">${shift.time}</span>`:'—'}</td>
+      <td class="mono" style="font-size:11px;">${shift?shift.time:'—'}</td>
       <td class="mono">${r.inTime||'—'}</td><td class="mono">${r.outTime||'—'}</td>
       <td style="color:var(--teal);">${fmtH(h)}</td>${lateCell}</tr>`;
   }).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">無符合紀錄</td></tr>';
@@ -2997,11 +3217,11 @@ function renderAdminSchedule(){
     const nameEl=coverer
       ?`<span style="font-size:10px;color:var(--muted);text-decoration:line-through;">${esc(emp.name)}</span>
          <span style="font-size:11px;font-weight:700;color:var(--amber);">${esc(coverer.name)}<span style="font-size:9px;">代</span></span>`
-      :`<span style="font-size:12px;font-weight:600;color:var(--ink2);">${esc(emp.name)}</span>`;
-    return `<div style="display:flex;align-items:center;gap:3px;justify-content:space-between;padding:1px 0;">
-      <div style="display:flex;align-items:center;gap:3px;">
-        <span style="font-size:9px;font-weight:700;color:${tagCol};">[${tagLabel}]</span>
-        ${nameEl}
+      :`<span style="font-size:12px;font-weight:600;color:var(--ink2);word-break:keep-all;line-height:1.3;">${esc(emp.name)}</span>`;
+    return `<div style="display:flex;align-items:flex-start;gap:3px;justify-content:space-between;padding:1px 0;">
+      <div style="display:flex;align-items:flex-start;gap:3px;min-width:0;flex:1;">
+        <span style="font-size:9px;font-weight:700;color:${tagCol};flex-shrink:0;margin-top:1px;">[${tagLabel}]</span>
+        <span style="min-width:0;">${nameEl}</span>
       </div>
       <span onclick="removeFromCell('${date}','${shId}',${entry.empId})" style="cursor:pointer;color:var(--border);font-size:10px;padding:1px 3px;border-radius:3px;flex-shrink:0;" onmouseover="this.style.color='var(--coral)'" onmouseout="this.style.color='var(--border)'">✕</span>
     </div>`;
@@ -3013,17 +3233,18 @@ function renderAdminSchedule(){
   }
 
   let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);">
-  <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;min-width:680px;width:100%;">
+  <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;min-width:680px;width:100%;table-layout:fixed;">
+    <colgroup><col style="width:74px;"><col><col><col><col><col></colgroup>
     <thead><tr>
-      <th style="padding:10px 12px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;min-width:72px;position:sticky;left:0;z-index:2;">時間</th>`;
+      <th style="padding:10px 8px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;position:sticky;left:0;z-index:2;">時間</th>`;
 
   weekdayDates.forEach((date,i)=>{
     const isToday=date===td;
     const d=new Date(date);
-    html+=`<th style="padding:8px 6px;text-align:center;font-size:13px;font-weight:700;
+    html+=`<th style="padding:8px 4px;text-align:center;font-size:13px;font-weight:700;
       color:${isToday?'var(--teal-d)':'var(--ink)'};
       background:${isToday?'var(--teal-l)':'var(--bg)'};
-      border-left:1px solid var(--border);border-bottom:2px solid var(--border);min-width:130px;">
+      border-left:1px solid var(--border);border-bottom:2px solid var(--border);">
       ${DAY_NAMES[i]}<span style="font-size:10px;font-family:'DM Mono',monospace;font-weight:400;color:${isToday?'var(--teal)':'var(--muted)'};margin-left:4px;">${(d.getMonth()+1)}/${d.getDate()}</span>
     </th>`;
   });
@@ -3036,8 +3257,7 @@ function renderAdminSchedule(){
 
     html+=`<tr>
       <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:${isLastRow?'none':'1px solid var(--border)'};vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2);">${sh.time.split('–')[0]}</div>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);">–${sh.time.split('–')[1]}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2);">${sh.time}</div>
       </td>`;
 
     weekdayDates.forEach((date,di)=>{
@@ -3956,6 +4176,12 @@ async function initApp(){
       requests=requests.filter(r=>r.myDate>=td);
       console.log(`[Cleanup] 已刪除 ${expired.length} 筆過期代換班申請`);
     }
+
+    // ── 載入使用說明 ──
+    try {
+      const gRes=await db.from('settings').select('*').eq('key','guide');
+      if(gRes.data&&gRes.data[0]&&gRes.data[0].value) guideText=gRes.data[0].value;
+    } catch(e){ /* settings 表可能不存在，用預設 */ }
 
   } catch(err){
     console.error('資料庫連線錯誤：', err.message);
