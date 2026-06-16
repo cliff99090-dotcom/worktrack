@@ -1065,7 +1065,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
             <button class="btn btn-sm" onclick="exportCSV()"><i class="fas fa-download"></i>匯出 CSV</button>
           </div>
           <div style="overflow:auto;">
-            <table class="tbl"><thead><tr><th>姓名</th><th>日期</th><th>班次</th><th>上班</th><th>下班</th><th>工時</th><th>遲到</th></tr></thead>
+            <table class="tbl"><thead><tr><th>姓名</th><th>日期</th><th>班次</th><th>上班</th><th>下班</th><th>工時</th><th>遲到</th><th>操作</th></tr></thead>
             <tbody id="all-tbody"></tbody></table>
           </div>
         </div>
@@ -1075,29 +1075,43 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="page" id="page-scheduleadmin">
 
         <!-- 上方工具列 -->
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
           <button class="btn btn-primary" onclick="openImportModal()">
             <i class="fas fa-file-arrow-up"></i> 匯入班表
           </button>
           <button class="btn" onclick="openModal('modal-closure')">
             <i class="fas fa-building-lock"></i> 新增休館日
           </button>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-            <button class="btn btn-sm" onclick="adminShiftWeek(-1)"><i class="fas fa-chevron-left"></i></button>
-            <button class="btn btn-sm" onclick="adminShiftWeek(1)"><i class="fas fa-chevron-right"></i></button>
-            <div id="admin-week-label" style="font-size:13px;font-weight:600;min-width:180px;text-align:center;"></div>
-            <button class="btn btn-sm" onclick="adminWeekOffset=0;renderAdminSchedule()">今週</button>
-          </div>
+        </div>
+
+        <!-- 平日/假日切換 -->
+        <div style="display:flex;gap:8px;margin-bottom:14px;background:var(--bg);padding:5px;border-radius:var(--r);max-width:340px;">
+          <button id="adm-view-wd" class="btn btn-sm" style="flex:1;background:var(--teal);color:#fff;" onclick="setAdminScheduleView('weekday')">
+            <i class="fas fa-sun"></i> 平日班表
+          </button>
+          <button id="adm-view-we" class="btn btn-sm" style="flex:1;" onclick="setAdminScheduleView('weekend')">
+            <i class="fas fa-umbrella-beach"></i> 假日班表
+          </button>
+        </div>
+
+        <!-- 週導覽 -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <button class="btn btn-sm" onclick="adminShiftWeek(-1)"><i class="fas fa-chevron-left"></i></button>
+          <div id="admin-week-label" style="font-size:13px;font-weight:600;min-width:180px;text-align:center;flex:1;"></div>
+          <button class="btn btn-sm" onclick="adminShiftWeek(1)"><i class="fas fa-chevron-right"></i></button>
+          <button class="btn btn-sm" onclick="adminWeekOffset=0;renderAdminScheduleView()">本週</button>
         </div>
 
         <!-- 說明 -->
-        <div style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;font-size:12px;color:#0E3E7A;">
+        <div id="adm-sched-hint" style="background:var(--blue-l);border:1px solid #9DC4EF;border-radius:var(--r);padding:10px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;font-size:12px;color:#0E3E7A;">
           <i class="fas fa-circle-info" style="margin-top:1px;flex-shrink:0;"></i>
           <div>點擊格子中的 <strong>+</strong> 可新增排班；點擊姓名旁的 ✕ 可移除。匯入班表會覆蓋指定區間的班次。</div>
         </div>
 
-        <!-- 可編輯班表 -->
+        <!-- 可編輯班表（平日） -->
         <div id="admin-schedule-grid"></div>
+        <!-- 假日班表預覽 -->
+        <div id="admin-weekend-grid" style="display:none;"></div>
 
         <!-- 休館日列表 -->
         <div class="card" style="margin-top:20px;">
@@ -1267,6 +1281,24 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
   </div>
 </div>
 
+<!-- ══ EDIT CLOCK RECORD MODAL ══ -->
+<div class="modal-overlay" id="modal-edit-rec">
+  <div class="modal-box" style="width:380px;">
+    <div class="modal-title"><i class="fas fa-pen" style="color:var(--teal);margin-right:8px;"></i>編輯打卡紀錄</div>
+    <input type="hidden" id="edit-rec-key">
+    <div id="edit-rec-info" style="font-size:13px;color:var(--muted);margin-bottom:14px;padding:8px 12px;background:var(--bg);border-radius:var(--r);"></div>
+    <div class="two-col">
+      <div class="form-row"><label>上班時間</label><input type="time" class="fi" id="edit-rec-in"></div>
+      <div class="form-row"><label>下班時間</label><input type="time" class="fi" id="edit-rec-out"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;">留空 = 清除該時間。儲存後會自動重算遲到與加班。</div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-edit-rec')">取消</button>
+      <button class="btn btn-primary" onclick="saveEditRecord()"><i class="fas fa-check"></i> 儲存</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ EMPLOYEE IMPORT MODAL ══ -->
 <div class="modal-overlay" id="modal-emp-import">
   <div class="modal-box" style="width:500px;">
@@ -1300,7 +1332,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
 
 <script>
 // ═══ CONSTANTS ═══
-const ADMIN_PIN = '0000';
+const ADMIN_PIN = '2281';
 const WEEKDAY_SHIFTS = [
   {id:'wd1',label:'08:00–10:00',time:'08:00–10:00'},
   {id:'wd2',label:'10:00–12:00',time:'10:00–12:00'},
@@ -1310,8 +1342,8 @@ const WEEKDAY_SHIFTS = [
   {id:'wd5',label:'18:00–21:00',time:'18:00–21:00'},
 ];
 const WEEKEND_SHIFTS = [
-  {id:'we1',label:'09:00–13:00',time:'09:00–13:00'},
-  {id:'we2',label:'13:00–17:00',time:'13:00–17:00'},
+  {id:'we_full',label:'09:00–17:00',time:'09:00–17:00'},
+  {id:'we_half',label:'13:00–17:00',time:'13:00–17:00'},
 ];
 const ALL_SHIFTS = [...WEEKDAY_SHIFTS,...WEEKEND_SHIFTS];
 
@@ -1353,7 +1385,12 @@ function calH(a,b){
 function calHours(inT,outT){
   if(!inT||!outT)return null;
   const [ih,im]=inT.split(':').map(Number),[oh,om]=outT.split(':').map(Number);
-  const m=(oh*60+om)-(ih*60+im);return m>0?m/60:null;
+  let m=(oh*60+om)-(ih*60+im);
+  if(m<=0) return null;
+  // 全天班跨午休：上班含 12:00–13:00 且時長 ≥ 6 小時，扣 1 小時午休
+  const startMin=ih*60+im, endMin=oh*60+om;
+  if(m>=360 && startMin<=12*60 && endMin>=13*60) m-=60;
+  return m/60;
 }
 function fmtH(h){return h!=null?h.toFixed(1)+'h':'-';}
 
@@ -1669,24 +1706,24 @@ async function autoClockAfterSwipe(){
     });
   }
 
-  const todayShifts = getTodayShifts();
-  if(!todayShifts.length) return;
+  const blocks = getTodayShiftBlocks();
+  if(!blocks.length) return;
 
   const now = nowMin();
-  for(const shift of todayShifts){
-    const startMin = parseMin(shift.time.split('–')[0]);
-    const endMin   = parseMin(shift.time.split('–')[1]);
+  for(const block of blocks){
+    const startMin = block.startMin;
+    const endMin   = block.endMin;
     const allRecs  = getTRs();
-    const rec      = allRecs.find(r => r.shiftId === shift.id);
+    const rec      = allRecs.find(r => r.shiftId === block.id);
     const canIn    = now >= (startMin-10) && now <= endMin && !rec?.inTime;
     const canOut   = rec?.inTime && !rec?.outTime;
 
     if(canIn){
-      await doClockShift('in', shift.id);
+      await doClockBlock('in', block.id);
       return;
     }
     if(canOut){
-      await doClockShift('out', shift.id);
+      await doClockBlock('out', block.id);
       return;
     }
   }
@@ -1741,7 +1778,8 @@ function go(page){
   }
   if(page==='dashboard'){renderDashboard();}
   if(page==='scheduleadmin'){
-    adminWeekOffset=weekOffset;renderAdminSchedule();
+    adminWeekOffset=weekOffset;
+    setAdminScheduleView(adminScheduleView||'weekday');
     if(typeof renderClosureList==='function') renderClosureList();
   }
   if(page==='employees'){renderEmployees();}
@@ -1798,6 +1836,41 @@ function getTodayShifts(){
   )).map(s=>ALL_SHIFTS.find(sh=>sh.id===s.shiftId)).filter(Boolean);
 }
 
+// 將連續的班次合併成「班次區塊」：前一班結束==後一班開始就合併
+function getTodayShiftBlocks(){
+  const shifts=getTodayShifts()
+    .slice()
+    .sort((a,b)=>parseMin(a.time.split('–')[0])-parseMin(b.time.split('–')[0]));
+  const blocks=[];
+  shifts.forEach(sh=>{
+    const start=parseMin(sh.time.split('–')[0]);
+    const end=parseMin(sh.time.split('–')[1]);
+    const last=blocks[blocks.length-1];
+    if(last && parseMin(last.endTime)===start){
+      // 連續，併入上一區塊
+      last.shifts.push(sh);
+      last.endTime=sh.time.split('–')[1];
+      last.endMin=end;
+    } else {
+      blocks.push({
+        shifts:[sh],
+        startTime:sh.time.split('–')[0],
+        endTime:sh.time.split('–')[1],
+        startMin:start, endMin:end,
+      });
+    }
+  });
+  // 區塊的顯示時間與 id（用第一個班次的 id 當主鍵）
+  blocks.forEach(b=>{
+    b.id=b.shifts[0].id;
+    b.time=`${b.startTime}–${b.endTime}`;
+    b.label=b.time;
+    b.shiftIds=b.shifts.map(s=>s.id);
+  });
+  return blocks;
+}
+
+
 // Can clock-in: within 10 min before shift start up to shift end
 function canClockIn(shift){
   const start=parseMin(shift.time.split('–')[0]);
@@ -1823,12 +1896,12 @@ function calcOvertime(shiftTime, outTime){
 
 function renderClock(){
   if(!currentUser) return;
-  const todayShifts=getTodayShifts();
+  const blocks=getTodayShiftBlocks();
   const allRecs=getTRs();
   const wrap=document.getElementById('today-shifts-list');
   if(!wrap) return;
 
-  if(!todayShifts.length){
+  if(!blocks.length){
     wrap.innerHTML=`<div style="text-align:center;padding:24px;color:var(--muted);">
       <i class="fas fa-calendar-xmark" style="font-size:24px;margin-bottom:8px;display:block;opacity:0.4;"></i>
       今日無排班
@@ -1836,25 +1909,24 @@ function renderClock(){
     return;
   }
 
-  wrap.innerHTML=todayShifts.map(shift=>{
-    const rec=allRecs.find(r=>r.shiftId===shift.id);
-    const start=parseMin(shift.time.split('–')[0]);
-    const end=parseMin(shift.time.split('–')[1]);
+  wrap.innerHTML=blocks.map(block=>{
+    // 區塊的紀錄掛在第一個班次 id 上
+    const rec=allRecs.find(r=>r.shiftId===block.id);
+    const start=block.startMin;
+    const end=block.endMin;
     const now=nowMin();
     const windowOpen=now>=(start-10);
     const windowClosed=now>end;
     const canIn=windowOpen&&!windowClosed&&!rec?.inTime;
     const canOut=rec?.inTime&&!rec?.outTime;
+    const isMerged=block.shifts.length>1;
 
-    // Status
     let statusHtml='';
     if(rec?.outTime){
-      const ot=calcOvertime(shift.time, rec.outTime);
+      const ot=calcOvertime(block.time, rec.outTime);
       statusHtml=`<span class="badge bg-gray"><i class="fas fa-check"></i> 已完成</span>
         ${ot>0?`<span class="badge bg-blue" style="margin-left:4px;"><i class="fas fa-plus"></i> 加班 ${ot} 分</span>`:''}`;
     } else if(rec?.inTime){
-      const late=rec.lateMinutes||0;
-      // accumulating late from start
       const nowLate=!rec.outTime?Math.max(0,now-start):0;
       statusHtml=`<span class="badge bg-teal"><i class="fas fa-circle" style="font-size:6px;"></i> 上班中</span>
         ${nowLate>0?`<span class="badge bg-red" style="margin-left:4px;"><i class="fas fa-clock"></i> 遲到累計 ${nowLate} 分</span>`:''}`;
@@ -1867,12 +1939,11 @@ function renderClock(){
       statusHtml=`<span class="badge bg-amber"><i class="fas fa-bell"></i> 可打卡</span>`;
     }
 
-    // Cards
     let cardsHtml='';
     if(rec){
       const h=calHours(rec.inTime,rec.outTime);
       const late=rec.lateMinutes||0;
-      const ot=rec.outTime?calcOvertime(shift.time,rec.outTime):0;
+      const ot=rec.outTime?calcOvertime(block.time,rec.outTime):0;
       cardsHtml=`<div style="display:grid;grid-template-columns:repeat(${2+(h?1:0)+(late>0?1:0)+(ot>0?1:0)},1fr);gap:6px;margin-top:10px;">
         <div class="scard" style="padding:10px 12px;"><div class="sc-lbl">上班</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;">${rec.inTime||'—'}</div></div>
         <div class="scard" style="padding:10px 12px;"><div class="sc-lbl">下班</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;">${rec.outTime||'—'}</div></div>
@@ -1885,17 +1956,17 @@ function renderClock(){
     return `<div style="border:1.5px solid ${rec?.outTime?'var(--border)':canIn||canOut?'var(--teal)':'var(--border)'};border-radius:var(--r-lg);padding:14px 16px;margin-bottom:12px;background:${rec?.outTime?'var(--bg)':'var(--surface)'};">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
         <div>
-          <div style="font-size:13px;font-weight:600;color:var(--ink2);">${shift.label}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);">${shift.time}</div>
+          <div style="font-size:13px;font-weight:600;color:var(--ink2);">${block.time}${isMerged?` <span style="font-size:10px;color:var(--teal);font-weight:500;">（連續${block.shifts.length}班合併）</span>`:''}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">${isMerged?'打一次上下班卡即可':''}</div>
         </div>
         <div>${statusHtml}</div>
       </div>
       ${cardsHtml}
       ${!rec?.outTime?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
-        <button class="clk-btn clk-in" style="height:44px;font-size:13px;" ${canIn?'':'disabled'} onclick="doClockShift('in','${shift.id}')">
+        <button class="clk-btn clk-in" style="height:44px;font-size:13px;" ${canIn?'':'disabled'} onclick="doClockBlock('in','${block.id}')">
           <i class="fas fa-arrow-right-to-bracket"></i> 上班打卡
         </button>
-        <button class="clk-btn clk-out" style="height:44px;font-size:13px;" ${canOut?'':'disabled'} onclick="doClockShift('out','${shift.id}')">
+        <button class="clk-btn clk-out" style="height:44px;font-size:13px;" ${canOut?'':'disabled'} onclick="doClockBlock('out','${block.id}')">
           <i class="fas fa-arrow-right-from-bracket"></i> 下班打卡
         </button>
       </div>`:''}
@@ -1903,10 +1974,21 @@ function renderClock(){
   }).join('');
 }
 
-async function doClockShift(type, shiftId){
+// 打卡區塊（合併連續班次）— 用區塊主班次 id 與其完整時間範圍記錄
+async function doClockBlock(type, blockId){
+  const blocks=getTodayShiftBlocks();
+  const block=blocks.find(b=>b.id===blockId);
+  if(!block){ await doClockShift(type, blockId); return; }
+  // 用區塊的完整時間範圍當作這個班次的時間（遲到/加班依整個區塊計算）
+  await doClockShift(type, blockId, block.time);
+}
+
+async function doClockShift(type, shiftId, timeOverride){
   if(!currentUser) return;
   const n=new Date(); const t=pad(n.getHours())+':'+pad(n.getMinutes());
-  const shift=ALL_SHIFTS.find(s=>s.id===shiftId);
+  const baseShift=ALL_SHIFTS.find(s=>s.id===shiftId);
+  // 合併班次時用整個區塊的時間範圍計算遲到/加班
+  const shift = timeOverride ? {id:shiftId, time:timeOverride, label:timeOverride} : baseShift;
   const td=today();
 
   // 找出這個班次在班表中的記錄，判斷是否為代班
@@ -1970,6 +2052,7 @@ const STATION_COLORS={C:'#D05A1E',C2:'#D05A1E',C3:'#2A6FA8',D:'#1B6B3A'};
 function tagColor(tag){
   if(!tag) return '#888';
   const t=String(tag).toUpperCase();
+  if(t==='CD') return '#9A4DB8';   // 會櫃台+詢問台（紫）
   if(t==='C'||t==='C2') return '#D05A1E';
   if(t==='C3') return '#2A6FA8';
   if(t==='D') return '#1B6B3A';
@@ -2161,33 +2244,23 @@ function renderSchedule(){
   document.getElementById('schedule-grid').innerHTML=html;
 }
 
-// ═══ WEEKEND SCHEDULE (圖2格式：組別×姓名×輪值日期) ═══
-// weekend_groups format: [{groupNum, leader, members:[{name,station}], slots:[{dates:[sat,sun], label}]}]
-let weekendGroups = []; // managed by admin, loaded from DB or manually set
+// ═══ WEEKEND SCHEDULE ═══
+let weekendGroups = [];
+let weWeekOffset = 0; // 工讀生假日班表的週偏移
 
-function renderWeekendSchedule(){
-  const el=document.getElementById('schedule-we-grid');
-  // Show weekend schedule entries (we1/we2) grouped by date
-  const weekendEntries=schedule.filter(s=>s.shiftId==='we1'||s.shiftId==='we2');
-  if(!weekendEntries.length){
-    el.innerHTML=`<div style="text-align:center;padding:48px;color:var(--muted);">
-      <i class="fas fa-umbrella-beach" style="font-size:32px;opacity:0.3;display:block;margin-bottom:12px;"></i>
-      假日班表尚未設定，請由管理員在「班表管理 → 匯入班表 → 假日班表」匯入。
-    </div>`;
-    return;
-  }
-  // Group by date
+// 共用：產生指定日期清單的假日卡片 HTML
+function renderWeekendCards(dates){
+  const DAY_NAMES=['日','一','二','三','四','五','六'];
   const byDate={};
-  weekendEntries.forEach(s=>{
+  schedule.filter(s=>(s.shiftId==='we_full'||s.shiftId==='we_half')&&dates.includes(s.date)).forEach(s=>{
     if(!byDate[s.date]) byDate[s.date]={};
     if(!byDate[s.date][s.shiftId]) byDate[s.date][s.shiftId]=[];
     byDate[s.date][s.shiftId].push(s);
   });
-  const dates=Object.keys(byDate).sort();
-  const DAY_NAMES=['日','一','二','三','四','五','六'];
-
+  const shownDates=dates.filter(d=>byDate[d]);
+  if(!shownDates.length) return '';
   let html=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;">`;
-  dates.forEach(date=>{
+  shownDates.forEach(date=>{
     const d=new Date(date);
     const dn=DAY_NAMES[d.getDay()];
     html+=`<div class="card" style="padding:14px;">
@@ -2197,9 +2270,16 @@ function renderWeekendSchedule(){
     WEEKEND_SHIFTS.forEach(sh=>{
       const entries=byDate[date][sh.id]||[];
       if(!entries.length) return;
+      const leaders=entries.filter(e=>String(e.station||'').includes('小組長'));
+      const normals=entries.filter(e=>!String(e.station||'').includes('小組長'));
       html+=`<div style="margin-bottom:10px;">
         <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--teal-d);font-weight:600;margin-bottom:4px;">${sh.time}</div>
-        ${entries.map(e=>{
+        ${leaders.map(e=>{
+          const emp=employees.find(x=>x.id===(e.coverBy||e.empId));
+          if(!emp) return '';
+          return `<div style="font-size:12px;padding:1px 0;"><span style="font-weight:700;color:#B07A00;font-size:10px;">⭐小組長</span> ${esc(emp.name)}</div>`;
+        }).join('')}
+        ${normals.map(e=>{
           const emp=employees.find(x=>x.id===(e.coverBy||e.empId));
           if(!emp) return '';
           const tag=e.station||'C';
@@ -2210,8 +2290,43 @@ function renderWeekendSchedule(){
     html+=`</div>`;
   });
   html+=`</div>`;
-  el.innerHTML=html;
+  return html;
 }
+
+// 取得某週偏移的週六、週日日期
+function getWeekendDates(offset){
+  const dates=getWeekDates(offset); // 該週一~日
+  const monday=new Date(dates[0]);
+  const sat=new Date(monday); sat.setDate(sat.getDate()+5);
+  const sun=new Date(monday); sun.setDate(sun.getDate()+6);
+  return [fmtD(sat), fmtD(sun)];
+}
+
+function renderWeekendSchedule(){
+  const el=document.getElementById('schedule-we-grid');
+  if(!el) return;
+  const anyWeekend=schedule.some(s=>s.shiftId==='we_full'||s.shiftId==='we_half');
+  if(!anyWeekend){
+    el.innerHTML=`<div style="text-align:center;padding:48px;color:var(--muted);">
+      <i class="fas fa-umbrella-beach" style="font-size:32px;opacity:0.3;display:block;margin-bottom:12px;"></i>
+      假日班表尚未設定，請由管理員匯入。
+    </div>`;
+    return;
+  }
+  const weekendDates=getWeekendDates(weWeekOffset);
+  const cards=renderWeekendCards(weekendDates);
+  const navBar=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+    <button class="btn btn-sm" onclick="weWeekOffset--;renderWeekendSchedule()"><i class="fas fa-chevron-left"></i></button>
+    <div style="font-size:13px;font-weight:600;min-width:180px;text-align:center;flex:1;">${weekendDates[0]} ～ ${weekendDates[1]}</div>
+    <button class="btn btn-sm" onclick="weWeekOffset++;renderWeekendSchedule()"><i class="fas fa-chevron-right"></i></button>
+    <button class="btn btn-sm" onclick="weWeekOffset=0;renderWeekendSchedule()">本週</button>
+  </div>`;
+  el.innerHTML=navBar+(cards||`<div style="text-align:center;padding:40px;color:var(--muted);">
+    <i class="fas fa-umbrella-beach" style="font-size:28px;opacity:0.3;display:block;margin-bottom:10px;"></i>
+    本週末沒有假日班表，用前後箭頭查看其他週。
+  </div>`);
+}
+
 
 // Update login announcement feed
 function renderLoginAnnFeed(){
@@ -3169,11 +3284,68 @@ function renderAll(){
     const lateCell=r.lateMinutes>0
       ?`<td><span class="badge bg-red">${r.lateMinutes} 分</span></td>`
       :`<td style="color:var(--muted);font-size:11px;">—</td>`;
+    // 用 empId+date+shiftId 當識別
+    const key=`${r.empId}|${r.date}|${r.shiftId||''}`;
     return `<tr><td>${esc(r.name)}</td><td>${r.date}</td>
       <td class="mono" style="font-size:11px;">${shift?shift.time:'—'}</td>
       <td class="mono">${r.inTime||'—'}</td><td class="mono">${r.outTime||'—'}</td>
-      <td style="color:var(--teal);">${fmtH(h)}</td>${lateCell}</tr>`;
-  }).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">無符合紀錄</td></tr>';
+      <td style="color:var(--teal);">${fmtH(h)}</td>${lateCell}
+      <td style="white-space:nowrap;">
+        <button class="btn btn-sm" style="padding:4px 8px;" onclick="openEditRecord('${key}')"><i class="fas fa-pen"></i></button>
+        <button class="btn btn-sm btn-danger" style="padding:4px 8px;" onclick="deleteRecord('${key}')"><i class="fas fa-trash"></i></button>
+      </td></tr>`;
+  }).join(''):'<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted);">無符合紀錄</td></tr>';
+}
+
+// ── 管理員編輯/刪除打卡紀錄 ──
+function findRecordByKey(key){
+  const [empId,date,shiftId]=key.split('|');
+  return records.find(r=>String(r.empId)===empId&&r.date===date&&String(r.shiftId||'')===shiftId);
+}
+
+function openEditRecord(key){
+  const r=findRecordByKey(key);
+  if(!r){toast('找不到紀錄','err');return;}
+  const shift=r.shiftId?ALL_SHIFTS.find(s=>s.id===r.shiftId):null;
+  document.getElementById('edit-rec-key').value=key;
+  document.getElementById('edit-rec-info').innerHTML=
+    `<strong>${esc(r.name)}</strong> · ${r.date}${shift?' · '+shift.time:''}`;
+  document.getElementById('edit-rec-in').value=r.inTime||'';
+  document.getElementById('edit-rec-out').value=r.outTime||'';
+  openModal('modal-edit-rec');
+}
+
+async function saveEditRecord(){
+  const key=document.getElementById('edit-rec-key').value;
+  const r=findRecordByKey(key);
+  if(!r){toast('找不到紀錄','err');return;}
+  const inT=document.getElementById('edit-rec-in').value.trim();
+  const outT=document.getElementById('edit-rec-out').value.trim();
+  // 重新計算遲到/加班
+  const shift=r.shiftId?ALL_SHIFTS.find(s=>s.id===r.shiftId):null;
+  const late=shift&&inT?calcLate(shift.time,inT):0;
+  const ot=shift&&outT?calcOvertime(shift.time,outT):0;
+  r.inTime=inT; r.outTime=outT; r.lateMinutes=late; r.overtimeMinutes=ot;
+  // 寫回 Supabase
+  const res=await db.from('clock_records')
+    .update({in_time:inT||null,out_time:outT||null,late_minutes:late,overtime_minutes:ot})
+    .eq('emp_id',r.empId).eq('date',r.date).eq('shift_id',r.shiftId);
+  if(res.error){toast('儲存失敗：'+res.error.message,'err');return;}
+  closeModal('modal-edit-rec');
+  toast('✅ 已更新打卡紀錄');
+  renderAll();
+}
+
+async function deleteRecord(key){
+  const r=findRecordByKey(key);
+  if(!r){toast('找不到紀錄','err');return;}
+  if(!confirm(`確定刪除這筆打卡紀錄？\n${r.name} · ${r.date}`))return;
+  const res=await db.from('clock_records').delete()
+    .eq('emp_id',r.empId).eq('date',r.date).eq('shift_id',r.shiftId);
+  if(res.error){toast('刪除失敗：'+res.error.message,'err');return;}
+  records=records.filter(x=>x!==r);
+  toast('✅ 已刪除打卡紀錄');
+  renderAll();
 }
 function exportCSV(){
   const header='姓名,日期,上班時間,下班時間,工時(h)\n';
@@ -3197,9 +3369,63 @@ function exportCSV(){
 
 // ═══ SCHEDULE ADMIN ═══
 let adminWeekOffset=0;
+let adminScheduleView='weekday'; // 'weekday' or 'weekend'
 let editCellDate=null, editCellShiftId=null, editCellStation=null;
 
-function adminShiftWeek(dir){adminWeekOffset+=dir;renderAdminSchedule();}
+function adminShiftWeek(dir){adminWeekOffset+=dir;renderAdminScheduleView();}
+
+function setAdminScheduleView(view){
+  adminScheduleView=view;
+  const wd=document.getElementById('adm-view-wd');
+  const we=document.getElementById('adm-view-we');
+  const wdGrid=document.getElementById('admin-schedule-grid');
+  const weGrid=document.getElementById('admin-weekend-grid');
+  const hint=document.getElementById('adm-sched-hint');
+  if(view==='weekday'){
+    wd.style.background='var(--teal)';wd.style.color='#fff';
+    we.style.background='';we.style.color='';
+    wdGrid.style.display='';weGrid.style.display='none';
+    if(hint) hint.style.display='';
+  } else {
+    we.style.background='var(--amber)';we.style.color='#fff';
+    wd.style.background='';wd.style.color='';
+    wdGrid.style.display='none';weGrid.style.display='';
+    if(hint) hint.style.display='none';
+  }
+  renderAdminScheduleView();
+}
+
+function renderAdminScheduleView(){
+  if(adminScheduleView==='weekday') renderAdminSchedule();
+  else renderAdminWeekend();
+}
+
+// 管理員端假日班表預覽（依當前週顯示該週六日）
+function renderAdminWeekend(){
+  const el=document.getElementById('admin-weekend-grid');
+  if(!el) return;
+  const dates=getWeekDates(adminWeekOffset); // 該週一~日
+  // 找出該週的週六、週日
+  const weekendDates=[];
+  const monday=new Date(dates[0]);
+  for(let i=5;i<=6;i++){ // 週六=offset5, 週日=offset6
+    const d=new Date(monday); d.setDate(d.getDate()+i);
+    weekendDates.push(fmtD(d));
+  }
+  // 更新週標籤
+  const lbl=document.getElementById('admin-week-label');
+  if(lbl) lbl.textContent=`${weekendDates[0]} ～ ${weekendDates[1]}`;
+
+  const weekendEntries=schedule.filter(s=>(s.shiftId==='we_full'||s.shiftId==='we_half')&&weekendDates.includes(s.date));
+  if(!weekendEntries.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);">
+      <i class="fas fa-umbrella-beach" style="font-size:28px;opacity:0.3;display:block;margin-bottom:10px;"></i>
+      本週末沒有假日班表。可用「匯入班表 → 假日班表」匯入，或用前後箭頭看其他週。
+    </div>`;
+    return;
+  }
+  el.innerHTML=renderWeekendCards(weekendDates.filter(d=>weekendEntries.some(e=>e.date===d)));
+}
 
 function renderAdminSchedule(){
   const dates=getWeekDates(adminWeekOffset);
@@ -3497,8 +3723,8 @@ const SHIFT_TIME_MAP=[
   {pattern:/14:00.16:00/,id:'wd4'},
   {pattern:/16:00.18:00/,id:'wd5_16'}, // 16-18 slot (not in default shifts, we'll add dynamically)
   {pattern:/18:00.21:00/,id:'wd5'},
-  {pattern:/09:00.13:00/,id:'we1'},
-  {pattern:/13:00.17:00/,id:'we2'},
+  {pattern:/09:00.17:00/,id:'we_full'},
+  {pattern:/13:00.17:00/,id:'we_half'},
 ];
 
 // Make sure 16:00–18:00 is included as a weekday shift
@@ -3582,8 +3808,21 @@ function parseXlsxFile(file){
   } else { doRead(); }
 }
 
+// Shared: detect new employees & show preview after parsing
+function finishParse(detectedNames){
+  console.log(`[Import] ${importParsed.length} entries, ${detectedNames.size} people`);
+  if(!importParsed.length){
+    showImportError('未能解析到排班資料。\n平日：欄位需含「週一」~「週五」\n假日：欄位需含「日期」「全天班」「午班」\n格內格式：[C] 姓名 [D] 姓名');
+    return;
+  }
+  importNewEmps=[];
+  detectedNames.forEach(name=>{
+    if(!employees.find(e=>e.name===name)) importNewEmps.push(name);
+  });
+  showImportPreview();
+}
+
 // Read cell values directly from SheetJS worksheet object
-// This avoids all CSV quoting/escaping issues
 function parseSheetDirect(ws){
   importParsed=[];importNewEmps=[];
   const detectedNames=new Set();
@@ -3637,6 +3876,53 @@ function parseSheetDirect(ws){
     }
     return entries;
   };
+
+  // ── 假日「日期 × 小組長/全天/午班」格式偵測 ──
+  if(importType==='weekend'){
+    let dateHeaderRow=-1, dateCol=-1, leaderCol=-1, fullCol=-1, halfCol=-1;
+    for(let r=0;r<=Math.min(3,maxRow);r++){
+      for(let c=0;c<=maxCol;c++){
+        const v=cellVal(r,c);
+        if(v.includes('日期')){dateHeaderRow=r;dateCol=c;}
+        if(v.includes('小組長')){leaderCol=c;}
+        else if(v.includes('全天')){fullCol=c;}
+        if(v.includes('午班')||v.includes('半天')){halfCol=c;}
+      }
+      if(dateHeaderRow>=0) break;
+    }
+    if(dateHeaderRow>=0 && dateCol>=0 && (fullCol>=0||halfCol>=0||leaderCol>=0)){
+      for(let r=dateHeaderRow+1;r<=maxRow;r++){
+        let dateStr=cellVal(r,dateCol);
+        if(!dateStr) continue;
+        const dm=dateStr.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+        if(!dm) continue;
+        const isoDate=`${dm[1]}-${dm[2].padStart(2,'0')}-${dm[3].padStart(2,'0')}`;
+        // 小組長 → we_full + station ⭐小組長
+        if(leaderCol>=0){
+          parseCell(cellVal(r,leaderCol)).forEach(({tag,name})=>{
+            detectedNames.add(name);
+            importParsed.push({date:isoDate,shiftId:'we_full',name,tag:'⭐小組長',shiftLabel:'09:00–17:00'});
+          });
+        }
+        // 全天班 → we_full（保留原始能力標籤 CD/C/D）
+        if(fullCol>=0){
+          parseCell(cellVal(r,fullCol)).forEach(({tag,name})=>{
+            detectedNames.add(name);
+            importParsed.push({date:isoDate,shiftId:'we_full',name,tag,shiftLabel:'09:00–17:00'});
+          });
+        }
+        // 午班 → we_half（保留原始能力標籤）
+        if(halfCol>=0){
+          parseCell(cellVal(r,halfCol)).forEach(({tag,name})=>{
+            detectedNames.add(name);
+            importParsed.push({date:isoDate,shiftId:'we_half',name,tag,shiftLabel:'13:00–17:00'});
+          });
+        }
+      }
+      finishParse(detectedNames);
+      return;
+    }
+  }
 
   // Process each data row
   for(let r=headerRow+1;r<=maxRow;r++){
@@ -3833,12 +4119,13 @@ function showImportPreview(){
   const pd=document.getElementById('import-preview');pd.style.display='';
   const preview=importParsed.slice(0,8);
   document.getElementById('preview-table').innerHTML=`
-    <thead><tr><th>星期</th><th>班次時間</th><th>工作站</th><th>工讀生</th></tr></thead>
+    <thead><tr><th>日期/星期</th><th>班次時間</th><th>工作站</th><th>工讀生</th></tr></thead>
     <tbody>${preview.map(r=>{
-      const dayIdx=parseInt((r.date.split(':')[1])||'0');
+      const isDate=!String(r.date).startsWith('weekday:');
+      const dayLabel=isDate?r.date:('週'+(dayNames[parseInt(r.date.split(':')[1])||0]||''));
       const col=r.tag.includes('⭐')||r.tag.includes('小組長')?'var(--amber)':r.tag==='D'?'#1B6B3A':'#D05A1E';
       return `<tr>
-        <td>週${dayNames[dayIdx]||dayIdx}</td>
+        <td style="font-size:11px;">${dayLabel}</td>
         <td class="mono" style="font-size:11px;">${r.shiftLabel}</td>
         <td><span style="font-weight:700;color:${col};font-size:11px;">[${r.tag}]</span></td>
         <td style="font-weight:500;">${esc(r.name)}</td>
@@ -3848,8 +4135,9 @@ function showImportPreview(){
     </tbody>`;
 
   const uniquePeople=new Set(importParsed.map(r=>r.name)).size;
+  const isDateBased=importParsed.length>0&&!String(importParsed[0].date).startsWith('weekday:');
   document.getElementById('import-summary').innerHTML=
-    `共 <strong>${importParsed.length}</strong> 筆排班 · <strong>${uniquePeople}</strong> 位工讀生 · 每週重複此規律`;
+    `共 <strong>${importParsed.length}</strong> 筆排班 · <strong>${uniquePeople}</strong> 位工讀生 · ${isDateBased?'依日期直接排入':'每週重複此規律'}`;
 
   const ns=document.getElementById('new-emp-section');
   if(importNewEmps.length){
@@ -3896,43 +4184,53 @@ async function executeImport(){
 
   const overwrite=document.getElementById('import-overwrite').checked;
 
-  // Build a map: dayOffset(0~4) → [{shiftId, name, tag}]
-  const weekTemplate={};
-  importParsed.forEach(r=>{
-    const dayIdx=parseInt(r.date.split(':')[1]);
-    if(!weekTemplate[dayIdx]) weekTemplate[dayIdx]=[];
-    weekTemplate[dayIdx].push({shiftId:r.shiftId,name:r.name,tag:r.tag});
-  });
+  // 偵測是否為「日期直接展開」格式（假日 date×全天/午班）
+  const isDateBased = importParsed.length>0 && !String(importParsed[0].date).startsWith('weekday:');
 
-  // Iterate every calendar day in [startVal, endVal]
-  const cur=new Date(startVal);
-  const endD=new Date(endVal);
   const allEntries=[];
 
-  while(cur<=endD){
-    const dow=cur.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-    const dateStr=fmtD(cur);
-    if(importType==='weekend'){
-      // weekTemplate keyed by 5=Sat, 6=Sun
-      const dayOffset = dow===6 ? 5 : (dow===0 ? 6 : -1);
-      if(dayOffset>=0){
-        const slots=weekTemplate[dayOffset]||[];
-        slots.forEach(({shiftId,name,tag})=>{
-          const emp=employees.find(e=>e.name===name);
-          if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
-        });
+  if(isDateBased){
+    // 直接用 importParsed 裡的真實日期，只取落在區間內的
+    importParsed.forEach(r=>{
+      if(r.date>=startVal && r.date<=endVal){
+        const emp=employees.find(e=>e.name===r.name);
+        if(emp) allEntries.push({date:r.date,shiftId:r.shiftId,empId:emp.id,station:r.tag});
       }
-    } else {
-      if(dow>=1&&dow<=5){
-        const dayOffset=dow-1;
-        const slots=weekTemplate[dayOffset]||[];
-        slots.forEach(({shiftId,name,tag})=>{
-          const emp=employees.find(e=>e.name===name);
-          if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
-        });
+    });
+  } else {
+    // Build a map: dayOffset → [{shiftId, name, tag}]
+    const weekTemplate={};
+    importParsed.forEach(r=>{
+      const dayIdx=parseInt(r.date.split(':')[1]);
+      if(!weekTemplate[dayIdx]) weekTemplate[dayIdx]=[];
+      weekTemplate[dayIdx].push({shiftId:r.shiftId,name:r.name,tag:r.tag});
+    });
+
+    // Iterate every calendar day in [startVal, endVal]
+    const cur=new Date(startVal);
+    const endD=new Date(endVal);
+
+    while(cur<=endD){
+      const dow=cur.getDay();
+      const dateStr=fmtD(cur);
+      if(importType==='weekend'){
+        const dayOffset = dow===6 ? 5 : (dow===0 ? 6 : -1);
+        if(dayOffset>=0){
+          (weekTemplate[dayOffset]||[]).forEach(({shiftId,name,tag})=>{
+            const emp=employees.find(e=>e.name===name);
+            if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
+          });
+        }
+      } else {
+        if(dow>=1&&dow<=5){
+          (weekTemplate[dow-1]||[]).forEach(({shiftId,name,tag})=>{
+            const emp=employees.find(e=>e.name===name);
+            if(emp) allEntries.push({date:dateStr,shiftId,empId:emp.id,station:tag});
+          });
+        }
       }
+      cur.setDate(cur.getDate()+1);
     }
-    cur.setDate(cur.getDate()+1);
   }
 
   // Overwrite: remove existing entries for affected dates
