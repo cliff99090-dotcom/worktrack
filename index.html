@@ -3460,9 +3460,9 @@ function renderAdminSchedule(){
 
   let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);">
   <table style="border-collapse:collapse;background:var(--surface);font-family:'Noto Sans TC',sans-serif;font-size:12px;min-width:680px;width:100%;table-layout:fixed;">
-    <colgroup><col style="width:74px;"><col><col><col><col><col></colgroup>
+    <colgroup><col style="width:62px;"><col><col><col><col><col></colgroup>
     <thead><tr>
-      <th style="padding:10px 8px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;white-space:nowrap;position:sticky;left:0;z-index:2;">時間</th>`;
+      <th style="padding:10px 6px;background:var(--bg);border-right:1px solid var(--border);border-bottom:2px solid var(--border);font-size:11px;color:var(--muted);font-weight:600;vertical-align:middle;position:sticky;left:0;z-index:2;">時間</th>`;
 
   weekdayDates.forEach((date,i)=>{
     const isToday=date===td;
@@ -3482,8 +3482,8 @@ function renderAdminSchedule(){
     const isNight=sh.id==='wd5';
 
     html+=`<tr>
-      <td style="padding:10px 12px;border-right:1px solid var(--border);border-bottom:${isLastRow?'none':'1px solid var(--border)'};vertical-align:middle;background:var(--bg);white-space:nowrap;">
-        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2);">${sh.time}</div>
+      <td style="padding:10px 8px;border-right:1px solid var(--border);border-bottom:${isLastRow?'none':'1px solid var(--border)'};vertical-align:middle;background:var(--bg);">
+        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2);line-height:1.4;">${sh.time.split('–')[0]}<br>–${sh.time.split('–')[1]}</div>
       </td>`;
 
     weekdayDates.forEach((date,di)=>{
