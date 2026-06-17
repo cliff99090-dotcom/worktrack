@@ -979,7 +979,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
             </div>
           </div>
           <div style="overflow:auto;">
-            <table class="tbl"><thead><tr><th>日期</th><th>班次</th><th>上班</th><th>下班</th><th>工時</th><th>遲到</th><th>加班</th></tr></thead>
+            <table class="tbl"><thead><tr><th>日期</th><th>班次</th><th>上班</th><th>下班</th><th>工時</th><th>遲到/早退</th></tr></thead>
             <tbody id="my-tbody"></tbody>
             <tfoot id="my-tfoot"></tfoot></table>
           </div>
@@ -1298,7 +1298,7 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink)
       <div class="form-row"><label>上班時間</label><input type="time" class="fi" id="edit-rec-in"></div>
       <div class="form-row"><label>下班時間</label><input type="time" class="fi" id="edit-rec-out"></div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px;">留空 = 清除該時間。儲存後會自動重算遲到與加班。</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;">留空 = 清除該時間。儲存後會自動重算遲到與早退。</div>
     <div class="modal-foot">
       <button class="btn" onclick="closeModal('modal-edit-rec')">取消</button>
       <button class="btn btn-primary" onclick="saveEditRecord()"><i class="fas fa-check"></i> 儲存</button>
@@ -1999,9 +1999,7 @@ function renderClock(){
 
     let statusHtml='';
     if(rec?.outTime){
-      const ot=calcOvertime(block.time, rec.outTime);
-      statusHtml=`<span class="badge bg-gray"><i class="fas fa-check"></i> 已完成</span>
-        ${ot>0?`<span class="badge bg-blue" style="margin-left:4px;"><i class="fas fa-plus"></i> 加班 ${ot} 分</span>`:''}`;
+      statusHtml=`<span class="badge bg-gray"><i class="fas fa-check"></i> 已完成</span>`;
     } else if(rec?.inTime){
       const nowLate=!rec.outTime?Math.max(0,now-start):0;
       statusHtml=`<span class="badge bg-teal"><i class="fas fa-circle" style="font-size:6px;"></i> 上班中</span>
@@ -2019,13 +2017,11 @@ function renderClock(){
     if(rec){
       const h=calHours(rec.inTime,rec.outTime);
       const late=rec.lateMinutes||0;
-      const ot=rec.outTime?calcOvertime(block.time,rec.outTime):0;
-      cardsHtml=`<div style="display:grid;grid-template-columns:repeat(${2+(h?1:0)+(late>0?1:0)+(ot>0?1:0)},1fr);gap:6px;margin-top:10px;">
+      cardsHtml=`<div style="display:grid;grid-template-columns:repeat(${2+(h?1:0)+(late>0?1:0)},1fr);gap:6px;margin-top:10px;">
         <div class="scard" style="padding:10px 12px;"><div class="sc-lbl">上班</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;">${rec.inTime||'—'}</div></div>
         <div class="scard" style="padding:10px 12px;"><div class="sc-lbl">下班</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;">${rec.outTime||'—'}</div></div>
         ${h?`<div class="scard" style="padding:10px 12px;"><div class="sc-lbl">工時</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;color:var(--teal);">${fmtH(h)}</div></div>`:''}
-        ${late>0?`<div class="scard" style="padding:10px 12px;background:var(--coral-l);border-color:var(--coral-l);"><div class="sc-lbl" style="color:var(--coral);">遲到</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;color:var(--coral);">${late} 分</div></div>`:''}
-        ${ot>0?`<div class="scard" style="padding:10px 12px;background:var(--blue-l);border-color:var(--blue-l);"><div class="sc-lbl" style="color:var(--blue);">加班</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;color:var(--blue);">${ot} 分</div></div>`:''}
+        ${late>0?`<div class="scard" style="padding:10px 12px;background:var(--coral-l);border-color:var(--coral-l);"><div class="sc-lbl" style="color:var(--coral);">遲到/早退</div><div class="mono" style="font-size:15px;font-weight:600;margin-top:3px;color:var(--coral);">${late} 分</div></div>`:''}
       </div>`;
     }
 
@@ -2120,8 +2116,10 @@ async function makeupClockIn(){
     emp_id:currentUser.id,name:currentUser.name,date:td,in_time:t,out_time:null,minutes:0,status:'clocking'
   }]).select();
   if(res.error){
-    if(res.error.code==='42P01') toast('補登功能需先在 Supabase 建立 makeup_requests 表','err');
-    else toast('補登失敗：'+res.error.message,'err');
+    if(res.error.code==='42P01') toast('補登失敗：請先在 Supabase 建立 makeup_requests 表','err');
+    else if(res.error.code==='42501') toast('補登失敗：makeup_requests 表缺少 anon 權限，請執行 GRANT','err');
+    else toast(`補登失敗（${res.error.code||'?'}）：${res.error.message}`,'err');
+    console.error('makeupClockIn error:',res.error);
     makeups=makeups.filter(x=>x!==m);
     return;
   }
@@ -2156,6 +2154,7 @@ async function doClockBlock(type, blockId){
 
 async function doClockShift(type, shiftId, timeOverride){
   if(!currentUser) return;
+  if(isViewOnly){ toast('查詢模式無法打卡','err'); return; }
   const n=new Date(); const t=pad(n.getHours())+':'+pad(n.getMinutes());
   const baseShift=ALL_SHIFTS.find(s=>s.id===shiftId);
   // 合併班次時用整個區塊的時間範圍計算遲到/加班
@@ -2185,7 +2184,7 @@ async function doClockShift(type, shiftId, timeOverride){
     const isFirstShift = blocks.length>0 && blocks[0].id===shiftId;
     const grace = isFirstShift ? FIRST_SHIFT_GRACE() : 0;
     const late=shift?calcLate(shift.time,t,grace):0;
-    const newRec={empId:recordEmpId,name:recordName,date:td,inTime:t,outTime:'',shiftId,lateMinutes:late,overtimeMinutes:0,coveredBy:isCover?currentUser.id:null};
+    const newRec={empId:recordEmpId,name:recordName,date:td,inTime:t,outTime:'',shiftId,lateMinutes:late,overtimeMinutes:0,clockInAt:Date.now(),coveredBy:isCover?currentUser.id:null};
     records.push(newRec);
     const {error}=await db.from('clock_records').upsert({
       emp_id:recordEmpId,name:recordName,date:td,
@@ -2196,27 +2195,47 @@ async function doClockShift(type, shiftId, timeOverride){
     else toast('✅ 上班打卡成功 '+t);
   } else {
     if(!rec||rec.outTime) return;
-    // 第5點：晚班可提早 30 分鐘打下班卡，自動填下班時間
-    let outTime=t;
+    // 第6點：上班打卡後 10 分鐘內不能打下班卡（防誤打）
+    // 第6點：上班打卡後 10 分鐘內不能打下班卡（防誤打）— 用打卡時間字串比對，重整後仍有效
+    if(rec.inTime){
+      const sinceIn = nowMin() - parseMin(rec.inTime);
+      if(sinceIn >= 0 && sinceIn < 10){
+        toast(`剛打過上班卡，請 ${10-sinceIn} 分鐘後再打下班卡（防誤觸）`,'err');
+        return;
+      }
+    }
     const endMin=shift?parseMin(shift.time.split('–')[1]):0;
     const nowM=nowMin();
-    const isEvening = endMin>=20*60; // 結束時間 ≥20:00 視為晚班
-    if(isEvening && nowM>=endMin-EARLY_OUT_MIN() && nowM<endMin){
-      // 提早打卡 → 自動記為排定下班時間
-      outTime=shift.time.split('–')[1];
-    }
-    const ot=shift?calcOvertime(shift.time,outTime):0;
-    rec.outTime=outTime; rec.overtimeMinutes=ot;
+    // 一律照實際打卡時間記錄下班
+    const outTime=t;
+    // 早退：提早於排定下班時間 → 記錄早退分鐘（併入遲到統計）
+    const early = nowM<endMin ? (endMin-nowM) : 0;
+    rec.outTime=outTime;
+    rec.overtimeMinutes=0; // 不計加班
+    rec.earlyMinutes=early;
+    const newLate=(rec.lateMinutes||0)+early;
     const {error}=await db.from('clock_records')
-      .update({out_time:outTime,overtime_minutes:ot})
+      .update({out_time:outTime,overtime_minutes:0,late_minutes:newLate})
       .eq('emp_id',recordEmpId).eq('date',td).eq('shift_id',shiftId);
     if(error) console.error(error);
-    if(outTime!==t) toast(`👋 下班打卡成功，已記為排定下班時間 ${outTime}`);
-    else if(ot>0) toast(`👋 下班打卡成功 ${outTime}，加班 ${ot} 分鐘`);
-    else toast('👋 下班打卡成功 '+outTime);
+    rec.lateMinutes=newLate; // 本地同步（含早退）
+    if(early>0){
+      toast(`👋 下班打卡 ${outTime}，早退 ${early} 分鐘已記入`,'err');
+    } else {
+      toast('👋 下班打卡成功 '+outTime);
+    }
   }
   renderClock();
   if(typeof updateDashboard==='function' && isAdmin) updateDashboard();
+  // 第4點：打完卡（上班或下班）馬上自動登出回打卡頁（僅刷卡/工讀生模式）
+  if(!isAdmin){
+    setTimeout(()=>{ autoLogoutToClockPage(); }, 1200);
+  }
+}
+
+// 打完卡自動登出回到刷卡頁
+function autoLogoutToClockPage(){
+  if(typeof logout==='function'){ logout(); }
 }
 
 // keep old doClock as fallback (unused but referenced in some places)
@@ -2549,11 +2568,10 @@ function renderMyRecords(){
     .filter(r=>!filterMonth||r.date.startsWith(filterMonth))
     .sort((a,b)=>b.date.localeCompare(a.date)||(a.shiftId||'').localeCompare(b.shiftId||''));
 
-  let totalH=0,days=new Set(),totalLate=0,lateDays=0,totalOT=0;
+  let totalH=0,days=new Set(),totalLate=0,lateDays=0;
   myR.forEach(r=>{
     const h=calHours(r.inTime,r.outTime);if(h){totalH+=h;days.add(r.date);}
     if(r.lateMinutes>0){totalLate+=r.lateMinutes;lateDays++;}
-    if(r.overtimeMinutes>0) totalOT+=r.overtimeMinutes;
   });
   // 扣除已通過審核的補登時數（1:1 抵銷遲到）
   const approvedMakeup=makeups.filter(m=>m.empId===currentUser.id&&m.status==='approved')
@@ -2567,7 +2585,6 @@ function renderMyRecords(){
     const h=calHours(r.inTime,r.outTime);
     const shift=r.shiftId?ALL_SHIFTS.find(s=>s.id===r.shiftId):null;
     const late=r.lateMinutes||0;
-    const ot=r.overtimeMinutes||0;
     return `<tr>
       <td>${r.date}</td>
       <td class="mono" style="font-size:11px;">${shift?shift.time:'—'}</td>
@@ -2575,9 +2592,8 @@ function renderMyRecords(){
       <td class="mono">${r.outTime||'—'}</td>
       <td style="color:var(--teal);font-weight:500;">${fmtH(h)}</td>
       <td>${late>0?`<span class="badge bg-red">${late} 分</span>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}</td>
-      <td>${ot>0?`<span class="badge bg-blue">${ot} 分</span>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}</td>
     </tr>`;
-  }).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">暫無紀錄</td></tr>`;
+  }).join(''):`<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">暫無紀錄</td></tr>`;
 
   // Total footer row
   const tfoot=document.getElementById('my-tfoot');
@@ -2586,7 +2602,6 @@ function renderMyRecords(){
       <td colspan="4" style="text-align:right;">合計（${filterMonth?filterMonth.replace('-','年')+'月':'全部'}）</td>
       <td style="color:var(--teal);">${totalH.toFixed(1)} h</td>
       <td>${totalLate>0?`<span style="color:var(--coral);">${totalLate} 分</span>`:'—'}</td>
-      <td>${totalOT>0?`<span style="color:var(--blue);">${totalOT} 分</span>`:'—'}</td>
     </tr>`:'';
   }
 }
@@ -2772,6 +2787,26 @@ async function submitSwap(){
   if(!myDate||!myShift){toast('請填寫班次資訊','err');return;}
   if(type==='swap'&&(!theirDate||!theirShift)){toast('請填寫對方班次','err');return;}
 
+  // 驗證：我要送出的班必須是「自己的班」
+  const isMine=schedule.some(s=>s.date===myDate&&s.shiftId===myShift&&
+    ((s.empId===currentUser.id&&!s.coverBy)||s.coverBy===currentUser.id));
+  if(!isMine){
+    const sh=ALL_SHIFTS.find(s=>s.id===myShift);
+    toast(`無法送出：${myDate} ${sh?sh.time:''} 不是你的班，無法申請代換`,'err');
+    return;
+  }
+  // 換班時也驗證對方的班確實是對方的
+  if(type==='swap'){
+    const toIdCheck=parseInt(targetVal);
+    const theirIsValid=schedule.some(s=>s.date===theirDate&&s.shiftId===theirShift&&
+      ((s.empId===toIdCheck&&!s.coverBy)||s.coverBy===toIdCheck));
+    if(!theirIsValid){
+      const sh=ALL_SHIFTS.find(s=>s.id===theirShift);
+      toast(`無法送出：${theirDate} ${sh?sh.time:''} 不是對方的班`,'err');
+      return;
+    }
+  }
+
   // Group id to link requests sent to multiple people for the same shift
   const groupId='g'+Date.now();
 
@@ -2934,13 +2969,18 @@ async function peerAction(id,action){
   r.approvedAt=today();
 
   if(r.type==='swap'){
-    // 換班：兩人班次對調
+    // 換班：不直接對調，改用 coverBy 標記實際上班人（像代班一樣顯示「原上班人（代班人代）」）
+    // r.fromId 的班(myDate/myShift) → 由 r.toId 上班
+    // r.toId 的班(theirDate/theirShift) → 由 r.fromId 上班
     const e1=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
     const e2=schedule.find(s=>s.date===r.theirDate&&s.shiftId===r.theirShift&&s.empId===r.toId);
-    if(e1&&e2){
-      [e1.empId,e2.empId]=[e2.empId,e1.empId];
-      await db.from('schedule').update({emp_id:r.toId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
-      await db.from('schedule').update({emp_id:r.fromId}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.toId);
+    if(e1){
+      e1.coverBy=r.toId;
+      await db.from('schedule').update({cover_by:r.toId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
+    }
+    if(e2){
+      e2.coverBy=r.fromId;
+      await db.from('schedule').update({cover_by:r.fromId}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.toId);
     }
   } else {
     // 代班：原上班人保留(統計用)，coverBy = 代班人(打卡用)
@@ -3017,13 +3057,16 @@ async function approveCancel(id){
 
   // 還原班表
   if(r.type==='swap'){
-    // 換回來
-    const e1=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.toId);
-    const e2=schedule.find(s=>s.date===r.theirDate&&s.shiftId===r.theirShift&&s.empId===r.fromId);
-    if(e1&&e2){
-      [e1.empId,e2.empId]=[e2.empId,e1.empId];
-      await db.from('schedule').update({emp_id:r.fromId}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.toId);
-      await db.from('schedule').update({emp_id:r.toId}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.fromId);
+    // 移除兩邊的 coverBy
+    const e1=schedule.find(s=>s.date===r.myDate&&s.shiftId===r.myShift&&s.empId===r.fromId);
+    const e2=schedule.find(s=>s.date===r.theirDate&&s.shiftId===r.theirShift&&s.empId===r.toId);
+    if(e1){
+      e1.coverBy=null;
+      await db.from('schedule').update({cover_by:null}).eq('date',r.myDate).eq('shift_id',r.myShift).eq('emp_id',r.fromId);
+    }
+    if(e2){
+      e2.coverBy=null;
+      await db.from('schedule').update({cover_by:null}).eq('date',r.theirDate).eq('shift_id',r.theirShift).eq('emp_id',r.toId);
     }
   } else {
     // 代班：移除 cover_by
@@ -3133,7 +3176,7 @@ async function refreshTodayRecords(){
         empId:r.emp_id, name:r.name, date:r.date,
         inTime:r.in_time, outTime:r.out_time, shiftId:r.shift_id,
         lateMinutes:r.late_minutes||0, overtimeMinutes:r.overtime_minutes||0,
-        lateOffset:r.late_offset||null, coveredBy:null
+        coveredBy:null
       }));
     }
   }catch(e){ /* 離線時略過 */ }
@@ -3211,24 +3254,31 @@ function updateDashboard(){
     }).join(''):`<div style="color:var(--muted);font-size:12px;padding:12px;">此時段無排班</div>`;
   }
 
-  // ── BOTTOM SECTION: all today's shifts sorted by time ──
-  // Collect all (empId, shiftId) pairs for today
+  // ── BOTTOM SECTION: all today's shifts sorted by time（連續班次合併顯示）──
   const allToday=schedule.filter(s=>s.date===td);
-  // Sort by shift start time
-  const sortedEntries=[...allToday].sort((a,b)=>{
-    const sa=ALL_SHIFTS.find(sh=>sh.id===a.shiftId);
-    const sb=ALL_SHIFTS.find(sh=>sh.id===b.shiftId);
-    return parseMin((sa?.time||'99:99').split('–')[0])-parseMin((sb?.time||'99:99').split('–')[0]);
+  // 依「歸屬人」分組，對每人做班次合併
+  const byEmp={};
+  allToday.forEach(s=>{
+    const ownerId=s.coverBy||s.empId;
+    if(!byEmp[ownerId]) byEmp[ownerId]=[];
+    byEmp[ownerId].push(s);
   });
+  // 對每人產生合併後的區塊列
+  const rows=[];
+  Object.keys(byEmp).forEach(ownerId=>{
+    const blocks=getShiftBlocksFor(parseInt(ownerId), td);
+    blocks.forEach(b=>rows.push({ownerId:parseInt(ownerId), block:b}));
+  });
+  // 依區塊開始時間排序
+  rows.sort((a,b)=>a.block.startMin-b.block.startMin);
 
-  document.getElementById('today-dash').innerHTML=sortedEntries.length?sortedEntries.map(entry=>{
-    const emp=employees.find(e=>e.id===(entry.coverBy||entry.empId));
+  document.getElementById('today-dash').innerHTML=rows.length?rows.map(({ownerId,block})=>{
+    const emp=employees.find(e=>e.id===ownerId);
     if(!emp) return '';
-    const shift=ALL_SHIFTS.find(sh=>sh.id===entry.shiftId);if(!shift) return '';
-    const rec=findRecForShift(tR, emp.id, td, shift.id);
-    const startMin=parseMin(shift.time.split('–')[0]);
-    const endMin=parseMin(shift.time.split('–')[1]);
+    const startMin=block.startMin, endMin=block.endMin;
     const inWindow=now>=(startMin-10)&&now<=endMin;
+    // 區塊紀錄掛在主班次 id
+    const rec=findRecForShift(tR, ownerId, td, block.id);
 
     let statusHtml='';
     if(rec?.outTime){
@@ -3246,9 +3296,10 @@ function updateDashboard(){
       statusHtml='<span class="badge bg-gray">上班時間未到</span>';
     }
     const lateMin=rec?.lateMinutes||0;
+    const merged=block.shiftIds.length>1;
     return `<tr>
       <td style="font-weight:500;">${esc(emp.name)}</td>
-      <td class="mono" style="font-size:11px;">${shift.time}</td>
+      <td class="mono" style="font-size:11px;">${block.time}${merged?` <span style="font-size:9px;color:var(--teal);">合併</span>`:''}</td>
       <td>${statusHtml}</td>
       <td class="mono">${rec?.inTime||'—'}</td>
       <td class="mono">${rec?.outTime||'—'}</td>
@@ -3523,7 +3574,7 @@ function renderAll(){
     const h=calHours(r.inTime,r.outTime);
     const shift=r.shiftId?ALL_SHIFTS.find(s=>s.id===r.shiftId):null;
     const lateCell=r.lateMinutes>0
-      ?`<td><span class="badge bg-red">${r.lateMinutes} 分</span>${r.lateOffset?'<br><span class="badge bg-green" style="font-size:9px;margin-top:2px;">已抵銷</span>':''}</td>`
+      ?`<td><span class="badge bg-red">${r.lateMinutes} 分</span></td>`
       :`<td style="color:var(--muted);font-size:11px;">—</td>`;
     // 用 empId+date+shiftId 當識別
     const key=`${r.empId}|${r.date}|${r.shiftId||''}`;
@@ -3532,8 +3583,6 @@ function renderAll(){
       <td class="mono">${r.inTime||'—'}</td><td class="mono">${r.outTime||'—'}</td>
       <td style="color:var(--teal);">${fmtH(h)}</td>${lateCell}
       <td style="white-space:nowrap;">
-        ${r.lateMinutes>0&&!r.lateOffset?`<button class="btn btn-sm" style="padding:4px 8px;background:var(--teal-l);color:var(--teal-d);" onclick="offsetLate('${key}')" title="抵銷遲到"><i class="fas fa-check"></i> 抵銷</button>`:''}
-        ${r.lateOffset?`<button class="btn btn-sm" style="padding:4px 8px;" onclick="restoreLate('${key}')" title="還原遲到"><i class="fas fa-rotate-left"></i></button>`:''}
         <button class="btn btn-sm" style="padding:4px 8px;" onclick="openEditRecord('${key}')"><i class="fas fa-pen"></i></button>
         <button class="btn btn-sm btn-danger" style="padding:4px 8px;" onclick="deleteRecord('${key}')"><i class="fas fa-trash"></i></button>
       </td></tr>`;
@@ -3585,34 +3634,6 @@ async function rejectMakeup(id){
   updateBadges();
 }
 
-// ── 抵銷遲到（管理員手動，仍保留）──
-async function offsetLate(key){
-  const r=findRecordByKey(key);
-  if(!r){toast('找不到紀錄','err');return;}
-  if(!confirm(`確定抵銷 ${r.name} 的 ${r.lateMinutes} 分鐘遲到嗎？`))return;
-  r.lateOffset=r.lateMinutes; // 記住原本遲到值
-  r.lateMinutes=0;
-  const res=await db.from('clock_records')
-    .update({late_minutes:0,late_offset:r.lateOffset})
-    .eq('emp_id',r.empId).eq('date',r.date).eq('shift_id',r.shiftId);
-  if(res.error&&res.error.code!=='42703') console.error(res.error);
-  toast('✅ 已抵銷遲到時數');
-  renderAll();
-}
-
-async function restoreLate(key){
-  const r=findRecordByKey(key);
-  if(!r||!r.lateOffset){return;}
-  r.lateMinutes=r.lateOffset;
-  r.lateOffset=null;
-  const res=await db.from('clock_records')
-    .update({late_minutes:r.lateMinutes,late_offset:null})
-    .eq('emp_id',r.empId).eq('date',r.date).eq('shift_id',r.shiftId);
-  if(res.error&&res.error.code!=='42703') console.error(res.error);
-  toast('已還原遲到時數');
-  renderAll();
-}
-
 // ── 管理員編輯/刪除打卡紀錄 ──
 function findRecordByKey(key){
   const [empId,date,shiftId]=key.split('|');
@@ -3637,14 +3658,21 @@ async function saveEditRecord(){
   if(!r){toast('找不到紀錄','err');return;}
   const inT=document.getElementById('edit-rec-in').value.trim();
   const outT=document.getElementById('edit-rec-out').value.trim();
-  // 重新計算遲到/加班
+  // 重新計算遲到（含早退），不計加班
   const shift=r.shiftId?ALL_SHIFTS.find(s=>s.id===r.shiftId):null;
-  const late=shift&&inT?calcLate(shift.time,inT):0;
-  const ot=shift&&outT?calcOvertime(shift.time,outT):0;
-  r.inTime=inT; r.outTime=outT; r.lateMinutes=late; r.overtimeMinutes=ot;
+  const lateIn=shift&&inT?calcLate(shift.time,inT):0;
+  // 早退：下班早於排定結束
+  let early=0;
+  if(shift&&outT){
+    const endMin=parseMin(shift.time.split('–')[1]);
+    const outMin=parseMin(outT);
+    if(outMin<endMin) early=endMin-outMin;
+  }
+  const late=lateIn+early;
+  r.inTime=inT; r.outTime=outT; r.lateMinutes=late; r.overtimeMinutes=0; r.earlyMinutes=early;
   // 寫回 Supabase
   const res=await db.from('clock_records')
-    .update({in_time:inT||null,out_time:outT||null,late_minutes:late,overtime_minutes:ot})
+    .update({in_time:inT||null,out_time:outT||null,late_minutes:late,overtime_minutes:0})
     .eq('emp_id',r.empId).eq('date',r.date).eq('shift_id',r.shiftId);
   if(res.error){toast('儲存失敗：'+res.error.message,'err');return;}
   closeModal('modal-edit-rec');
@@ -4647,7 +4675,7 @@ function renderClosureList(){
     <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
       <div>
         <span class="mono" style="font-size:11px;">${c.start}${c.end!==c.start?` ～ ${c.end}`:''}</span>
-        <span style="font-size:11px;color:var(--muted);margin-left:6px;">${c.note}</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:6px;">${esc(c.note)}</span>
       </div>
       <button class="btn btn-xs btn-danger" onclick="removeClosure(${c.id})"><i class="fas fa-trash"></i></button>
     </div>`).join('');
@@ -4766,7 +4794,6 @@ async function initApp(){
       inTime:r.in_time, outTime:r.out_time,
       shiftId:r.shift_id, lateMinutes:r.late_minutes||0,
       overtimeMinutes:r.overtime_minutes||0,
-      lateOffset:r.late_offset||null,
       coveredBy:null // derived from schedule at runtime
     }));
 
