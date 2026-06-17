@@ -2001,9 +2001,9 @@ function renderClock(){
     if(rec?.outTime){
       statusHtml=`<span class="badge bg-gray"><i class="fas fa-check"></i> 已完成</span>`;
     } else if(rec?.inTime){
-      const nowLate=!rec.outTime?Math.max(0,now-start):0;
+      const recLate=rec.lateMinutes||0;
       statusHtml=`<span class="badge bg-teal"><i class="fas fa-circle" style="font-size:6px;"></i> 上班中</span>
-        ${nowLate>0?`<span class="badge bg-red" style="margin-left:4px;"><i class="fas fa-clock"></i> 遲到累計 ${nowLate} 分</span>`:''}`;
+        ${recLate>0?`<span class="badge bg-red" style="margin-left:4px;"><i class="fas fa-clock"></i> 遲到 ${recLate} 分</span>`:''}`;
     } else if(!windowOpen){
       const minsTo=start-10-now;
       statusHtml=`<span class="badge bg-gray">打卡開放於 ${Math.floor(minsTo/60)?Math.floor(minsTo/60)+'小時':''}${minsTo%60}分後</span>`;
@@ -3221,15 +3221,19 @@ function updateDashboard(){
       if(!emp) return '';
       const rec=findRecForShift(tR, emp.id, td, activeSlot.id);
       const startMin=parseMin(activeSlot.time.split('–')[0]);
-      const accLate=rec?.inTime?Math.max(0,now-startMin):0;
+      // 08:00 班有 20 分寬限
+      const grace=activeSlot.time.split('–')[0]==='08:00'?FIRST_SHIFT_GRACE():0;
+      // 已打卡：用實際記錄的遲到；未打卡：用「現在-開始(扣寬限)」估算累計遲到
+      const storedLate=rec?.lateMinutes||0;
+      const liveLate=Math.max(0, now-startMin-grace);
 
       let statusHtml='',cardBg='var(--surface)',borderCol='var(--border)';
       if(rec?.outTime){
-        statusHtml='<span class="badge bg-gray"><i class="fas fa-check"></i> 已下班</span>';
+        statusHtml=`<span class="badge bg-gray"><i class="fas fa-check"></i> 已下班</span>${storedLate>0?` <span class="badge bg-red" style="margin-left:4px;">遲到 ${storedLate} 分</span>`:''}`;
         cardBg='var(--bg)';
       } else if(rec?.inTime){
-        if(accLate>0){
-          statusHtml=`<span class="badge bg-red"><i class="fas fa-clock"></i> 遲到 ${accLate} 分</span>`;
+        if(storedLate>0){
+          statusHtml=`<span class="badge bg-red"><i class="fas fa-clock"></i> 上班中・遲到 ${storedLate} 分</span>`;
           cardBg='#FFF5F3';borderCol='var(--coral-l)';
         } else {
           statusHtml='<span class="badge bg-teal"><i class="fas fa-circle" style="font-size:6px;"></i> 上班中</span>';
@@ -3239,7 +3243,8 @@ function updateDashboard(){
         statusHtml='<span class="badge bg-amber"><i class="fas fa-bell"></i> 待打卡</span>';
         borderCol='var(--amber)';
       } else {
-        statusHtml='<span class="badge bg-red"><i class="fas fa-user-xmark"></i> 未打卡</span>';
+        // 還沒打卡且已過開始時間 → 顯示累計中的遲到
+        statusHtml=`<span class="badge bg-red"><i class="fas fa-user-xmark"></i> 未打卡${liveLate>0?`・遲到累計 ${liveLate} 分`:''}</span>`;
         cardBg='#FFF5F3';borderCol='var(--coral-l)';
       }
       const tag=entry.station||'C';
@@ -3280,22 +3285,27 @@ function updateDashboard(){
     // 區塊紀錄掛在主班次 id
     const rec=findRecForShift(tR, ownerId, td, block.id);
 
+    const lateMin=rec?.lateMinutes||0;
+    const grace=block.startTime==='08:00'?FIRST_SHIFT_GRACE():0;
+    const liveLate=Math.max(0, now-startMin-grace);
+
     let statusHtml='';
     if(rec?.outTime){
-      statusHtml='<span class="badge bg-gray"><i class="fas fa-check"></i> 已下班</span>';
+      statusHtml=`<span class="badge bg-gray"><i class="fas fa-check"></i> 已下班</span>`;
     } else if(rec?.inTime){
-      const accLate=Math.max(0,now-startMin);
-      statusHtml=accLate>0
-        ?`<span class="badge bg-red"><i class="fas fa-clock"></i> 上班中・遲到 ${accLate} 分</span>`
+      statusHtml=lateMin>0
+        ?`<span class="badge bg-red"><i class="fas fa-clock"></i> 上班中・遲到 ${lateMin} 分</span>`
         :`<span class="badge bg-teal"><i class="fas fa-circle" style="font-size:6px;"></i> 上班中</span>`;
     } else if(now>endMin){
       statusHtml='<span class="badge bg-red"><i class="fas fa-user-xmark"></i> 缺席</span>';
     } else if(inWindow){
-      statusHtml='<span class="badge bg-amber"><i class="fas fa-bell"></i> 待打卡</span>';
+      // 已過開始時間還沒打卡 → 顯示累計遲到中
+      statusHtml=liveLate>0
+        ?`<span class="badge bg-red"><i class="fas fa-bell"></i> 待打卡・遲到累計 ${liveLate} 分</span>`
+        :'<span class="badge bg-amber"><i class="fas fa-bell"></i> 待打卡</span>';
     } else {
       statusHtml='<span class="badge bg-gray">上班時間未到</span>';
     }
-    const lateMin=rec?.lateMinutes||0;
     const merged=block.shiftIds.length>1;
     return `<tr>
       <td style="font-weight:500;">${esc(emp.name)}</td>
