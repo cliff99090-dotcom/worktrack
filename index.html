@@ -2180,9 +2180,9 @@ async function doClockShift(type, shiftId, timeOverride){
   if(type==='in'){
     if(rec&&rec.inTime) { toast('此班次已打過上班卡',''); return; }
     // 第4點：當日第一個班次享 20 分鐘寬限期
-    const blocks=getTodayShiftBlocks();
-    const isFirstShift = blocks.length>0 && blocks[0].id===shiftId;
-    const grace = isFirstShift ? FIRST_SHIFT_GRACE() : 0;
+    // 第4點：只有 08:00 開始的班享 20 分鐘寬限期
+    const shiftStart = shift ? shift.time.split('–')[0] : '';
+    const grace = (shiftStart==='08:00') ? FIRST_SHIFT_GRACE() : 0;
     const late=shift?calcLate(shift.time,t,grace):0;
     const newRec={empId:recordEmpId,name:recordName,date:td,inTime:t,outTime:'',shiftId,lateMinutes:late,overtimeMinutes:0,clockInAt:Date.now(),coveredBy:isCover?currentUser.id:null};
     records.push(newRec);
